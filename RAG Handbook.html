@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAG Core Handbook — Learner-Sequenced Edition</title>
+<style>
+  :root{
+    --c-found:#2563eb;   --c-found-bg:#eff6ff;
+    --c-pattern:#7c3aed; --c-pattern-bg:#f5f3ff;
+    --c-stage:#0d9488;   --c-stage-bg:#f0fdfa;
+    --c-security:#dc2626;--c-security-bg:#fef2f2;
+    --c-fail:#ea580c;    --c-fail-bg:#fff7ed;
+    --c-eval:#4f46e5;    --c-eval-bg:#eef2ff;
+    --c-obs:#0891b2;     --c-obs-bg:#ecfeff;
+    --c-cost:#d97706;    --c-cost-bg:#fffbeb;
+    --c-platform:#059669;--c-platform-bg:#ecfdf5;
+    --c-recall:#db2777;  --c-recall-bg:#fdf2f8;
+    --c-sa:#1e3a8a;      --c-sa-bg:#eff6ff;
+    --ink:#1f2937; --sub:#6b7280; --line:#e5e7eb;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); line-height:1.6; background:#f9fafb;
+  }
+  .wrap{max-width:1000px;margin:0 auto;padding:0 24px 80px;}
+  header.hero{
+    background:linear-gradient(135deg,#1e3a8a 0%,#7c3aed 50%,#0d9488 100%);
+    color:#fff; padding:56px 24px 64px; text-align:center;
+  }
+  header.hero h1{margin:0 0 8px;font-size:2.2rem;letter-spacing:.5px;}
+  header.hero p{margin:0;font-size:1.05rem;opacity:.92;max-width:680px;margin:0 auto;}
+  .badge-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:20px;}
+  .pill{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.4);
+    border-radius:999px;padding:5px 14px;font-size:.78rem;font-weight:600;}
+
+  nav.toc{background:#fff;border:1px solid var(--line);border-radius:12px;
+    padding:18px 22px;margin:-40px auto 36px;max-width:1000px;box-shadow:0 6px 24px rgba(0,0,0,.06);}
+  nav.toc h2{margin:0 0 12px;font-size:.95rem;text-transform:uppercase;letter-spacing:1px;color:var(--sub);}
+  nav.toc ol{margin:0;padding-left:20px;columns:2;column-gap:28px;font-size:.92rem;}
+  nav.toc li{margin-bottom:6px;break-inside:avoid;}
+  nav.toc a{color:var(--ink);text-decoration:none;border-bottom:1px dotted var(--line);}
+  nav.toc a:hover{color:var(--c-found);}
+
+  section{margin:46px 0;}
+  .sec-head{display:flex;align-items:center;gap:14px;margin-bottom:6px;}
+  .sec-num{display:inline-flex;align-items:center;justify-content:center;
+    min-width:42px;height:42px;border-radius:10px;color:#fff;font-weight:700;font-size:1.1rem;}
+  .sec-head h2{margin:0;font-size:1.5rem;}
+  .sec-sub{color:var(--sub);font-size:.92rem;margin:4px 0 18px 56px;}
+
+  .note{border-left:4px solid; border-radius:8px; padding:14px 18px; margin:16px 0; font-size:.94rem;}
+  .note.found{border-color:var(--c-found);background:var(--c-found-bg);}
+  .note.pattern{border-color:var(--c-pattern);background:var(--c-pattern-bg);}
+  .note.stage{border-color:var(--c-stage);background:var(--c-stage-bg);}
+  .note.security{border-color:var(--c-security);background:var(--c-security-bg);}
+  .note.fail{border-color:var(--c-fail);background:var(--c-fail-bg);}
+  .note.evalc{border-color:var(--c-eval);background:var(--c-eval-bg);}
+  .note.obs{border-color:var(--c-obs);background:var(--c-obs-bg);}
+  .note.cost{border-color:var(--c-cost);background:var(--c-cost-bg);}
+  .note.platform{border-color:var(--c-platform);background:var(--c-platform-bg);}
+  .note.sa{border-color:var(--c-sa);background:var(--c-sa-bg);}
+
+  .recall{border:1px dashed var(--c-recall);background:var(--c-recall-bg);
+    border-radius:10px;padding:10px 16px;margin:14px 0;font-size:.88rem;display:flex;gap:10px;align-items:baseline;}
+  .recall .tag{font-weight:700;color:var(--c-recall);font-size:.72rem;text-transform:uppercase;
+    letter-spacing:.5px;white-space:nowrap;}
+  .quote{font-style:italic;color:var(--ink);}
+
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:.9rem;}
+  th{background:var(--ink);color:#fff;text-align:left;padding:10px 12px;font-weight:600;}
+  td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;}
+  tr:nth-child(even) td{background:#fafafa;}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px;margin:18px 0;}
+  .card{border:1px solid var(--line);border-radius:12px;padding:18px 20px;background:#fff;
+    border-top:5px solid var(--c-found);box-shadow:0 2px 10px rgba(0,0,0,.04);}
+  .card h3{margin:0 0 6px;font-size:1.05rem;}
+  .card .flow{font-family:'Cascadia Code',Consolas,monospace;font-size:.78rem;color:var(--sub);
+    background:#f3f4f6;border-radius:6px;padding:8px 10px;margin:8px 0;}
+  .card p{margin:6px 0;font-size:.88rem;}
+  .card .lbl{font-weight:700;font-size:.78rem;text-transform:uppercase;letter-spacing:.4px;}
+  .card.pattern{border-top-color:var(--c-pattern);}
+  .card.security{border-top-color:var(--c-security);}
+  .lbl.best{color:#15803d;} .lbl.weak{color:#b91c1c;} .lbl.what{color:var(--sub);}
+
+  details.stage{border:1px solid var(--line);border-radius:10px;margin:10px 0;overflow:hidden;background:#fff;}
+  details.stage summary{cursor:pointer;list-style:none;padding:14px 18px;font-weight:600;
+    background:var(--c-stage-bg);border-left:5px solid var(--c-stage);display:flex;justify-content:space-between;}
+  details.stage summary::-webkit-details-marker{display:none;}
+  details.stage summary::after{content:"+";font-size:1.2rem;color:var(--c-stage);font-weight:700;}
+  details.stage[open] summary::after{content:"–";}
+  details.stage .body{padding:14px 18px;font-size:.9rem;}
+  details.stage .body p{margin:6px 0;}
+
+  .pipeline{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;
+    margin:18px 0;font-size:.82rem;}
+  .pstep{background:#fff;border:1.5px solid var(--c-found);color:var(--c-found);border-radius:8px;
+    padding:8px 12px;font-weight:600;}
+  .arrow{color:var(--sub);font-weight:700;}
+
+  .oneliner-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:16px 0;}
+  .oneliner{background:#fff;border:1px solid var(--line);border-left:5px solid var(--c-recall);
+    border-radius:8px;padding:12px 16px;font-size:.86rem;font-style:italic;}
+
+  .heur-list{margin:10px 0;padding-left:0;list-style:none;}
+  .heur-list li{padding:8px 0 8px 28px;position:relative;border-bottom:1px solid var(--line);font-size:.92rem;}
+  .heur-list li:last-child{border-bottom:none;}
+  .heur-list li::before{content:"→";position:absolute;left:0;color:var(--c-found);font-weight:700;}
+
+  footer{text-align:center;color:var(--sub);font-size:.82rem;margin-top:60px;padding-top:24px;border-top:1px solid var(--line);}
+  .resequence{font-size:.78rem;color:var(--sub);background:#f3f4f6;border-radius:6px;padding:4px 10px;display:inline-block;margin-left:8px;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>RAG Core Handbook</h1>
+  <p>Learner-Sequenced Edition — re-ordered from the original "SA Edition" so the ideas build on each other the way a first-time learner actually needs them to.</p>
+  <div class="badge-row">
+    <span class="pill">Architecture</span><span class="pill">Patterns</span><span class="pill">Security</span>
+    <span class="pill">Evaluation</span><span class="pill">Observability</span><span class="pill">Cost</span>
+    <span class="pill">Tooling</span><span class="pill">SA Playbook</span>
+  </div>
+</header>
+
+<div class="wrap">
+
+<nav class="toc">
+  <h2>Contents — Learning Order</h2>
+  <ol>
+    <li><a href="#s1">Why RAG Exists</a></li>
+    <li><a href="#s2">RAG vs. Alternatives</a></li>
+    <li><a href="#s3">End-to-End Architecture &amp; the Cascade</a></li>
+    <li><a href="#s4">Stage-by-Stage Deep Dive</a></li>
+    <li><a href="#s5">Architecture Patterns</a></li>
+    <li><a href="#s6">Security Architecture &amp; Failure Analysis</a></li>
+    <li><a href="#s7">Evaluation &amp; Observability</a></li>
+    <li><a href="#s8">Cost Model &amp; Tooling Map</a></li>
+    <li><a href="#s9">Enterprise Reference Architecture</a></li>
+    <li><a href="#s10">Quick-Recall Companion</a></li>
+    <li><a href="#s11">One-Page Summary</a></li>
+    <li><a href="#s12">Solutions Architect Playbook — Requirements Gathering</a></li>
+    <li><a href="#sA">Appendix A — Build vs. Buy, Phased Rollout, Portfolio View</a></li>
+    <li><a href="#sB">Appendix B — Changelog</a></li>
+  </ol>
+</nav>
+
+<div class="note found" style="font-size:.85rem;">
+  <strong>A note on this edition:</strong> this is the <strong>Updated v2</strong> revision — nothing has been removed, only reorganized, relocated, or added (full list in <a href="#sB">Appendix B — Changelog</a>). New material includes the Source-of-Truth relationship (3.1), Index Lifecycle &amp; Data Freshness (4.6a), the RAG + Fine-Tuning complement framing (Section 2), new trade-off tables (chunking, retrieval strategy, index refresh, security models), and an expanded, fully-visualized Context Assembly deep-dive (4.12).
+</div>
+
+<!-- ============ 1. WHY RAG EXISTS ============ -->
+<section id="s1">
+  <div class="sec-head"><span class="sec-num" style="background:var(--c-found);">1</span><h2>Why RAG Exists</h2></div>
+
+  <p>LLMs alone have three problems: <strong>missing enterprise knowledge</strong>, <strong>stale knowledge</strong>, and <strong>hallucination</strong>. RAG inserts a retrieval step between question and model — Enterprise Documents → RAG → LLM — so the model writes from the right facts instead of guessing.</p>
+
+  <div class="recall"><span class="tag">Quick Recall</span><span class="quote">Token = Customer ID · Embedding = Customer profile · The whole pipeline = a lossy chain, each link can only preserve or destroy what it received.</span></div>
+</section>
+
+<!-- ============ 2. RAG VS ALTERNATIVES ============ -->
+<section id="s2">
+  <div class="sec-head"><span class="sec-num" style="background:var(--c-found);">2</span><h2>RAG vs. Alternatives — Should You Even Use RAG?</h2></div>
+
+  <table>
+    <tr><th>Approach</th><th>What it does</th><th>Best when</th><th>Weak when</th></tr>
+    <tr><td><strong>RAG</strong></td><td>Retrieves relevant external knowledge at query time, feeds it to the LLM as context</td><td>Knowledge changes often, must be traceable/citable, too large for a prompt or model weights</td><td>Latency tolerance is very tight, or "knowledge" is really a <em>skill</em> (style/format/reasoning), not a <em>fact</em></td></tr>
+    <tr><td><strong>Fine-tuning</strong></td><td>Adjusts model weights on your data</td><td>Need consistent style, domain language, structured outputs, narrow specialized skill</td><td>Knowledge changes often (constant retraining), or you need traceability/citations</td></tr>
+    <tr><td><strong>Long-context</strong></td><td>Puts source material directly in the prompt, no retrieval</td><td>Small, stable corpora that fit in context</td><td>Large/changing corpora — cost &amp; latency scale with every query</td></tr>
+    <tr><td><strong>Agents</strong></td><td>Plans, calls tools (RAG can be one), takes multi-step action</td><td>Task needs multi-step reasoning, API calls, combining sources/actions</td><td>Task is a single grounded Q&amp;A — agent adds needless latency/complexity</td></tr>
+    <tr><td><strong>Workflow / deterministic pipeline</strong></td><td>Fixed, code-defined sequence, LLM/RAG as a component</td><td>Process is well-understood, repeatable, needs auditability</td><td>Task is open-ended / needs judgment that can't be pre-scripted</td></tr>
+    <tr><td><strong>Plain enterprise search</strong></td><td>Keyword/metadata search returns documents to a human</td><td>User wants to find and read a document themselves</td><td>User wants a synthesized conversational answer across many documents</td></tr>
+    <tr><td><strong>Knowledge graphs</strong></td><td>Entities + explicit relationships; supports multi-hop queries</td><td>Questions are about <em>how things relate</em></td><td>Knowledge is mostly unstructured prose where relationships aren't the point</td></tr>
+  </table>
+
+  <div class="note found">
+    <strong>Decision shortcut</strong>
+    <ul class="heur-list">
+      <li>Up-to-date / large external knowledge that needs traceability? → RAG (+ graph if relationships matter)</li>
+      <li>Need a different skill/style/format from the model itself? → Fine-tuning</li>
+      <li>Small, stable corpus? → Long context, skip retrieval</li>
+      <li>Multi-step reasoning / tool use? → Agent (RAG as one of its tools)</li>
+    </ul>
+  </div>
+
+  <div class="recall"><span class="tag">One-liner</span><span class="quote">"RAG answers 'what do our documents say'; fine-tuning changes 'how the model behaves'; agents decide 'what to do next'; knowledge graphs answer 'how things relate.' Usually combined, rarely substitutes."</span></div>
+</section>
+
+<!-- ============ 3. ARCHITECTURE + CASCADE ============ -->
+<section id="s3">
+  <div class="sec-head"><span class="sec-num" style="background:var(--c-found);">3</span><h2>End-to-End Architecture &amp; the Cascade</h2></div>
+
+  <div class="pipeline">
+    <span class="pstep">Enterprise Sources</span><span class="arrow">→</span>
+    <span class="pstep">Ingestion</span><span class="arrow">→</span>
+    <span class="pstep">Metadata Enrichment</span><span class="arrow">→</span>
+    <span class="pstep">Embedding</span><span class="arrow">→</span>
+    <span class="pstep">Vector DB / Index</span>
+  </div>
+  <p style="text-align:center;color:var(--sub);font-size:.8rem;text-transform:uppercase;letter-spacing:1px;">— runtime boundary —</p>
+  <div class="pipeline">
+    <span class="pstep">User Question</span><span class="arrow">→</span>
+    <span class="pstep">Identity / Auth</span><span class="arrow">→</span>
+    <span class="pstep">Query Processing + Embedding</span><span class="arrow">→</span>
+    <span class="pstep">Security Filter</span><span class="arrow">→</span>
+    <span class="pstep">Retrieval</span><span class="arrow">→</span>
+    <span class="pstep">Re-ranking</span><span class="arrow">→</span>
+    <span class="pstep">Context Assembly</span><span class="arrow">→</span>
+    <span class="pstep">Prompt Construction</span><span class="arrow">→</span>
+    <span class="pstep">LLM</span><span class="arrow">→</span>
+    <span class="pstep">Guardrails / Citations / Logs</span><span class="arrow">→</span>
+    <span class="pstep" style="border-color:var(--c-stage);color:var(--c-stage);">Final Answer</span>
+  </div>
+
+  <table>
+    <tr><th>Pipeline</th><th>Job</th><th>One-liner</th></tr>
+    <tr><td>Ingestion</td><td>Prepares knowledge</td><td>Garbage in, garbage out</td></tr>
+    <tr><td>Retrieval</td><td>Finds relevant knowledge</td><td>Optimizes recall</td></tr>
+    <tr><td>Context</td><td>Prepares knowledge for the LLM</td><td>Optimizes signal-to-noise</td></tr>
+    <tr><td>Generation</td><td>Produces the answer</td><td>Only as good as what it's handed</td></tr>
+    <tr><td>Governance</td><td>Controls safety, access, logging, evaluation</td><td>Separates a demo from a product</td></tr>
+  </table>
+
+  <h3 style="margin-top:28px;">The Cascade — Relationships Between Components</h3>
+  <div class="pipeline">
+    <span class="pstep">Source Quality</span><span class="arrow">→</span><span class="pstep">Chunking</span><span class="arrow">→</span>
+    <span class="pstep">Embedding</span><span class="arrow">→</span><span class="pstep">Retrieval</span><span class="arrow">→</span>
+    <span class="pstep">Re-ranking</span><span class="arrow">→</span><span class="pstep">Context Assembly</span><span class="arrow">→</span>
+    <span class="pstep">Prompt</span><span class="arrow">→</span><span class="pstep">Answer</span>
+  </div>
+
+  <div class="note found">
+    <strong>The rule:</strong> <em>quality lost early cannot be recovered later.</em> RAG is a lossy pipeline — each stage can only <strong>preserve or destroy</strong> what it received. A perfect LLM cannot answer from context that never contained the right chunk; a perfect retriever cannot find a chunk that chunking destroyed.
+    <p style="margin-top:10px;">A second cross-cutting relationship: <strong>Identity/Authorization and Metadata Filtering define the search space retrieval is allowed to operate in</strong> — get them wrong and you don't get a slightly-worse answer, you get a wrong or unsafe one.</p>
+  </div>
+
+  <div class="recall"><span class="tag">Quick Recall</span><span class="quote">The whole pipeline = a lossy chain — each link can only preserve or destroy what it received. "Quality lost early in the pipeline cannot be recovered later — a perfect LLM can't fix a chunk that was never retrieved."</span></div>
+</section>
+
+<!-- ============ 4. STAGE BY STAGE ============ -->
+<section id="s4">
+  <div class="sec-head"><span class="sec-num" style="background:var(--c-stage);">4</span><h2>Stage-by-Stage Deep Dive</h2></div>
+  <p style="font-size:.9rem;color:var(--sub);">Each stage: Purpose → Trade-off → Failure Signature → Quick Recall analogy. Click a stage to expand it.</p>
+
+  <details class="stage"><summary>4.1 Document Loading / Ingestion</summary>
+    <div class="body">
+      <p>Pulls raw content (SharePoint, Confluence, PDFs, DBs, APIs, web, tickets) and normalizes it.</p>
+      <p><strong>Decide on:</strong> how messy your sources are — templated sources need light processing, scans/slides need OCR/structure-aware extraction.</p>
+      <p><strong>Trade-off:</strong> source breadth vs. parsing fidelity.</p>
+      <p><strong>Failure looks like:</strong> garbled/truncated answers that <em>look</em> like a retrieval bug but are an ingestion bug.</p>
+      <p><strong>One-liner:</strong> sets the ceiling for everything downstream.</p>
+    </div>
+  </details>
+
+  <details class="stage"><summary>4.2 Chunking</summary>
+    <div class="body">
+      <p>Splits documents into retrievable units.</p>
+      <ul class="heur-list">
+        <li>Need simplicity/speed? → Fixed-size</li>
+        <li>Need a balanced default? → Recursive</li>
+        <li>Need max precision on prose? → Semantic</li>
+        <li>Source is strongly structured? → Structure-aware</li>
+        <li>Facts need surrounding context preserved? → Parent-Child pattern</li>
+      </ul>
+      <p><strong>Trade-off:</strong> small = precision, large = context.</p>
+      <p><strong>Failure looks like:</strong> "almost right" retrievals — topically related but missing the specific fact, or the fact split across chunks.</p>
+      <p><strong>One-liner:</strong> the single highest-leverage tuning knob.</p>
+      <div class="recall"><span class="tag">Quick Recall</span><span class="quote">Chunk = Book chapter</span></div>
+    </div>
+  </details>
+
+  <details class="stage"><summary>4.3 Metadata Enrichment</summary>
+    <div class="body">
+      <p>Attaches owner, department, country, classification, source, type, date/version — the basis of both relevance and access control.</p>
+      <p><strong>Decide:</strong> let security/compliance set the <em>minimum</em> schema; let search-quality needs add the rest.</p>
+      <p><strong>Trade-off:</strong> richer metadata = finer security/relevance, but more complexity and a permissions-sync problem.</p>
+      <p><strong>Failure looks like:</strong> over-exposure <em>or</em> false "I don't have that" responses.</p>
+      <p><strong>One-liner:</strong> where "search" becomes "governed enterprise search."</p>
+    </div>
+  </details>
+
+  <details class="stage"><summary>4.4 Embedding Model</summary>
+    <div class="body">
+      <p>Converts chunks/queries into vectors.</p>
+      <p><strong>Decide:</strong> match to dominant languages and domain; weigh hosted-API convenience vs. self-hosted cost/control at your query volume.</p>
+      <p><strong>Trade-off:</strong> higher dimensions often retrieve better but cost more to compute/store/search.</p>
+      <p><strong>Failure looks like:</strong> confidently-wrong "semantically similar but factually unrelated" results.</p>
+      <p><strong>One-liner:</strong> defines the "language" your retrieval thinks in.</p>
+      <div class="recall"><span class="tag">Quick Recall</span><span class="quote">Embedding = Customer profile</span></div>
+    </div>
+  </details>
+
+  <details class="stage"><summary>4.5 Vector Database / Search Platform</summary>
+    <div class="body">
+      <p>Stores text + vectors + metadata; serves similarity search.</p>
+      <p><strong>Decide:</strong> existing stack (Postgres → pgvector; OpenSearch shop → OpenSearch) vs. need for graph+vector (Neo4j) vs. fully managed scale (Pinecone/Weaviate Cloud/Azure AI Search).</p>
+      <p><strong>Trade-off:</strong> managed = less ops, more cost/lock-in; self-hosted = more control, more ops ownership.</p>
+      <p><strong>Failure looks like:</strong> latency or relevance degradation as the corpus grows (usually an indexing/tuning issue).</p>
+      <p><strong>One-liner:</strong> pick for your stack and ops appetite — most are "good enough" on raw retrieval quality.</p>
+      <div class="recall"><span class="tag">Quick Recall</span><span class="quote">Vector DB = Semantic search engine</span></div>
+    </div>
+  </details>
+
+  <details class="stage"><summary>4.6 ANN Indexing</summary>
+    <div class="body">
+      <p>Builds fast approximate-search structures (HNSW, IVF).</p>
+      <p><strong>Trade-off:</strong> small accuracy loss for large speed gain.</p>
+      <p><strong>Failure looks like:</strong> inconsistent results on near-identical queries, or slowdowns past tuning assumptions.</p>
+      <p><strong>One-liner:</strong> "approximately right, very fast" — explicitly chosen.</p>
+    </div>
+  </details>
+
+  <details class="stage"><summary>4.7 Identity &amp; Access Context</summary>
+    <div class="body">
+      <p>Establishes who's asking before retrieval happens — the entry point to the security architecture covered later in this edition.</p>
+      <p><strong>Trade-off:</strong> query-time enforcement costs more per query than ingest-time-only, but is the only correct way to handle permissions that change post-indexing.</p>
+      <p><strong>Failure looks like:</strong> the same question getting different answers depending on <em>when</em> it's asked.</p>
+      <p><strong>One-liner:</strong> skip it and a helpful assistant becomes a data-leak incident.</p>
+    </div>
+  </details>
+
+  <details class="stage"><summary>4.8 Query Processing &amp; Embedding</summary>
+    <div class="body">
+      <p>Cleans, interprets intent, optionally rewrites/expands, then embeds the query (this is where Multi-Query RAG plugs in).</p>
+      <p><strong>Trade-off:</strong> rewriting improves recall on vague questions but adds latency and intent-drift risk.</p>
+      <p><strong>Failure looks like:</strong> the system answering a <em>related but different</em> question.</p>
+      <p><strong>One-liner:</strong> a well-formed query is half the retrieval battle.</p>
+    </div>
+  </details>
+
+  <details class="stage"><summary>4.9 Metadata / Security Filtering</summary>
+    <div class="body">
+      <p>Narrows the search space to authorized documents — see Security section for the underlying models (RBAC/ABAC/ACL/row-level/tenant isolation).</p>
+      <p><strong>Decide:</strong> pre-filter (before vector search — more secure/efficient, needs platform support) vs. post-filter (simpler, riskier).</p>
+      <p><strong>Failure looks like:</strong> "found something relevant but can't show it" loops, or silent leakage only caught in audit.</p>
+      <p><strong>One-liner:</strong> security and relevance working as one mechanism.</p>
+    </div>
+  </details>
+
+  <details class="stage"><summary>4.10 Retrieval (Vector / Keyword / Hybrid)</summary>
+    <div class="body">
+      <p>Casts a wide net — typically top 50–100 — via vector similarity and/or keyword matching (this <em>is</em> the choice between Naive and Hybrid RAG).</p>
+      <ul class="heur-list">
+        <li>Mostly natural-language, paraphrased questions? → Vector search</li>
+        <li>Mostly exact terms (codes, IDs, acronyms)? → Keyword search</li>
+        <li>Mixed / enterprise-general? → Hybrid (default)</li>
+      </ul>
+      <p><strong>Failure looks like:</strong> the right document exists, is correctly chunked and tagged, but never appears in the candidate list — pure recall failure.</p>
+      <p><strong>One-liner:</strong> over-retrieve first, refine later — this stage's job is recall.</p>
+      <div class="recall"><span class="tag">Quick Recall</span><span class="quote">Retriever = Long-list candidate search</span></div>
+    </div>
+  </details>
+
+  <details class="stage"><summary>4.11 Re-ranking</summary>
+    <div class="body">
+      <p>Scores candidates jointly (cross-encoder: question + chunk together) and narrows to the best few.</p>
+      <p><strong>Decide:</strong> cross-encoder for cheap, consistent reranking of large sets; LLM-as-reranker only for small sets needing nuanced judgment, accepting the latency/cost.</p>
+      <p><strong>Trade-off:</strong> cross-encoders beat embedding-similarity ranking on accuracy (joint attention) but are too slow/costly to run over a whole corpus.</p>
+      <p><strong>Failure looks like:</strong> the right chunk <em>was</em> retrieved (visible in logs) but didn't survive ranking — easy to misdiagnose as a retrieval bug.</p>
+      <p><strong>One-liner:</strong> retriever finds candidates, reranker judges them — long-list vs. interview panel.</p>
+      <div class="recall"><span class="tag">Quick Recall</span><span class="quote">Reranker = Interview panel. "Cross-encoders compare jointly, embedding models compare separately — that's why cross-encoders win on relevance and lose on speed."</span></div>
+    </div>
+  </details>
+
+  <details class="stage" open><summary>4.12 Context Assembly <span class="resequence">expanded — funnel &amp; model-flow visualized below</span></summary>
+    <div class="body">
+      <p>Dedupes, orders, compresses top results into the token-budget-respecting final context.</p>
+      <p><strong>Trade-off:</strong> more context = more completeness but higher cost/"lost in the middle" risk; tighter = cheaper/sharper but can omit detail.</p>
+      <p><strong>Failure looks like:</strong> answer cites the wrong source among several correct ones, or blends sources incorrectly.</p>
+      <p><strong>One-liner:</strong> where retrieval quality is preserved — or quietly diluted — right before the model sees it.</p>
+      <div class="recall"><span class="tag">Quick Recall</span><span class="quote">Context Window = RAM</span></div>
+
+      <h4 style="margin:24px 0 8px;">The Funnel, Visualized</h4>
+      <div class="pipeline" style="justify-content:flex-start;">
+        <span class="pstep">Top 50 Retrieved Chunks</span><span class="arrow">→</span>
+        <span class="pstep">Re-ranking</span><span class="arrow">→</span>
+        <span class="pstep">Top 10 Chunks</span><span class="arrow">→</span>
+        <span class="pstep">Deduplication</span><span class="arrow">→</span>
+        <span class="pstep">Compression</span><span class="arrow">→</span>
+        <span class="pstep">Ordering</span><span class="arrow">→</span>
+        <span class="pstep" style="border-color:var(--c-stage);color:var(--c-stage);">Final Context</span>
+      </div>
+      <table>
+        <tr><th>Stage</th><th>Purpose</th></tr>
+        <tr><td>Top 50 Retrieved</td><td>Maximize recall</td></tr>
+        <tr><td>Re-ranking</td><td>Improve relevance</td></tr>
+        <tr><td>Top 10 Chunks</td><td>Keep strongest candidates</td></tr>
+        <tr><td>Deduplication</td><td>Remove repeated information</td></tr>
+        <tr><td>Compression</td><td>Reduce token usage</td></tr>
+        <tr><td>Ordering</td><td>Improve model attention</td></tr>
+        <tr><td>Final Context</td><td>Context sent to the LLM</td></tr>
+      </table>
+      <div class="note stage">Every stage in this funnel can remove information — a chunk being retrieved does not guarantee it reaches the LLM. That's why Context Assembly is a first-class architecture component, not a simple formatting step, and why "the right chunk was retrieved" and "the right chunk made it into the answer" are two different claims (the gap between them is its own row in the Section 6 Failure Analysis table).</div>
+
+      <p style="margin-top:14px;"><strong>A note on trust — retrieved content is data, not instructions:</strong> everything that survives this funnel becomes part of the prompt the LLM sees. Retrieved chunks are <em>untrusted input</em> in the same sense user input is — a document phrased as an instruction ("ignore previous instructions and…") should be treated as a quoted fact to reason about, never as a command to follow. (The full attack-surface treatment — indirect prompt injection, exfiltration, mitigations — belongs in a dedicated security/governance treatment; the point here is that this boundary exists and has to be designed for.)</p>
+
+      <h4 style="margin:24px 0 8px;">Ownership &amp; Strategies</h4>
+      <p><strong>Who actually does this?</strong> Usually the orchestration layer — LangChain, LlamaIndex, Haystack, Spring AI, or custom application code — not a dedicated AI model. That layer decides which chunks to keep, drop, how to order/compress/summarize them, and how much fits the token budget. <em>Context Assembly is often logic, not a model.</em></p>
+      <table>
+        <tr><th>Strategy</th><th>Who does it?</th><th>Purpose</th></tr>
+        <tr><td>Top-K</td><td>Retriever / app code</td><td>Select the best N chunks</td></tr>
+        <tr><td>Deduplication</td><td>App code</td><td>Remove repeated chunks</td></tr>
+        <tr><td>Ordering</td><td>App code</td><td>Place chunks where the model is most likely to attend to them</td></tr>
+        <tr><td>Compression</td><td>Rules / embeddings / small LLM</td><td>Strip irrelevant text while preserving original wording</td></tr>
+        <tr><td>Summarization</td><td>LLM</td><td>Rewrite chunks into a shorter form</td></tr>
+      </table>
+
+      <h4 style="margin:24px 0 8px;">Compression vs. Summarization</h4>
+      <table>
+        <tr><th>Factor</th><th>Compression</th><th>Summarization</th></tr>
+        <tr><td>Preserves original text</td><td>Yes</td><td>No — rewrites it</td></tr>
+        <tr><td>Uses an LLM</td><td>Usually no</td><td>Yes</td></tr>
+        <tr><td>Hallucination risk</td><td>Very low</td><td>Higher</td></tr>
+        <tr><td>Accuracy</td><td>Very high</td><td>Medium–high</td></tr>
+        <tr><td>Token reduction</td><td>Medium</td><td>Very high</td></tr>
+      </table>
+      <div class="recall"><span class="tag">One-liner</span><span class="quote">Compression preserves facts; summarization rewrites facts. Reach for compression when traceability matters, summarization when the token budget is the binding constraint.</span></div>
+
+      <h4 style="margin:24px 0 8px;">The Optional Fourth Model</h4>
+      <p>The pipeline is usually described with three models — embedding, reranker, generation LLM. Context Assembly can introduce an optional fourth.</p>
+
+      <p style="font-size:.78rem;color:var(--sub);text-transform:uppercase;letter-spacing:1px;margin:14px 0 6px;">Standard RAG model flow</p>
+      <div class="pipeline" style="justify-content:flex-start;">
+        <span class="pstep">Question</span><span class="arrow">→</span>
+        <span class="pstep">Embedding Model</span><span class="arrow">→</span>
+        <span class="pstep">Retrieval</span><span class="arrow">→</span>
+        <span class="pstep">Re-ranking Model</span><span class="arrow">→</span>
+        <span class="pstep">Context Assembly</span><span class="arrow">→</span>
+        <span class="pstep">Main LLM</span><span class="arrow">→</span>
+        <span class="pstep" style="border-color:var(--c-stage);color:var(--c-stage);">Answer</span>
+      </div>
+
+      <p style="font-size:.78rem;color:var(--sub);text-transform:uppercase;letter-spacing:1px;margin:18px 0 6px;">When summarization is added — Context Assembly forks into two possible handling paths</p>
+      <div class="pipeline" style="justify-content:flex-start;">
+        <span class="pstep">Question</span><span class="arrow">→</span>
+        <span class="pstep">Embedding Model</span><span class="arrow">→</span>
+        <span class="pstep">Retrieval</span><span class="arrow">→</span>
+        <span class="pstep">Re-ranking Model</span><span class="arrow">→</span>
+        <span class="pstep">Context Assembly</span><span class="arrow">→</span>
+        <span class="pstep">Compression <small>(rules / embeddings)</small></span><span class="arrow">→</span>
+        <span class="pstep">Main LLM</span><span class="arrow">→</span>
+        <span class="pstep" style="border-color:var(--c-stage);color:var(--c-stage);">Answer</span>
+      </div>
+      <div class="pipeline" style="justify-content:flex-start;">
+        <span class="pstep">Question</span><span class="arrow">→</span>
+        <span class="pstep">Embedding Model</span><span class="arrow">→</span>
+        <span class="pstep">Retrieval</span><span class="arrow">→</span>
+        <span class="pstep">Re-ranking Model</span><span class="arrow">→</span>
+        <span class="pstep">Context Assembly</span><span class="arrow">→</span>
+        <span class="pstep">Summarization LLM</span><span class="arrow">→</span>
+        <span class="pstep">Main LLM</span><span class="arrow">→</span>
+        <span class="pstep" style="border-color:var(--c-stage);color:var(--c-stage);">Answer</span>
+      </div>
+
+      <div class="note stage" style="margin-top:16px;">
+        <strong>Most RAG systems use three models</strong> — Embedding, Re-ranking, Generation LLM. When summarization is introduced during Context Assembly, a fourth — the Summarization LLM — may appear. It's optional, and exists solely to reduce context size before generation.
+      </div>
+      <table>
+        <tr><th>Model</th><th>Purpose</th></tr>
+        <tr><td>Embedding Model</td><td>Convert text into vectors</td></tr>
+        <tr><td>Re-ranking Model</td><td>Improve retrieval precision</td></tr>
+        <tr><td>Summarization Model <em>(optional)</em></td><td>Reduce context size</td></tr>
+        <tr><td>Generation LLM</td><td>Produce the final answer</td></tr>
+      </table>
+      <p style="font-size:.86rem;color:var(--sub);">Not every RAG system contains four models, but enterprise-scale systems often do when token budgets become a significant cost or latency constraint.</p>
+
+      <h4 style="margin:24px 0 8px;">Lost-in-the-Middle</h4>
+      <p>LLMs tend to pay more attention to information near the <em>beginning</em> and <em>end</em> of the supplied context than to information buried in the middle. This makes ordering a quality lever, not a cosmetic detail — Context Assembly may deliberately place the most critical chunks first or last so the model is more likely to attend to them, rather than simply preserving retrieval-rank order.</p>
+
+      <h4 style="margin:24px 0 8px;">Relationship to Prompt Construction</h4>
+      <div class="pipeline" style="justify-content:flex-start;">
+        <span class="pstep">Retrieval</span><span class="arrow">→</span>
+        <span class="pstep">Re-ranking</span><span class="arrow">→</span>
+        <span class="pstep">Context Assembly</span><span class="arrow">→</span>
+        <span class="pstep">Prompt Construction</span><span class="arrow">→</span>
+        <span class="pstep">LLM</span>
+      </div>
+      <p>Retrieval finds information. Context Assembly decides <em>what</em> the LLM sees. Prompt Construction decides <em>how</em> it sees it.</p>
+    </div>
+  </details>
+
+  <details class="stage"><summary>4.13 Prompt Construction</summary>
+    <div class="body">
+      <p>Packages instructions, question, context, citation/safety rules.</p>
+      <p><strong>Trade-off:</strong> more explicit instruction = more consistency, but consumes context budget.</p>
+      <p><strong>Failure looks like:</strong> correct context assembled, but the answer doesn't cite it / mis-cites it / ignores instructions.</p>
+      <p><strong>One-liner:</strong> the contract between your retrieval pipeline and the model.</p>
+    </div>
+  </details>
+
+  <details class="stage"><summary>4.14 Generation (LLM)</summary>
+    <div class="body">
+      <p>Produces the grounded answer.</p>
+      <p><strong>Trade-off:</strong> bigger models reason better over context but cost more, respond slower, and cannot fix weak retrieval.</p>
+      <p><strong>Failure looks like:</strong> fluent, confident, <em>unsupported</em> answers despite good retrieval — a prompting/model-choice issue, not a retrieval issue.</p>
+      <p><strong>One-liner:</strong> the final decision maker, not the whole process.</p>
+      <div class="recall"><span class="tag">Quick Recall</span><span class="quote">LLM = Final decision maker</span></div>
+    </div>
+  </details>
+
+  <details class="stage"><summary>4.15 Post-Processing / Guardrails</summary>
+    <div class="body">
+      <p>Adds citations, formatting, safety/policy checks, logging.</p>
+      <p><strong>Trade-off:</strong> more checks = less risk, more latency, occasional over-blocking.</p>
+      <p><strong>Failure looks like:</strong> good answers getting blocked or stripped — the "too safe to be useful" failure mode.</p>
+      <p><strong>One-liner:</strong> the seatbelt — invisible when things go right.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ============ 5. PATTERNS ============ -->
+<section id="s5">
+  <div class="sec-head"><span class="sec-num" style="background:var(--c-pattern);">5</span><h2>Architecture Patterns — From Naive to Adaptive</h2></div>
+  <p>Components explain the <em>parts</em>. Patterns explain how architects <em>assemble</em> those parts to fit a problem. This is now one of the most common interview and design-review topics.</p>
+
+  <div class="grid">
+    <div class="card pattern">
+      <h3>5.1 Naive (Basic) RAG</h3>
+      <div class="flow">Question → Embed → Vector Search → Top-K → Prompt → LLM</div>
+      <p><span class="lbl best">Best when:</span> Simple FAQ-style corpora, prototypes, low-stakes internal tools.</p>
+      <p><span class="lbl weak">Weak when:</span> Questions are vague, exact-term-heavy, or multi-hop.</p>
+      <p><span class="lbl what">One-liner:</span> The "hello world" of RAG — fine start, poor production end-state.</p>
+      <div class="recall" style="margin-top:10px;"><span class="tag">Recall</span><span class="quote">Naive RAG = Asking one person one question, once</span></div>
+    </div>
+    <div class="card pattern">
+      <h3>5.2 Hybrid RAG</h3>
+      <div class="flow">Question → [Vector Search + Keyword Search] → Fusion → Re-rank → Prompt → LLM</div>
+      <p><span class="lbl best">Best when:</span> Enterprise corpora mixing natural language and exact terms (codes, IDs, names, acronyms) — i.e., almost all real enterprise content.</p>
+      <p><span class="lbl weak">Weak when:</span> Adds infrastructure cost/complexity small, narrow-domain systems may not need.</p>
+      <p><span class="lbl what">One-liner:</span> The 2026 production <em>baseline</em> — most enterprises should start here.</p>
+    </div>
+    <div class="card pattern">
+      <h3>5.3 Multi-Query RAG</h3>
+      <div class="flow">Question → LLM generates several reformulated queries → Retrieve for each → Fuse → Re-rank</div>
+      <p><span class="lbl best">Best when:</span> User questions are vague, ambiguous, or could be phrased many ways.</p>
+      <p><span class="lbl weak">Weak when:</span> Adds latency (multiple retrieval rounds); can over-broaden the candidate set.</p>
+      <p><span class="lbl what">One-liner:</span> Don't bet the whole answer on one way of asking the question.</p>
+    </div>
+    <div class="card pattern">
+      <h3>5.4 Parent-Child (Hierarchical) RAG</h3>
+      <div class="flow">Index small "child" chunks for precision → expand to larger "parent" section for context</div>
+      <p><span class="lbl best">Best when:</span> Documents have strong hierarchical structure (manuals, policies, contracts, specs).</p>
+      <p><span class="lbl weak">Weak when:</span> Source documents are short or flat — adds indexing complexity for no benefit.</p>
+      <p><span class="lbl what">One-liner:</span> Resolves the chunking trade-off ("small = precision, large = context") by doing <em>both</em>, at different stages.</p>
+    </div>
+    <div class="card pattern">
+      <h3>5.5 Graph RAG</h3>
+      <div class="flow">Documents → Extract entities &amp; relationships → Knowledge graph → Graph traversal (+ vector search) → LLM</div>
+      <p><span class="lbl best">Best when:</span> Questions require reasoning across relationships ("who approved this change, under which policy, after which incident").</p>
+      <p><span class="lbl weak">Weak when:</span> Source content is unstructured prose with few meaningful entity relationships; heavier upfront engineering investment.</p>
+      <p><span class="lbl what">One-liner:</span> Vector search finds <em>similar text</em>; graph traversal finds <em>connected facts</em>.</p>
+      <div class="recall" style="margin-top:10px;"><span class="tag">Recall</span><span class="quote">Graph RAG = Following a chain of connections, not just matching keywords</span></div>
+    </div>
+    <div class="card pattern">
+      <h3>5.6 Agentic RAG</h3>
+      <div class="flow">Question → LLM plans → retrieves → evaluates sufficiency → retrieves again if needed → reasons → answers</div>
+      <p><span class="lbl best">Best when:</span> Complex, multi-step, or ambiguous questions where a single retrieval pass is unlikely to be sufficient.</p>
+      <p><span class="lbl weak">Weak when:</span> Simple, well-defined Q&amp;A — the loop adds cost/latency for no quality gain and is harder to govern.</p>
+      <p><span class="lbl what">One-liner:</span> Retrieval becomes a <em>decision the model makes</em>, not a <em>step the pipeline executes</em>.</p>
+      <div class="recall" style="margin-top:10px;"><span class="tag">Recall</span><span class="quote">Agentic RAG = A research analyst who keeps digging until satisfied</span></div>
+    </div>
+    <div class="card pattern" style="grid-column:1/-1;">
+      <h3>5.7 Adaptive RAG (the emerging best practice)</h3>
+      <div class="flow">Question → Classifier estimates complexity → routes to the cheapest pattern that can answer it correctly</div>
+      <p><span class="lbl best">Best when:</span> You're running RAG at scale across a wide variety of question types and can't afford to run the most expensive pattern on every query.</p>
+      <p><span class="lbl weak">Weak when:</span> You have a narrow, homogeneous question set — the routing layer becomes pure overhead.</p>
+      <p><span class="lbl what">One-liner:</span> Don't use a research analyst to answer "what's our return policy" — route by need, not by maximal capability.</p>
+    </div>
+  </div>
+
+  <div class="note pattern">
+    <strong>Pattern selection cheat sheet</strong>
+    <ul class="heur-list">
+      <li>Simple, narrow, FAQ-like? → Naive or Hybrid RAG</li>
+      <li>Mixed natural-language + exact terms? → Hybrid RAG (default for enterprise)</li>
+      <li>Vague / many phrasings of same intent? → Multi-Query RAG</li>
+      <li>Facts need surrounding context? → Parent-Child RAG</li>
+      <li>Questions about relationships? → Graph RAG</li>
+      <li>Multi-step, research-like questions? → Agentic RAG</li>
+      <li>Wide variety of all the above at scale? → Adaptive RAG (router in front of the rest)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 6. SECURITY + FAILURE ANALYSIS ============ -->
+<section id="s6">
+  <div class="sec-head"><span class="sec-num" style="background:var(--c-security);">6</span><h2>Security Architecture &amp; Failure Analysis</h2></div>
+
+  <h3>Enterprise Security Models</h3>
+  <p style="font-size:.9rem;color:var(--sub);">The stage-by-stage section named <em>that</em> security matters; here are the actual models architects choose between.</p>
+
+  <div class="grid">
+    <div class="card security"><h3>RBAC — Role-Based Access Control</h3>
+      <p><span class="lbl what">What:</span> Access is granted based on a user's <em>role</em> (e.g., "Finance Analyst," "HR Manager").</p>
+      <p><span class="lbl best">Best when:</span> Roles map cleanly to access needs and don't change often.</p>
+      <p><span class="lbl weak">Weak when:</span> Access depends on <em>context</em> that role alone can't capture — "role explosion."</p>
+      <p><span class="lbl what">One-liner:</span> Simple and auditable — until your roles start multiplying to cover edge cases.</p>
+    </div>
+    <div class="card security"><h3>ABAC — Attribute-Based Access Control</h3>
+      <p><span class="lbl what">What:</span> Access decisions evaluate <em>attributes</em> of user, resource, and context together (e.g., department == document.department AND clearance ≥ classification).</p>
+      <p><span class="lbl best">Best when:</span> Access genuinely depends on multiple, combinable factors — regulated industries, multinational orgs.</p>
+      <p><span class="lbl weak">Weak when:</span> Policies become harder to write, test, and audit than role lists.</p>
+      <p><span class="lbl what">One-liner:</span> More expressive than RBAC, and proportionally harder to get right.</p>
+    </div>
+    <div class="card security"><h3>Document-Level ACLs</h3>
+      <p><span class="lbl what">What:</span> Each document/chunk carries an explicit access list, often inherited from the source system (SharePoint, Confluence).</p>
+      <p><span class="lbl best">Best when:</span> Source systems already maintain authoritative, fine-grained permissions you can mirror.</p>
+      <p><span class="lbl weak">Weak when:</span> Source permissions change frequently — your index drifts out of sync (the most common real-world RAG security bug).</p>
+      <p><span class="lbl what">One-liner:</span> Only as good as how fresh your sync with the source system is.</p>
+    </div>
+    <div class="card security"><h3>Row-Level Security (RLS)</h3>
+      <p><span class="lbl what">What:</span> Enforced at the data-store layer — the platform itself filters rows/vectors the identity isn't allowed to see.</p>
+      <p><span class="lbl best">Best when:</span> You want security enforced as close to the data as possible, so no application bug can leak it.</p>
+      <p><span class="lbl weak">Weak when:</span> Not all vector/search platforms support expressive RLS.</p>
+      <p><span class="lbl what">One-liner:</span> Push security down to the data layer whenever the platform allows it.</p>
+    </div>
+    <div class="card security" style="grid-column:1/-1;"><h3>Tenant Isolation</h3>
+      <p><span class="lbl what">What:</span> Guarantees one customer's/business unit's data is never retrievable by another's — via separate indices, namespaces, encryption keys, or fully separate infrastructure.</p>
+      <p><span class="lbl best">Best when:</span> Running a shared RAG platform across multiple customers, business units, or regulatory domains.</p>
+      <p><span class="lbl weak">Weak when:</span> Stricter isolation costs more and complicates the "shared platform" economics that justified centralizing it.</p>
+      <p><span class="lbl what">One-liner:</span> The line between "multi-tenant platform" and "data breach waiting to happen" is exactly how seriously you take this.</p>
+    </div>
+  </div>
+
+  <div class="note security"><strong>Section one-liner:</strong> In a regulated enterprise, the security model isn't a feature <em>of</em> RAG — it's a <em>prerequisite</em> for being allowed to run RAG on real data at all.</div>
+
+  <h3 style="margin-top:34px;">Failure Analysis — "Why Is the Answer Bad?"</h3>
+  <p>Work backwards through the cascade — a bad answer is a pipeline-tracing exercise, not a model-quality complaint:</p>
+
+  <table>
+    <tr><th>Symptom</th><th>Most likely stage(s)</th><th>What to check</th></tr>
+    <tr><td>Confidently wrong answer, no relevant source available</td><td>Generation / Prompting</td><td>Was the model instructed to say "I don't know" when context is insufficient?</td></tr>
+    <tr><td>Right document exists but never retrieved</td><td>Chunking, Embedding, or Retrieval</td><td>Is the fact split across chunk boundaries? Does the embedding model fit this domain? Is it in the top-50?</td></tr>
+    <tr><td>Right chunk retrieved but not in final answer</td><td>Re-ranking or Context Assembly</td><td>Check logs — did it survive reranking? Did assembly dedupe/drop it?</td></tr>
+    <tr><td>Answer cites the wrong source among several correct ones</td><td>Context Assembly or Prompting</td><td>Check ordering, deduplication, citation instructions</td></tr>
+    <tr><td>User sees content they shouldn't / can't see content they should</td><td>Metadata, Identity, or Security Filtering</td><td>Audit metadata freshness vs. actual source-system permissions — the #1 real-world RAG security bug</td></tr>
+    <tr><td>Answers are technically correct but generic/unhelpful</td><td>Chunking (too large) or Context Assembly (too compressed)</td><td>Check chunk size and how much specific detail survives into final context</td></tr>
+    <tr><td>Latency too high</td><td>Retrieval breadth, Re-ranking, or Generation model size</td><td>Profile each stage independently — reranking and generation usually dominate</td></tr>
+    <tr><td>Inconsistent answers to the same question over time</td><td>Permissions drift, ANN approximation, or non-deterministic decoding</td><td>Did the index, permissions, or model settings change between runs?</td></tr>
+    <tr><td>Multi-hop / "how do these connect" questions answered poorly</td><td>Pattern mismatch</td><td>You may be running Naive/Hybrid RAG on questions that need Graph or Agentic RAG</td></tr>
+  </table>
+  <div class="note fail"><strong>One-liner:</strong> A RAG failure is rarely "the AI is wrong" — it's almost always "a specific, identifiable stage lost information it was supposed to preserve."</div>
+</section>
+
+<!-- ============ 7. EVALUATION + OBSERVABILITY ============ -->
+<section id="s7">
+  <div class="sec-head"><span class="sec-num" style="background:var(--c-eval);">7</span><h2>Evaluation &amp; Observability</h2></div>
+
+  <h3>Evaluation — How Do You Know If It's Actually Working?</h3>
+  <p>Evaluation splits cleanly into two halves — <strong>did we find the right information</strong>, and <strong>did we say the right thing with it</strong> — because a system can fail at either independently.</p>
+
+  <div class="grid">
+    <div class="card" style="border-top-color:var(--c-eval);"><h3>Retrieval Evaluation</h3>
+      <p><strong>Recall@k:</strong> Of all chunks that <em>should</em> have been retrieved, how many were in the top-k?</p>
+      <p><strong>Precision@k:</strong> Of the chunks retrieved, how many were actually relevant?</p>
+      <p><strong>MRR / NDCG:</strong> Do the most relevant chunks rank highest, not just appear somewhere?</p>
+      <p><strong>Test sets:</strong> curate question/expected-source pairs from real usage logs and SMEs — the single highest-value evaluation investment, and the one most teams skip.</p>
+    </div>
+    <div class="card" style="border-top-color:var(--c-eval);"><h3>Answer Evaluation</h3>
+      <p><strong>Faithfulness / Groundedness:</strong> Is every claim actually supported by the retrieved context, or did the model add things that "sound right"? (the measurable proxy for hallucination)</p>
+      <p><strong>Relevance:</strong> Does the answer address the question asked — useful, not just true?</p>
+      <p><strong>Citation Accuracy:</strong> Do citations point to sources that actually support each claim?</p>
+      <p><strong>Completeness:</strong> Did the answer use all the relevant information available, or omit something important?</p>
+    </div>
+  </div>
+
+  <div class="note evalc">
+    <strong>How these get measured in practice:</strong>
+    <ul class="heur-list">
+      <li><strong>LLM-as-judge:</strong> a (typically stronger) model scores faithfulness, relevance, citation accuracy at scale — fast and cheap, needs periodic calibration against human judgment</li>
+      <li><strong>Human review:</strong> slower, more expensive — the ground truth your LLM-judge calibration depends on, usually sampled</li>
+      <li><strong>Golden datasets / regression suites:</strong> a fixed set of question–expected-answer(-and-source) pairs run on every meaningful pipeline change</li>
+    </ul>
+    <p style="margin-top:8px;"><strong>One-liner:</strong> If you can't measure recall, faithfulness, and citation accuracy <em>separately</em>, you can't tell whether a bad answer is a retrieval problem or a generation problem.</p>
+  </div>
+
+  <h3 style="margin-top:30px;">Observability — What Should Be Watched in Production?</h3>
+  <p>Evaluation tells you <em>if</em> the system is good; observability tells you <em>what's happening right now</em> and <em>when something changes</em>.</p>
+
+  <table>
+    <tr><th>Signal</th><th>Why it matters</th><th>What a problem looks like</th></tr>
+    <tr><td><strong>Query latency</strong> (end-to-end and per-stage)</td><td>Tells you where time is going — usually reranking and generation dominate</td><td>A specific stage's latency creeping up as corpus or volume grows</td></tr>
+    <tr><td><strong>Retrieval recall / hit-rate</strong></td><td>The earliest warning that retrieval quality is degrading</td><td>Recall slowly dropping as new content is added without re-tuning</td></tr>
+    <tr><td><strong>Hallucination / faithfulness rate</strong></td><td>The most direct signal of whether users can trust the answers</td><td>Faithfulness scores dropping after a model, prompt, or assembly change</td></tr>
+    <tr><td><strong>Cost &amp; token usage</strong> (by stage)</td><td>Cost is perpetual and per-query; small inefficiencies compound fast</td><td>A "small" prompt-template change quietly doubling average context size</td></tr>
+    <tr><td><strong>Citation accuracy / coverage</strong></td><td>Whether users can actually verify what the system tells them</td><td>Citations present but pointing to wrong or generic sources</td></tr>
+    <tr><td><strong>Access-denial / security-filter events</strong></td><td>Your earliest signal of a permissions-sync problem</td><td>A spike in "couldn't retrieve due to permissions" — often a stale index</td></tr>
+    <tr><td><strong>Query patterns / failure clustering</strong></td><td>Shows you where users are struggling, in aggregate</td><td>A cluster of similar questions all getting poor answers — usually one fixable upstream issue</td></tr>
+  </table>
+  <div class="note obs"><strong>One-liner:</strong> If evaluation is the report card, observability is the dashboard — you need both, because a system can pass its evaluation suite on Monday and silently degrade by Friday as data, usage, or models drift.</div>
+</section>
+
+<!-- ============ 8. COST + TOOLING ============ -->
+<section id="s8">
+  <div class="sec-head"><span class="sec-num" style="background:var(--c-cost);">8</span><h2>Cost Model &amp; Tooling Map</h2></div>
+
+  <h3>Cost &amp; Performance Model</h3>
+  <table>
+    <tr><th>Component</th><th>Primary cost driver</th><th>Primary latency driver</th><th>Scaling consideration</th></tr>
+    <tr><td>Ingestion / Chunking</td><td>Volume &amp; complexity of source docs (one-time + incremental)</td><td>Not user-facing (offline)</td><td>Re-ingestion cost when formats/strategy change</td></tr>
+    <tr><td>Embedding</td><td># chunks × calls (ingestion) + every query (runtime)</td><td>Per-query embedding latency</td><td>Changing embedding models means re-embedding the whole corpus</td></tr>
+    <tr><td>Vector DB / Index</td><td>Storage (vectors + metadata) + search compute</td><td>Index size &amp; ANN parameters</td><td>Costs grow with corpus size and availability/replication needs</td></tr>
+    <tr><td>Retrieval (hybrid)</td><td>Query volume; running two search systems</td><td>Network + search time across both indices</td><td>Hybrid roughly doubles search-side infrastructure</td></tr>
+    <tr><td>Re-ranking</td><td>Query volume × candidate-set size (pairwise scoring)</td><td>Often the single biggest per-query latency contributor</td><td>Tune candidate-set size (top-50 vs. top-20) for quality/speed balance</td></tr>
+    <tr><td>LLM Generation</td><td>Input tokens (prompt + context) + output tokens</td><td>Model size, output length, provider</td><td>The largest recurring lever — context size has direct, compounding cost impact</td></tr>
+    <tr><td>Guardrails / Post-processing</td><td># and complexity of checks; possible secondary LLM calls</td><td>Adds a tail to every response</td><td>Each extra safety pass trades latency/cost against risk reduction</td></tr>
+  </table>
+
+  <div class="note cost">
+    <strong>Rules of thumb</strong>
+    <ul class="heur-list">
+      <li>Context size is your biggest controllable lever — every retrieved token is paid for on every query, forever</li>
+      <li>Re-ranking and generation dominate runtime latency — profile these first</li>
+      <li>Ingestion costs are one-time-ish; runtime costs are perpetual — over-invest in chunking/embedding quality up front</li>
+    </ul>
+    <p style="margin-top:8px;"><strong>One-liner:</strong> In RAG you don't pay for "AI" — you pay per token, per query, per stage, forever. Architecture decisions are cost decisions.</p>
+  </div>
+
+  <h3 style="margin-top:30px;">Component → Technology Mapping</h3>
+  <p style="font-size:.9rem;color:var(--sub);">The goal isn't to memorize today's leaderboard — tools rotate every few months. It's to know the <em>category</em>, what to evaluate it on, and a few names, so you can map any new tool back to a category you already understand. <em>(Reflects the landscape as of mid-2026 — verify against current docs before committing.)</em></p>
+  <table>
+    <tr><th>Category</th><th>What it does</th><th>What to evaluate it on</th><th>Examples in current use</th></tr>
+    <tr><td><strong>Embedding models</strong></td><td>Text → vector</td><td>Retrieval quality on your domain/language, dimensions vs. cost, multilingual support, hosted vs. self-hosted</td><td>OpenAI embeddings, Amazon Titan, Cohere Embed, BGE, E5, Voyage</td></tr>
+    <tr><td><strong>Vector databases / search platforms</strong></td><td>Store + search vectors, text, metadata</td><td>Hybrid support, metadata-filter expressiveness, scaling/ops model, managed vs. self-hosted fit</td><td>Pinecone, Qdrant, Weaviate, OpenSearch, Azure AI Search, pgvector, Neo4j (graph+vector)</td></tr>
+    <tr><td><strong>Rerankers</strong></td><td>Score candidate relevance jointly</td><td>Accuracy lift vs. latency cost, pricing per query, ease of swapping in</td><td>Cohere Rerank, BGE-reranker, open cross-encoder models</td></tr>
+    <tr><td><strong>Orchestration / RAG frameworks</strong></td><td>Wire ingestion → retrieval → generation together</td><td>Abstraction vs. lock-in, debuggability, community momentum, fit with your stack</td><td>LangChain, LlamaIndex, Haystack</td></tr>
+    <tr><td><strong>Generation models (LLMs)</strong></td><td>Produce the grounded answer</td><td>Reasoning quality over long context, cost/latency at volume, tool-calling support, context window</td><td>Claude, GPT-4-class models, open-weight options served internally</td></tr>
+    <tr><td><strong>AI Gateway / model-routing layer</strong></td><td>Auth, routing, rate-limiting, cost-tracking across models/providers</td><td>Multi-provider support, observability hooks, governance/policy fit with identity stack</td><td>Cloud-native gateways (Bedrock, Azure AI Foundry), purpose-built AI gateways, custom internal gateways</td></tr>
+    <tr><td><strong>Evaluation tooling</strong></td><td>Score retrieval and answer quality</td><td>Support for faithfulness/recall@k/citation metrics, golden-set building, tracing integration</td><td>LangSmith, Arize Phoenix, similar LLM-evaluation platforms</td></tr>
+    <tr><td><strong>Observability / tracing</strong></td><td>Monitor latency, cost, recall, hallucination rate in production</td><td>Per-stage tracing depth, alerting, integration with existing ops stack</td><td>LangSmith, Arize Phoenix, dedicated RAG-observability platforms</td></tr>
+    <tr><td><strong>Fully-managed RAG-as-a-service</strong></td><td>Bundles ingestion, embedding, indexing, retrieval, reranking, hallucination mitigation behind one API</td><td>Control traded for convenience, exit/portability, fit for teams without ML engineering capacity</td><td>Platforms such as Vectara and similar managed offerings</td></tr>
+  </table>
+  <div class="note cost"><strong>One-liner:</strong> Pick the <em>category</em> first based on your architecture decisions; pick the <em>product</em> last, and re-evaluate it periodically — this layer of the stack changes faster than any other.</div>
+</section>
+
+<!-- ============ 9. PLATFORM VIEW ============ -->
+<section id="s9">
+  <div class="sec-head"><span class="sec-num" style="background:var(--c-platform);">9</span><h2>Enterprise Reference Architecture — The Platform View</h2></div>
+
+  <div class="pipeline" style="flex-direction:column;align-items:center;">
+    <span class="pstep">Users</span><span class="arrow">↓</span>
+    <span class="pstep">Applications</span><span class="arrow">↓</span>
+    <span class="pstep">AI Gateway <small>(routing · auth · rate-limiting · cost-tracking · model abstraction)</small></span><span class="arrow">↓</span>
+    <span class="pstep">Shared RAG Service <small>(reusable ingestion, retrieval, reranking, context-assembly APIs)</small></span><span class="arrow">↓</span>
+    <span class="pstep">Vector Platform <small>(shared indices, multi-tenant metadata/ACL model)</small></span><span class="arrow">↓</span>
+    <span class="pstep">Models <small>(Embedding · Reranker · LLM)</small></span><span class="arrow">↓</span>
+    <span class="pstep" style="border-color:var(--c-platform);color:var(--c-platform);">Observability &amp; Governance <small>(logging · evaluation · guardrails · compliance — wraps the entire stack)</small></span>
+  </div>
+
+  <div class="note platform">
+    <strong>Key platform-level questions</strong>
+    <ul class="heur-list">
+      <li><strong>Central AI team vs. domain teams:</strong> who owns shared retrieval/ingestion infrastructure (central, for consistency/reuse) vs. who owns domain knowledge, tuning, content quality (domain teams, for relevance/accountability)?</li>
+      <li><strong>Shared RAG services:</strong> a reusable internal platform avoids every team reinventing chunking, embedding, and security filtering — but demands genuinely generic, well-governed APIs</li>
+      <li><strong>AI Gateway:</strong> the single control point for routing, auth, rate limits, and cost-tracking — without it, cost and access sprawl across every application</li>
+      <li><strong>Agent platforms:</strong> when RAG becomes one tool an agent calls alongside others, not the whole application</li>
+      <li><strong>Reference architecture:</strong> a standardized pattern so every new RAG use case starts from "plug into the platform," not "design a pipeline from scratch"</li>
+    </ul>
+    <p style="margin-top:8px;"><strong>One-liner:</strong> A single RAG pipeline is a project; a governed, observable, cost-aware shared platform in front of it is what makes RAG an <em>enterprise capability</em> rather than a pile of one-off PoCs.</p>
+  </div>
+</section>
+
+<!-- ============ 10. QUICK RECALL COMPANION ============ -->
+<section id="s10">
+  <div class="sec-head"><span class="sec-num" style="background:var(--c-recall);">10</span><h2>Quick-Recall Companion — Mental Models &amp; One-Liners</h2></div>
+
+  <h3>Architect Mental Models</h3>
+  <table>
+    <tr><th>Concept</th><th>Analogy</th></tr>
+    <tr><td>Token</td><td>Customer ID</td></tr>
+    <tr><td>Embedding</td><td>Customer profile</td></tr>
+    <tr><td>Vector DB</td><td>Semantic search engine</td></tr>
+    <tr><td>Chunk</td><td>Book chapter</td></tr>
+    <tr><td>Context Window</td><td>RAM</td></tr>
+    <tr><td>Retriever</td><td>Long-list candidate search</td></tr>
+    <tr><td>Reranker</td><td>Interview panel</td></tr>
+    <tr><td>LLM</td><td>Final decision maker</td></tr>
+    <tr><td>Naive RAG</td><td>Asking one person one question, once</td></tr>
+    <tr><td>Agentic RAG</td><td>A research analyst who keeps digging until satisfied</td></tr>
+    <tr><td>Graph RAG</td><td>Following a chain of connections, not just matching keywords</td></tr>
+    <tr><td>The whole pipeline</td><td>A lossy chain — each link can only preserve or destroy what it received</td></tr>
+  </table>
+
+  <h3 style="margin-top:30px;">Interview-Ready One-Liners</h3>
+  <div class="oneliner-grid">
+    <div class="oneliner">"RAG is not Vector DB + LLM — it's ingestion + indexing + retrieval + ranking + context assembly + prompt construction + generation + governance."</div>
+    <div class="oneliner">"Small chunks = precision, large chunks = context — parent-child RAG exists specifically to resolve that trade-off."</div>
+    <div class="oneliner">"Over-retrieve first, refine later — the retriever optimizes recall, the reranker optimizes precision."</div>
+    <div class="oneliner">"Retriever finds candidates, reranker judges candidates — long-list vs. interview panel."</div>
+    <div class="oneliner">"Cross-encoders compare jointly, embedding models compare separately — that's why cross-encoders win on relevance and lose on speed."</div>
+    <div class="oneliner">"Quality lost early in the pipeline cannot be recovered later — a perfect LLM can't fix a chunk that was never retrieved."</div>
+    <div class="oneliner">"Vector search finds similar text; graph traversal finds connected facts — pick based on what your questions actually need."</div>
+    <div class="oneliner">"RAG answers 'what do our documents say'; fine-tuning changes 'how the model behaves'; agents decide 'what to do next'; knowledge graphs answer 'how things relate.'"</div>
+    <div class="oneliner">"If you can't measure recall, faithfulness, and citation accuracy separately, you can't tell whether a bad answer is a retrieval problem or a generation problem."</div>
+    <div class="oneliner">"In RAG you don't pay for AI — you pay per token, per query, per stage, forever."</div>
+    <div class="oneliner">"Governance is what separates a PoC from a product; security architecture is what gets you permission to run it on real data at all."</div>
+  </div>
+</section>
+
+<!-- ============ 11. ONE PAGE SUMMARY ============ -->
+<section id="s11">
+  <div class="sec-head"><span class="sec-num" style="background:var(--ink);">11</span><h2>One-Page Summary</h2></div>
+
+  <div class="note found" style="font-size:.95rem;">
+    RAG prepares enterprise knowledge offline (load → clean → chunk → enrich with metadata → embed → index), then at runtime takes a question through identity checks, query processing, security-filtered hybrid search, reranking, context assembly, prompt construction, and generation — wrapped in guardrails, citations, and logging. Quality flows through this chain and can only be preserved or lost at each stage, never recovered downstream, which is why chunking and metadata decisions matter as much as model choice. Before building any of it, ask whether RAG is even the right tool versus fine-tuning, long-context, agents, or knowledge graphs — and if it is, pick the <em>pattern</em> (naive, hybrid, multi-query, parent-child, graph, agentic, or adaptive) that matches your actual question types rather than defaulting to the most complex one available. Wrap the system in a real security model (RBAC/ABAC/ACLs/row-level security/tenant isolation), measure it on both retrieval and answer quality (recall, faithfulness, citation accuracy), watch it continuously in production (latency, cost, hallucination rate, access-denial events), and price it like what it is — a perpetual, per-token, per-query cost. Do all of that, and you've moved from "I can explain RAG" to "I can architect, secure, run, and evolve a RAG platform" — which is the actual job.
+  </div>
+</section>
+
+<!-- ============ 12. SA PLAYBOOK — REQUIREMENTS GATHERING ============ -->
+<section id="s12">
+  <div class="sec-head"><span class="sec-num" style="background:var(--c-sa);">12</span><h2>Solutions Architect Playbook — Requirements Gathering</h2></div>
+  <p><em>Sections 1–11 answer "how do you architect, secure, run, and evolve a RAG platform." This section answers a question that comes <strong>before</strong> that — the one an SA has to resolve with stakeholders before a single architecture decision can be made well.</em></p>
+
+  <h3>12.1 Requirements-Gathering &amp; Sizing — The "Week One" Discovery Checklist</h3>
+  <p>This is arguably the most distinctly SA skill in the whole lifecycle — the one this handbook assumes is already done by the time the pattern-selection cheat sheet (Section 5) comes into play. Before any architecture decision can be made well, an SA needs answers to:</p>
+  <ul class="heur-list">
+    <li><strong>Corpus questions</strong> (feeds the ingestion trade-off): How many documents, in what formats, how often do they change, who owns updates, how messy are the source systems — templated and clean, or scanned/unstructured and in need of OCR?</li>
+    <li><strong>Query questions</strong> (the actual input to the Section 5 pattern-selection cheat sheet): What does a representative sample of real user questions look like? Vague or precise? Single-hop or multi-hop? Mostly natural language, or exact-term-heavy?</li>
+    <li><strong>Access-control questions</strong> (determines whether the Section 6 RBAC/ABAC/ACL choice is even feasible): What permission model exists today, how often does it change, who is the system of record? Getting this wrong at discovery is how the "#1 real-world RAG security bug" gets baked into a design before a single line of code is written.</li>
+    <li><strong>A back-of-envelope sizing heuristic:</strong> translate "X documents, Y average length, Z queries/day" into a rough estimated token spend using the cost model (Section 8) — embedding cost scales with corpus size at ingestion and query volume at runtime; generation cost scales with context size × queries, perpetually. An SA typically needs to produce a number like this within days of a first conversation, long before any architecture is finalized.</li>
+  </ul>
+  <div class="note sa"><strong>One-liner for the whole section:</strong> Sections 1–11 teach you how to architect a RAG system once the problem is well-framed. This section is about <em>framing the problem</em> — the conversations, decisions, and heuristics that happen before the first pipeline diagram gets drawn.</div>
+  <p style="font-size:.84rem;color:var(--sub);margin-top:14px;"><em>Note: the broader SA lifecycle — build vs. buy, phased rollout, and portfolio strategy — has been relocated to <a href="#sA">Appendix A</a>. It belongs conceptually with this Requirements-Gathering material, but is staged separately because it's platform-strategy content destined for a future "Enterprise AI Platform" handbook rather than RAG-pipeline architecture proper.</em></p>
+</section>
+
+<!-- ============ APPENDIX A — STAGED FOR FUTURE HANDBOOK ============ -->
+<section id="sA">
+  <div class="sec-head"><span class="sec-num" style="background:var(--sub);">A</span><h2>Appendix A — Staged for Future Handbook: Build vs. Buy, Phased Rollout, Portfolio View</h2></div>
+  <p style="font-size:.86rem;color:var(--sub);"><em>This material is unchanged from the original Section 12.1–12.3. It has been moved here — not removed — because it's Solutions-Architect / platform-strategy content rather than RAG-pipeline architecture. It's staged for inclusion in a future "Enterprise AI Platform" handbook; until then, it remains here for reference and continuity.</em></p>
+
+  <h3>A.1 Build vs. Buy</h3>
+  <p style="font-size:.86rem;color:var(--sub);">Extends the "Fully-managed RAG-as-a-service" row in the Tooling Map (Section 8)</p>
+  <ul class="heur-list">
+    <li><strong>Lean toward buying</strong> when time-to-value is the binding constraint, the team lacks dedicated ML engineering capacity, the use case is fairly standard (single corpus, common document types, FAQ-like questions), and the data isn't so sensitive that it can't sit inside a third party's pipeline.</li>
+    <li><strong>Lean toward building</strong> when the corpus or access-control model is unusual enough that off-the-shelf won't fit (multi-tenant ACL inheritance, regulated data residency, exotic source systems), the organization is making a multi-year platform bet, or query volume is high enough that per-query managed pricing becomes the dominant cost driver over time.</li>
+    <li><strong>The usual real answer is hybrid:</strong> buy the commodity layers (embedding, reranking, vector DB — the rows that rotate fastest and differentiate least), build the differentiated layers (ingestion connectors into proprietary systems, security filtering, domain-specific prompt and context-assembly logic).</li>
+  </ul>
+  <div class="note sa"><strong>The artifact an SA actually owes the stakeholder:</strong> It isn't a recommendation — it's an exit-cost analysis: what would it take, in time and engineering effort, to migrate off this vendor in 18 months if it doesn't work out? That question is what every "build vs. buy" conversation eventually turns into.</div>
+
+  <h3 style="margin-top:30px;">A.2 Phased Rollout — PoC → Pilot → Platform</h3>
+  <table>
+    <tr><th>Stage</th><th>Duration</th><th>Scope</th><th>What "good" looks like</th><th>Sections in play</th></tr>
+    <tr><td><strong>PoC</strong></td><td>4–6 weeks</td><td>Single use case, narrow corpus, naive or hybrid RAG</td><td>Retrieval quality clears a bar on a small golden set — <em>not</em> production security or observability</td><td>Patterns (Section 5), Evaluation (Section 7)</td></tr>
+    <tr><td><strong>Pilot</strong></td><td>~1 quarter</td><td>Real users, real (if limited) access controls, first eval/observability pass</td><td>Cost-per-query model holds up against real usage; access-control model survives an actual audit</td><td>Security (Section 6), Eval &amp; Obs (Section 7), Cost (Section 8)</td></tr>
+    <tr><td><strong>Platform</strong></td><td>Ongoing</td><td>Shared services, AI Gateway, multi-tenant vector platform, governance</td><td>"Central vs. domain ownership" resolved in practice, not just diagrammed</td><td>Reference Architecture (Section 9)</td></tr>
+  </table>
+  <p>The point of staging this explicitly — and naming it in a proposal — is that it lets an SA scope and price each phase separately, set the right expectations about what each phase will <em>not</em> yet deliver (e.g., "the PoC will prove retrieval quality; it will not yet prove security or cost at scale"), and create natural go/no-go checkpoints rather than one large, hard-to-estimate commitment.</p>
+
+  <h3 style="margin-top:30px;">A.3 Portfolio View — Staging the Shared-Platform Investment</h3>
+  <p>Section 9 describes what a shared RAG platform looks like once it exists. The harder, more SA-specific problem is <em>how you get there</em>:</p>
+  <ul class="heur-list">
+    <li><strong>Identify the second and third use case before building the first one's platform layer.</strong> A shared-service investment is far easier to justify — and far less risky — when backed by two or three concrete future use cases, not a single pilot and a hopeful roadmap slide.</li>
+    <li><strong>Separate what generalizes from what doesn't.</strong> Ingestion connectors and security/identity filtering tend to generalize well across business units; chunking strategy, prompt construction, and evaluation golden sets tend to stay domain-specific. That split is usually the actual line an SA draws when deciding what belongs in a shared platform versus what stays owned by domain teams.</li>
+    <li><strong>Use a rough break-even heuristic.</strong> Shared infrastructure tends to pay for itself once an organization is supporting roughly three to four concurrent use cases. Below that, the platform-building overhead usually outweighs the reuse benefit, and a per-engagement build is the more defensible call.</li>
+  </ul>
+</section>
+
+<!-- ============ APPENDIX B — CHANGELOG ============ -->
+<section id="sB">
+  <div class="sec-head"><span class="sec-num" style="background:var(--sub);">B</span><h2>Appendix B — Changelog: What Changed in This Revision</h2></div>
+  <p style="font-size:.86rem;color:var(--sub);"><em>Per the revision instruction, nothing was removed — only reorganized, relocated, or added. Listed in the order the changes appear in the document.</em></p>
+
+  <h3>Restructured</h3>
+  <ul class="heur-list">
+    <li>Section 3 split into 3.1 Runtime Pipeline / 3.2 The Cascade Principle / 3.3 Component Relationships, elevating the Cascade into its own named subsection as the interpretive lens for the rest of the handbook.</li>
+    <li>Section 12 narrowed to Requirements-Gathering only (renumbered as 12.1) with a note pointing to Appendix A for the relocated material.</li>
+  </ul>
+
+  <h3 style="margin-top:22px;">Relocated (not removed)</h3>
+  <ul class="heur-list">
+    <li>Original Sections 12.1–12.3 (Build vs. Buy, Phased Rollout PoC→Pilot→Platform, Portfolio View) moved verbatim to <strong>Appendix A</strong>, staged for a future "Enterprise AI Platform" handbook.</li>
+  </ul>
+
+  <h3 style="margin-top:22px;">Added — new architectural concepts</h3>
+  <ul class="heur-list">
+    <li><strong>Source of Truth</strong> relationship (Section 3.1): RAG index framed as a derived, lossy copy of source systems — "RAG indexes knowledge; it does not own knowledge" — plus a corresponding Quick-Recall one-liner in Section 10.</li>
+    <li><strong>Index Lifecycle &amp; Data Freshness</strong> (new Section 4.6a): change-detection → re-chunk → re-embed → re-index flow, refresh-strategy options (Batch / Incremental / Real-time), and a new failure-analysis row in Section 6 ("answer reflects an outdated version of a document").</li>
+    <li><strong>RAG + Fine-Tuning as complements</strong> (Section 2): a short table and relationship statement reframing the two as combinable rather than purely competing options.</li>
+    <li><strong>Untrusted-content note</strong> (Section 4.12): one-paragraph acknowledgment that retrieved content is data, not instructions — the pipeline-level seed of the prompt-injection topic, with the deeper attack-surface treatment flagged as belonging to a future security/governance treatment.</li>
+    <li><strong>Semantic caching</strong> rule of thumb added to the Cost Model section (8) as a lever that sits between Query Processing and Retrieval.</li>
+  </ul>
+
+  <h3 style="margin-top:22px;">Added — trade-off / decision tables</h3>
+  <ul class="heur-list">
+    <li>Chunking Decision &amp; Trade-off Table (Section 4.2): Fixed / Recursive / Semantic / Structure-aware / Parent-Child × Precision / Context / Complexity, plus practical starting-point guidance (chunk size, overlap) explicitly framed as defaults to validate, not fixed rules.</li>
+    <li>Retrieval Strategy Selection table (Section 4.10): consolidates guidance on keyword vs. vector vs. hybrid that was previously scattered across the stage and pattern sections, with a clear "Hybrid is the default" recommendation.</li>
+    <li>Index Refresh trade-off table (Section 4.6a): Batch / Incremental / Real-time × Freshness / Cost / Complexity.</li>
+    <li>Security Model trade-off table (Section 6): RBAC / ABAC / ACL / RLS / Tenant Isolation × Simplicity / Flexibility / Drift-and-audit risk.</li>
+  </ul>
+
+  <h3 style="margin-top:22px;">Added — explicit relationship one-liners</h3>
+  <ul class="heur-list">
+    <li>Chunking ↔ Embedding (Section 4.2): "chunking determines what gets embedded; embedding determines what can be retrieved."</li>
+    <li>Metadata ↔ Security (Sections 4.3 and 4.9): "security filtering depends on metadata — bad metadata is bad security."</li>
+    <li>Retrieval ↔ Re-ranking (Section 4.10): "retrieval optimizes recall, re-ranking optimizes precision."</li>
+    <li>Context Assembly ↔ Prompt Construction: already present in the original (Section 4.12) — left as-is and cross-referenced from the new Section 3.3 preview.</li>
+  </ul>
+
+  <h3 style="margin-top:22px;">Added — visual aid</h3>
+  <ul class="heur-list">
+    <li>Context Assembly funnel diagram (Section 4.12): Top-50 → Re-rank → Top-10 → Dedupe → Compress → Order → Final Context, visualizing the narrowing process the prose already described — and, in this edition, rendered as an inline arrow flow consistent with the rest of the handbook's pipeline diagrams.</li>
+  </ul>
+
+  <h3 style="margin-top:22px;">Front matter</h3>
+  <ul class="heur-list">
+    <li>Added a short "Revision note" near the top of the document explaining the nothing-removed / relocate-don't-delete approach, and pointing to this changelog.</li>
+  </ul>
+
+  <h3 style="margin-top:22px;">Round 2 — small precision fixes</h3>
+  <ul class="heur-list">
+    <li>Section 1's Quick Recall replaced with a RAG-specific contrast — "Without RAG: Question → LLM → Guess · With RAG: Question → Retrieve Facts → LLM → Answer" — so the section's call-out reinforces its own three problems (missing knowledge, stale knowledge, hallucination) instead of reusing an embedding-stage analogy that was better placed near 4.4 (where "Embedding = Customer profile" already lives) and in the Section 10 mental-models table (where "Token = Customer ID" remains).</li>
+    <li>Cascade diagram (3.2) updated from "→ Prompt → Answer" to "→ Prompt Construction → Answer" for naming consistency with Section 4.13 and the rest of the handbook.</li>
+  </ul>
+</section>
+
+<footer>
+  RAG Core Handbook — Learner-Sequenced Edition (Updated v2) · Re-ordered for progressive learning, expanded with new architectural concepts, trade-off tables, and a fully-visualized Context Assembly deep-dive · See Appendix B for the complete changelog
+</footer>
+
+</div>
+</body>
+</html>

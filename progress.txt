@@ -1,0 +1,23 @@
+RAG Advanced Patterns
+    ├─ Graph RAG
+    ├─ Agentic RAG
+    ├─ Multi-Hop Retrieval
+    └─ Parent-Child Retrieval
+
+RAG Security & Governance
+    ├─ RBAC
+    ├─ ABAC
+    ├─ Tenant Isolation
+    └─ Compliance
+
+RAG Evaluation & Observability
+    ├─ Metrics
+    ├─ Evaluation
+    ├─ Monitoring
+    └─ Cost Tracking
+
+Enterprise AI Platform
+    ├─ AI Gateway
+    ├─ Shared RAG Services
+    ├─ Agent Platform
+    └─ Operating Model
