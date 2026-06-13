@@ -1,0 +1,5531 @@
+Evaluation
+=========================================================================================
+
+AI Models Throughout an Enterprise RAG/Agent System
+
+| Stage      | Component                      | AI Model Needed? | Typical Model         |
+| ---------- | ------------------------------ | ---------------- | --------------------- |
+| Ingestion  | Document Classification        | Optional         | Small LLM             |
+| Ingestion  | Metadata Extraction            | Often            | Small LLM             |
+| Ingestion  | Entity Extraction              | Often            | Small LLM / NER Model |
+| Ingestion  | PII Detection                  | Often            | Specialized Model     |
+| Ingestion  | Document Summarization         | Sometimes        | Small LLM             |
+| Ingestion  | Chunking Optimization          | Sometimes        | Small LLM             |
+| Ingestion  | Embedding Generation           | Yes              | Embedding Model       |
+| Query      | Intent Detection               | Often            | Small LLM             |
+| Query      | Query Classification           | Often            | Small LLM             |
+| Query      | Query Transformation           | Often            | Small LLM             |
+| Query      | Query Expansion                | Often            | Small LLM             |
+| Query      | Query Decomposition            | Often            | Small LLM             |
+| Query      | Router RAG                     | Often            | Small LLM             |
+| Retrieval  | Vector Search                  | No               | Search Engine         |
+| Retrieval  | Hybrid Search                  | No               | Search Engine         |
+| Retrieval  | Metadata Filtering             | No               | Search Engine         |
+| Retrieval  | Re-ranking                     | Often            | Re-ranker Model       |
+| Retrieval  | Retrieval Quality Check (CRAG) | Often            | Small LLM             |
+| Context    | Context Compression            | Sometimes        | Small LLM             |
+| Context    | Context Summarization          | Sometimes        | Small LLM             |
+| Prompt     | Prompt Construction            | Usually No       | Templates             |
+| Prompt     | Dynamic Prompt Generation      | Sometimes        | Small LLM             |
+| Generation | Final Answer                   | Yes              | Large LLM             |
+| Generation | Tool Selection                 | Often            | LLM                   |
+| Generation | Agent Planning                 | Often            | LLM                   |
+| Generation | Function Calling Decisions     | Often            | LLM                   |
+| Output     | Citation Validation            | Sometimes        | Small LLM             |
+| Output     | Hallucination Detection        | Often            | Small LLM             |
+| Output     | Safety Check                   | Often            | Guardrail Model       |
+| Output     | PII Detection                  | Often            | Specialized Model     |
+| Output     | Toxicity Detection             | Often            | Safety Model          |
+| Output     | Answer Scoring                 | Often            | Small LLM             |
+| Monitoring | Conversation Evaluation        | Often            | Judge LLM             |
+| Monitoring | Quality Scoring                | Often            | Judge LLM             |
+| Monitoring | Drift Detection                | Sometimes        | ML Model              |
+| Monitoring | Feedback Analysis              | Often            | Small LLM             |
+
+
+If We Group Them Architecturally
+
+| Category               | Purpose                         |
+| ---------------------- | ------------------------------- |
+| Embedding Models       | Convert text to vectors         |
+| Classification Models  | Routing, intent, categorization |
+| Re-ranking Models      | Improve retrieval quality       |
+| Generative LLMs        | Generate answers                |
+| Judge/Evaluator Models | Evaluate quality                |
+| Safety Models          | Guardrails and compliance       |
+
+A Realistic Enterprise Example
+| Step                 | Model           |
+| -------------------- | --------------- |
+| Query classification | Small LLM       |
+| Query rewrite        | Small LLM       |
+| Router               | Small LLM       |
+| Embedding generation | Embedding Model |
+| Retrieval            | Search Engine   |
+| Re-ranking           | Re-ranker Model |
+| CRAG check           | Small LLM       |
+| Final answer         | Large LLM       |
+| Citation validation  | Small LLM       |
+| Safety check         | Safety Model    |
+
+
+Enterprise AI System – Complete AI Model Inventory
+
+Yes. For an AI Solution Architect, this is one of the most useful ways to think about the system.
+
+Instead of asking:
+
+> "Which LLM are we using?"
+
+Ask:
+
+> "Which AI models are involved in each phase of the lifecycle?"
+
+# Enterprise AI System – Complete AI Model Inventory
+
+| Phase     | Action                  | Typical Model Type       | Example Models                                    |
+| --------- | ----------------------- | ------------------------ | ------------------------------------------------- |
+| Ingestion | Document Classification | Small LLM / Classifier   | GPT-4o-mini, Claude Haiku, Llama 3 8B             |
+| Ingestion | Document Categorization | Small LLM                | GPT-4o-mini                                       |
+| Ingestion | Metadata Extraction     | Small LLM                | GPT-4o-mini, Claude Haiku                         |
+| Ingestion | Entity Extraction       | NER Model / Small LLM    | spaCy NER, GLiNER, GPT-4o-mini                    |
+| Ingestion | PII Detection           | Safety / Detection Model | Presidio, Azure AI Content Safety                 |
+| Ingestion | OCR Understanding       | Vision Model             | GPT-4o Vision, Gemini Vision                      |
+| Ingestion | Document Summarization  | Small LLM                | Claude Haiku, GPT-4o-mini                         |
+| Ingestion | Chunking Optimization   | Small LLM                | GPT-4o-mini                                       |
+| Ingestion | Embedding Generation    | Embedding Model          | text-embedding-3-large, bge-large-en, e5-large-v2 |
+
+---
+
+# Query Understanding Phase
+
+| Action                     | Model Type | Examples     |
+| -------------------------- | ---------- | ------------ |
+| Intent Detection           | Small LLM  | GPT-4o-mini  |
+| Query Classification       | Small LLM  | Claude Haiku |
+| Language Detection         | Classifier | FastText     |
+| User Context Understanding | Small LLM  | GPT-4o-mini  |
+| Query Rewrite              | Small LLM  | GPT-4o-mini  |
+| Query Expansion            | Small LLM  | Claude Haiku |
+| Query Decomposition        | Small LLM  | GPT-4o-mini  |
+| Multi-query Generation     | Small LLM  | GPT-4o-mini  |
+
+---
+
+# Routing Phase
+
+| Action                   | Model Type              | Examples               |
+| ------------------------ | ----------------------- | ---------------------- |
+| Router RAG               | Small LLM               | GPT-4o-mini            |
+| Domain Selection         | Small LLM               | Claude Haiku           |
+| Knowledge Base Selection | Small LLM               | Llama 3 8B             |
+| Tool Selection           | Small LLM / Agent Model | GPT-4.1, Claude Sonnet |
+| Workflow Selection       | Small LLM               | GPT-4o-mini            |
+
+---
+
+# Retrieval Phase
+
+| Action               | Model Type      | Examples                                   |
+| -------------------- | --------------- | ------------------------------------------ |
+| Embedding Query      | Embedding Model | Same embedding model used during ingestion |
+| Vector Search        | No AI Model     | Vector DB                                  |
+| Keyword Search       | No AI Model     | BM25                                       |
+| Metadata Filter      | No AI Model     | Search Engine                              |
+| Hybrid Search        | No AI Model     | Search Engine                              |
+| Re-ranking           | Re-ranker Model | bge-reranker-large, Cohere Rerank          |
+| Retrieval Evaluation | Judge LLM       | GPT-4o-mini                                |
+| Corrective RAG Check | Judge LLM       | GPT-4o-mini                                |
+
+---
+
+# Context Assembly Phase
+
+| Action                 | Model Type        | Examples     |
+| ---------------------- | ----------------- | ------------ |
+| Context Compression    | Small LLM         | Claude Haiku |
+| Context Summarization  | Small LLM         | GPT-4o-mini  |
+| Duplicate Removal      | Small LLM / Rules | GPT-4o-mini  |
+| Context Prioritization | Small LLM         | GPT-4o-mini  |
+
+---
+
+# Prompt Construction Phase
+
+| Action                     | Model Type    | Examples                             |
+| -------------------------- | ------------- | ------------------------------------ |
+| Prompt Builder             | Usually Rules | Templates                            |
+| Dynamic Prompt Creation    | Small LLM     | GPT-4o-mini                          |
+| Prompt Optimization        | Small LLM     | Claude Haiku                         |
+| Prompt Injection Detection | Safety LLM    | Llama Guard, Azure AI Content Safety |
+
+---
+
+# Agent Phase (if Agentic AI)
+
+| Action                   | Model Type | Examples               |
+| ------------------------ | ---------- | ---------------------- |
+| Task Planning            | LLM        | GPT-4.1, Claude Sonnet |
+| Tool Selection           | LLM        | GPT-4.1                |
+| Tool Calling             | LLM        | Claude Sonnet          |
+| Reflection               | LLM        | GPT-4.1                |
+| Self-Critique            | LLM        | Claude Sonnet          |
+| Multi-Agent Coordination | LLM        | GPT-4.1, Gemini Pro    |
+
+---
+
+# Generation Phase
+
+| Action                       | Model Type | Examples                           |
+| ---------------------------- | ---------- | ---------------------------------- |
+| Final Reasoning              | Large LLM  | GPT-4.1, Claude Sonnet, Gemini Pro |
+| Response Generation          | Large LLM  | GPT-4.1                            |
+| Structured Output Generation | Large LLM  | GPT-4.1                            |
+| Code Generation              | Large LLM  | Claude Sonnet, GPT-4.1             |
+
+---
+
+# Safety & Governance Phase
+
+| Action                     | Model Type   | Examples                             |
+| -------------------------- | ------------ | ------------------------------------ |
+| Input Moderation           | Safety Model | Llama Guard, Azure AI Content Safety |
+| Prompt Injection Detection | Safety Model | Llama Guard                          |
+| PII Detection              | Safety Model | Presidio                             |
+| Toxicity Detection         | Safety Model | Azure AI Content Safety              |
+| Policy Validation          | Judge LLM    | GPT-4o-mini                          |
+| Compliance Validation      | Judge LLM    | Claude Haiku                         |
+| Citation Validation        | Judge LLM    | GPT-4o-mini                          |
+| Hallucination Detection    | Judge LLM    | GPT-4o-mini                          |
+
+---
+
+# Evaluation & Observability Phase
+
+| Action                  | Model Type | Examples     |
+| ----------------------- | ---------- | ------------ |
+| Answer Quality Scoring  | Judge LLM  | GPT-4o-mini  |
+| Faithfulness Evaluation | Judge LLM  | GPT-4o-mini  |
+| Groundedness Evaluation | Judge LLM  | Claude Haiku |
+| Relevance Evaluation    | Judge LLM  | GPT-4o-mini  |
+| RAGAS-style Evaluation  | Judge LLM  | GPT-4o-mini  |
+| Feedback Classification | Small LLM  | GPT-4o-mini  |
+| Drift Detection         | ML Model   | Custom model |
+
+---
+
+# The 8 Model Families Architects Should Know
+
+| Family                | Purpose                           |
+| --------------------- | --------------------------------- |
+| Embedding Models      | Convert text into vectors         |
+| Classification Models | Categorize, route, detect intent  |
+| Extraction Models     | Metadata, entities, PII           |
+| Re-ranking Models     | Improve retrieval ordering        |
+| Generative LLMs       | Reason and generate answers       |
+| Agent Models          | Planning and tool orchestration   |
+| Safety Models         | Guardrails and moderation         |
+| Judge Models          | Evaluation and quality assessment |
+
+This is the mental model used by mature AI platforms: **an AI application is a pipeline of specialized models**, not a single LLM sitting in the middle of the architecture.
+
+
+Yes. For an AI Solution Architect, this is one of the most useful ways to think about the system.
+
+Instead of asking:
+
+> "Which LLM are we using?"
+
+Ask:
+
+> "Which AI models are involved in each phase of the lifecycle?"
+
+# Enterprise AI System – Complete AI Model Inventory
+
+| Phase     | Action                  | Typical Model Type       | Example Models                                    |
+| --------- | ----------------------- | ------------------------ | ------------------------------------------------- |
+| Ingestion | Document Classification | Small LLM / Classifier   | GPT-4o-mini, Claude Haiku, Llama 3 8B             |
+| Ingestion | Document Categorization | Small LLM                | GPT-4o-mini                                       |
+| Ingestion | Metadata Extraction     | Small LLM                | GPT-4o-mini, Claude Haiku                         |
+| Ingestion | Entity Extraction       | NER Model / Small LLM    | spaCy NER, GLiNER, GPT-4o-mini                    |
+| Ingestion | PII Detection           | Safety / Detection Model | Presidio, Azure AI Content Safety                 |
+| Ingestion | OCR Understanding       | Vision Model             | GPT-4o Vision, Gemini Vision                      |
+| Ingestion | Document Summarization  | Small LLM                | Claude Haiku, GPT-4o-mini                         |
+| Ingestion | Chunking Optimization   | Small LLM                | GPT-4o-mini                                       |
+| Ingestion | Embedding Generation    | Embedding Model          | text-embedding-3-large, bge-large-en, e5-large-v2 |
+
+---
+
+# Query Understanding Phase
+
+| Action                     | Model Type | Examples     |
+| -------------------------- | ---------- | ------------ |
+| Intent Detection           | Small LLM  | GPT-4o-mini  |
+| Query Classification       | Small LLM  | Claude Haiku |
+| Language Detection         | Classifier | FastText     |
+| User Context Understanding | Small LLM  | GPT-4o-mini  |
+| Query Rewrite              | Small LLM  | GPT-4o-mini  |
+| Query Expansion            | Small LLM  | Claude Haiku |
+| Query Decomposition        | Small LLM  | GPT-4o-mini  |
+| Multi-query Generation     | Small LLM  | GPT-4o-mini  |
+
+---
+
+# Routing Phase
+
+| Action                   | Model Type              | Examples               |
+| ------------------------ | ----------------------- | ---------------------- |
+| Router RAG               | Small LLM               | GPT-4o-mini            |
+| Domain Selection         | Small LLM               | Claude Haiku           |
+| Knowledge Base Selection | Small LLM               | Llama 3 8B             |
+| Tool Selection           | Small LLM / Agent Model | GPT-4.1, Claude Sonnet |
+| Workflow Selection       | Small LLM               | GPT-4o-mini            |
+
+---
+
+# Retrieval Phase
+
+| Action               | Model Type      | Examples                                   |
+| -------------------- | --------------- | ------------------------------------------ |
+| Embedding Query      | Embedding Model | Same embedding model used during ingestion |
+| Vector Search        | No AI Model     | Vector DB                                  |
+| Keyword Search       | No AI Model     | BM25                                       |
+| Metadata Filter      | No AI Model     | Search Engine                              |
+| Hybrid Search        | No AI Model     | Search Engine                              |
+| Re-ranking           | Re-ranker Model | bge-reranker-large, Cohere Rerank          |
+| Retrieval Evaluation | Judge LLM       | GPT-4o-mini                                |
+| Corrective RAG Check | Judge LLM       | GPT-4o-mini                                |
+
+---
+
+# Context Assembly Phase
+
+| Action                 | Model Type        | Examples     |
+| ---------------------- | ----------------- | ------------ |
+| Context Compression    | Small LLM         | Claude Haiku |
+| Context Summarization  | Small LLM         | GPT-4o-mini  |
+| Duplicate Removal      | Small LLM / Rules | GPT-4o-mini  |
+| Context Prioritization | Small LLM         | GPT-4o-mini  |
+
+---
+
+# Prompt Construction Phase
+
+| Action                     | Model Type    | Examples                             |
+| -------------------------- | ------------- | ------------------------------------ |
+| Prompt Builder             | Usually Rules | Templates                            |
+| Dynamic Prompt Creation    | Small LLM     | GPT-4o-mini                          |
+| Prompt Optimization        | Small LLM     | Claude Haiku                         |
+| Prompt Injection Detection | Safety LLM    | Llama Guard, Azure AI Content Safety |
+
+---
+
+# Agent Phase (if Agentic AI)
+
+| Action                   | Model Type | Examples               |
+| ------------------------ | ---------- | ---------------------- |
+| Task Planning            | LLM        | GPT-4.1, Claude Sonnet |
+| Tool Selection           | LLM        | GPT-4.1                |
+| Tool Calling             | LLM        | Claude Sonnet          |
+| Reflection               | LLM        | GPT-4.1                |
+| Self-Critique            | LLM        | Claude Sonnet          |
+| Multi-Agent Coordination | LLM        | GPT-4.1, Gemini Pro    |
+
+---
+
+# Generation Phase
+
+| Action                       | Model Type | Examples                           |
+| ---------------------------- | ---------- | ---------------------------------- |
+| Final Reasoning              | Large LLM  | GPT-4.1, Claude Sonnet, Gemini Pro |
+| Response Generation          | Large LLM  | GPT-4.1                            |
+| Structured Output Generation | Large LLM  | GPT-4.1                            |
+| Code Generation              | Large LLM  | Claude Sonnet, GPT-4.1             |
+
+---
+
+# Safety & Governance Phase
+
+| Action                     | Model Type   | Examples                             |
+| -------------------------- | ------------ | ------------------------------------ |
+| Input Moderation           | Safety Model | Llama Guard, Azure AI Content Safety |
+| Prompt Injection Detection | Safety Model | Llama Guard                          |
+| PII Detection              | Safety Model | Presidio                             |
+| Toxicity Detection         | Safety Model | Azure AI Content Safety              |
+| Policy Validation          | Judge LLM    | GPT-4o-mini                          |
+| Compliance Validation      | Judge LLM    | Claude Haiku                         |
+| Citation Validation        | Judge LLM    | GPT-4o-mini                          |
+| Hallucination Detection    | Judge LLM    | GPT-4o-mini                          |
+
+---
+
+# Evaluation & Observability Phase
+
+| Action                  | Model Type | Examples     |
+| ----------------------- | ---------- | ------------ |
+| Answer Quality Scoring  | Judge LLM  | GPT-4o-mini  |
+| Faithfulness Evaluation | Judge LLM  | GPT-4o-mini  |
+| Groundedness Evaluation | Judge LLM  | Claude Haiku |
+| Relevance Evaluation    | Judge LLM  | GPT-4o-mini  |
+| RAGAS-style Evaluation  | Judge LLM  | GPT-4o-mini  |
+| Feedback Classification | Small LLM  | GPT-4o-mini  |
+| Drift Detection         | ML Model   | Custom model |
+
+---
+
+# The 8 Model Families Architects Should Know
+
+| Family                | Purpose                           |
+| --------------------- | --------------------------------- |
+| Embedding Models      | Convert text into vectors         |
+| Classification Models | Categorize, route, detect intent  |
+| Extraction Models     | Metadata, entities, PII           |
+| Re-ranking Models     | Improve retrieval ordering        |
+| Generative LLMs       | Reason and generate answers       |
+| Agent Models          | Planning and tool orchestration   |
+| Safety Models         | Guardrails and moderation         |
+| Judge Models          | Evaluation and quality assessment |
+
+This is the mental model used by mature AI platforms: **an AI application is a pipeline of specialized models**, not a single LLM sitting in the middle of the architecture.
+
+
+Perfect. You've now essentially completed the **RAG & Retrieval Patterns** section.
+
+The next major topic in the AI Solution Architect path is:
+
+# Evaluation & Observability
+
+This is one of the most important production topics because it answers:
+
+> "How do we know the AI system is actually working?"
+
+---
+
+# Why Evaluation Matters
+
+Traditional software:
+
+```text
+2 + 2 = 4
+```
+
+Easy to test.
+
+---
+
+AI systems:
+
+```text
+Question:
+What is our leave policy?
+
+Answer:
+Employees receive 20 days annual leave.
+```
+
+Is it:
+
+* Correct?
+* Relevant?
+* Grounded?
+* Complete?
+* Up to date?
+
+Much harder.
+
+---
+
+# The Four Questions Every Enterprise Asks
+
+## 1. Did Retrieval Work?
+
+```text
+User Query
+    ↓
+Retriever
+    ↓
+Relevant Documents?
+```
+
+Example:
+
+```text
+Question:
+What is APRA CPS 230?
+
+Retrieved:
+CPS 234 documents
+```
+
+Retrieval failed.
+
+---
+
+## 2. Was the Answer Grounded?
+
+Did the answer come from retrieved documents?
+
+```text
+Retrieved Context
+      ↓
+LLM Answer
+```
+
+Or did the model make something up?
+
+---
+
+## 3. Was the Answer Correct?
+
+Even grounded answers can be wrong.
+
+Example:
+
+Document says:
+
+```text
+20 days leave
+```
+
+LLM says:
+
+```text
+25 days leave
+```
+
+Grounded but incorrect.
+
+---
+
+## 4. Was the Answer Useful?
+
+User asks:
+
+```text
+How many leave days do I get?
+```
+
+Answer:
+
+```text
+Refer to HR Policy 5.2.
+```
+
+Technically correct.
+
+Practically useless.
+
+---
+
+# The Core Evaluation Metrics
+
+These are the ones architects should know.
+
+| Metric              | Question                             |
+| ------------------- | ------------------------------------ |
+| Retrieval Relevance | Did we retrieve the right documents? |
+| Context Precision   | Was retrieved context useful?        |
+| Context Recall      | Did we miss important context?       |
+| Groundedness        | Is answer supported by context?      |
+| Faithfulness        | Did the model invent facts?          |
+| Answer Relevance    | Did it answer the question?          |
+| Correctness         | Is it factually correct?             |
+| Helpfulness         | Is it useful to the user?            |
+
+---
+
+# The Three Levels of Evaluation
+
+## Level 1 — Retrieval Evaluation
+
+Evaluate:
+
+```text
+Query
+   ↓
+Retrieval
+```
+
+Questions:
+
+* Were the right chunks found?
+* Was ranking correct?
+* Was recall sufficient?
+
+---
+
+## Level 2 — Generation Evaluation
+
+Evaluate:
+
+```text
+Context
+    ↓
+LLM
+    ↓
+Answer
+```
+
+Questions:
+
+* Grounded?
+* Faithful?
+* Correct?
+
+---
+
+## Level 3 — End-to-End Evaluation
+
+Evaluate:
+
+```text
+User
+   ↓
+System
+   ↓
+Answer
+```
+
+Questions:
+
+* Did the user get what they needed?
+* Would they ask again?
+* Did task completion improve?
+
+---
+
+# Observability
+
+Evaluation tells you quality.
+
+Observability tells you what happened.
+
+Think:
+
+```text
+Logs
+Metrics
+Tracing
+Monitoring
+```
+
+---
+
+# Example Trace
+
+```text
+User Question
+      ↓
+Query Rewrite
+      ↓
+Router
+      ↓
+Retrieval
+      ↓
+Re-ranker
+      ↓
+Prompt
+      ↓
+LLM
+      ↓
+Answer
+```
+
+For each step we capture:
+
+| Step          | Metrics      |
+| ------------- | ------------ |
+| Query Rewrite | Latency      |
+| Retrieval     | Relevance    |
+| Re-ranker     | Score        |
+| LLM           | Tokens       |
+| Output        | Groundedness |
+
+---
+
+# Tools You Will Hear About
+
+Common evaluation frameworks:
+
+* RAGAS
+* LangSmith
+* Arize Phoenix
+* Weights & Biases
+* TruLens
+
+You do not need to master all of them.
+
+As an architect, you need to understand **what they measure**, not every feature.
+
+---
+
+# Architect Interview One-Liner
+
+> Evaluation measures the quality of retrieval and generation, while observability provides visibility into the behavior, performance, cost, and reliability of the AI system in production.
+
+---
+
+### Next sub-topic
+
+The natural next lesson is:
+
+## Groundedness vs Faithfulness vs Correctness vs Relevance
+
+This is the most commonly confused area in AI evaluation and is where most architects initially struggle. Once you understand those four terms, the rest of evaluation becomes much easier.
+
+
+| Pattern                      | Purpose                                                         |
+| ---------------------------- | --------------------------------------------------------------- |
+| Basic RAG                    | Retrieve → Generate                                             |
+| Hybrid RAG                   | Combine vector + keyword search                                 |
+| Router RAG                   | Route query to the correct knowledge source                     |
+| Query Transformation RAG     | Improve retrieval through query rewriting/expansion             |
+| Corrective RAG (CRAG)        | Evaluate retrieval quality and retry if needed                  |
+| Self-RAG                     | Model evaluates retrieval needs and retrieval quality itself    |
+| Parent-Child RAG             | Retrieve small chunks but provide larger context                |
+| Multi-Hop RAG                | Retrieve information across multiple reasoning steps            |
+| Graph RAG                    | Retrieve entities and relationships from a knowledge graph      |
+| Agentic RAG                  | Agents plan retrieval and tool usage                            |
+| Adaptive RAG                 | Dynamically choose retrieval strategy based on query complexity |
+| Fusion RAG / Multi-Query RAG | Generate multiple queries and combine retrieval results         |
+| Hierarchical RAG             | Retrieve coarse → fine-grained information in stages            |
+| Multimodal RAG               | Retrieve text, images, audio, video, PDFs                       |
+| Knowledge Graph + RAG        | Hybrid Graph and Vector retrieval                               |
+| Federated RAG                | Retrieve across multiple repositories/systems                   |
+| SQL RAG / Structured RAG     | Retrieve from databases and structured sources                  |
+| Long-Context RAG             | Use large context windows with retrieval optimization           |
+
+
+
+This is actually a very good handbook, and after reading it I can see why **Self-RAG was omitted**.
+
+It wasn't an accident.
+
+The handbook is structured around patterns that are:
+
+1. **Architecturally distinct**
+2. **Common in enterprise implementations**
+3. **Represent separate retrieval architectures**
+
+Self-RAG is a bit different.
+
+---
+
+# Why Self-RAG Doesn't Naturally Fit
+
+Look at your progression:
+
+```text
+Parent-Child
+    ↓
+Multi-Hop
+    ↓
+Graph RAG
+    ↓
+Agentic RAG
+```
+
+Each introduces a new architecture:
+
+| Pattern      | New Architectural Capability   |
+| ------------ | ------------------------------ |
+| Parent-Child | Parent-child storage structure |
+| Multi-Hop    | Iterative retrieval workflow   |
+| Graph RAG    | Knowledge graph                |
+| Agentic RAG  | Planning and orchestration     |
+
+Self-RAG doesn't introduce a new retrieval architecture.
+
+Instead it adds:
+
+```text
+Self-Evaluation
+Reflection
+Retrieval Decision Making
+```
+
+inside the model.
+
+---
+
+# Where Self-RAG Fits Better
+
+If I were updating your handbook I'd put it here:
+
+```text
+Retrieval Enhancement Patterns
+
+Hybrid RAG
+Router RAG
+Query Transformation
+Corrective RAG
+Self-RAG
+```
+
+because Self-RAG is essentially an evolution of Corrective RAG.
+
+---
+
+# Compare CRAG vs Self-RAG
+
+## CRAG
+
+```text
+Retrieve
+    ↓
+External Evaluator
+    ↓
+Retry
+```
+
+Question:
+
+> Did retrieval work?
+
+The evaluator is outside the main LLM.
+
+---
+
+## Self-RAG
+
+```text
+LLM
+ ↓
+Need Retrieval?
+ ↓
+Retrieve
+ ↓
+Useful?
+ ↓
+Retrieve Again?
+ ↓
+Answer
+```
+
+Question:
+
+> Can the model evaluate retrieval itself?
+
+---
+
+# Why Enterprise Architects Rarely Draw It
+
+When you draw:
+
+```text
+Agent
+   ↓
+Retrieve
+   ↓
+Reflect
+   ↓
+Retrieve Again
+```
+
+you've effectively implemented Self-RAG behaviour.
+
+Modern systems often absorb Self-RAG into:
+
+* Agent frameworks
+* Reflection loops
+* Planning loops
+* Retrieval controllers
+
+rather than exposing it as a standalone box.
+
+---
+
+# If We Updated Your Handbook
+
+I would revise the Retrieval Enhancement section to:
+
+| Pattern              | Purpose                                                                                |
+| -------------------- | -------------------------------------------------------------------------------------- |
+| Hybrid RAG           | Improve retrieval quality                                                              |
+| Router RAG           | Choose retrieval source                                                                |
+| Query Transformation | Improve query quality                                                                  |
+| Corrective RAG       | Validate retrieval quality                                                             |
+| Self-RAG             | Allow the model to decide when retrieval is needed and whether retrieval is sufficient |
+
+---
+
+# Architect Classification
+
+For interviews and architecture discussions, I'd group the patterns like this:
+
+### Retrieval Quality
+
+```text
+Hybrid RAG
+Query Transformation
+Parent-Child
+```
+
+---
+
+### Retrieval Selection
+
+```text
+Router RAG
+Agentic RAG
+```
+
+---
+
+### Retrieval Validation
+
+```text
+Corrective RAG
+Self-RAG
+```
+
+---
+
+### Relationship Discovery
+
+```text
+Multi-Hop
+Graph RAG
+```
+
+---
+
+### Orchestration
+
+```text
+Agentic RAG
+```
+
+---
+
+So I wouldn't change your **major advanced patterns** section:
+
+✅ Parent-Child RAG
+✅ Multi-Hop RAG
+✅ Graph RAG
+✅ Agentic RAG
+
+I would simply add **Self-RAG** under **Retrieval Enhancement Patterns**, alongside Hybrid, Router, Query Transformation, and Corrective RAG.
+
+That keeps the handbook architecturally clean while still covering one of the most important modern retrieval techniques.
+
+
+Great. Let's continue with the next topic in **Enterprise AI Operations**:
+
+# Groundedness vs Faithfulness vs Correctness vs Relevance
+
+This is probably the most misunderstood area in AI evaluation.
+
+Most people use these terms interchangeably.
+
+They are not the same.
+
+---
+
+# The Example
+
+Suppose the retrieved document says:
+
+```text
+Employees receive 20 days annual leave.
+```
+
+User asks:
+
+```text
+How many annual leave days do employees receive?
+```
+
+---
+
+# 1. Groundedness
+
+Question:
+
+> Is the answer supported by the retrieved context?
+
+Retrieved Context:
+
+```text
+Employees receive 20 days annual leave.
+```
+
+Answer:
+
+```text
+Employees receive 20 days annual leave.
+```
+
+Grounded?
+
+✅ Yes
+
+The answer is directly supported by the context.
+
+---
+
+Answer:
+
+```text
+Employees receive 25 days annual leave.
+```
+
+Grounded?
+
+❌ No
+
+The context never said 25.
+
+---
+
+# Mental Model
+
+```text
+Groundedness
+=
+Answer supported by retrieved evidence?
+```
+
+---
+
+# 2. Faithfulness
+
+Question:
+
+> Did the model faithfully use the information provided?
+
+Context:
+
+```text
+Employees receive 20 days annual leave.
+```
+
+Answer:
+
+```text
+Employees receive 20 days annual leave.
+```
+
+Faithful?
+
+✅ Yes
+
+---
+
+Answer:
+
+```text
+Employees receive 20 days annual leave and 10 wellness days.
+```
+
+Faithful?
+
+❌ No
+
+The model added information.
+
+---
+
+# Mental Model
+
+```text
+Faithfulness
+=
+No hallucination
+```
+
+---
+
+# Groundedness vs Faithfulness
+
+These are very close.
+
+Think:
+
+```text
+Groundedness
+=
+Supported by evidence
+
+Faithfulness
+=
+Did not invent facts
+```
+
+Many frameworks treat them almost interchangeably.
+
+---
+
+# 3. Correctness
+
+Question:
+
+> Is the answer objectively true?
+
+Context:
+
+```text
+Employees receive 20 days annual leave.
+```
+
+Answer:
+
+```text
+Employees receive 20 days annual leave.
+```
+
+Correct?
+
+Maybe.
+
+We don't know.
+
+---
+
+Imagine:
+
+```text
+Document is outdated.
+```
+
+Actual policy:
+
+```text
+25 days leave
+```
+
+Now:
+
+| Metric   | Result |
+| -------- | ------ |
+| Grounded | ✅      |
+| Faithful | ✅      |
+| Correct  | ❌      |
+
+This is one of the most important architect lessons.
+
+---
+
+# Mental Model
+
+```text
+Correctness
+=
+Real-world truth
+```
+
+not
+
+```text
+Correctness
+=
+Matches retrieved document
+```
+
+---
+
+# 4. Relevance
+
+Question:
+
+> Did the answer address the user's question?
+
+User:
+
+```text
+How many leave days do employees receive?
+```
+
+Answer:
+
+```text
+Please refer to HR policy section 5.2.
+```
+
+Grounded?
+
+✅ Probably
+
+Faithful?
+
+✅ Probably
+
+Correct?
+
+✅ Probably
+
+Relevant?
+
+❌ Poor
+
+The user wanted the number.
+
+---
+
+# Mental Model
+
+```text
+Relevance
+=
+Did we answer the question?
+```
+
+---
+
+# Comparison Table
+
+| Metric       | Checks                         |
+| ------------ | ------------------------------ |
+| Groundedness | Supported by retrieved context |
+| Faithfulness | No hallucinated information    |
+| Correctness  | Factually true                 |
+| Relevance    | Answers the user's question    |
+
+---
+
+# The Classic Interview Example
+
+Document:
+
+```text
+Leave = 20 days
+```
+
+Actual policy:
+
+```text
+Leave = 25 days
+```
+
+Answer:
+
+```text
+Employees receive 20 days annual leave.
+```
+
+| Metric       | Result |
+| ------------ | ------ |
+| Groundedness | ✅      |
+| Faithfulness | ✅      |
+| Correctness  | ❌      |
+| Relevance    | ✅      |
+
+This demonstrates why retrieval quality alone is not enough.
+
+---
+
+# Another Example
+
+Document:
+
+```text
+Leave = 20 days
+```
+
+Answer:
+
+```text
+Employees receive 20 days annual leave and 10 wellness days.
+```
+
+| Metric       | Result  |
+| ------------ | ------- |
+| Groundedness | ❌       |
+| Faithfulness | ❌       |
+| Correctness  | Unknown |
+| Relevance    | ✅       |
+
+---
+
+# Architect Takeaway
+
+Think of evaluation in layers:
+
+```text
+Relevance
+    ↓
+Groundedness
+    ↓
+Faithfulness
+    ↓
+Correctness
+```
+
+And remember:
+
+> A RAG system can be perfectly grounded and faithful while still being factually incorrect if the retrieved knowledge is outdated, incomplete, or wrong.
+
+That single sentence explains why enterprises invest so much effort in knowledge management, governance, and observability—not just better models.
+
+### One-line definitions
+
+* **Groundedness** → Is the answer supported by retrieved evidence?
+* **Faithfulness** → Did the model avoid inventing facts?
+* **Correctness** → Is the answer objectively true?
+* **Relevance** → Did the answer address the user's question?
+
+This forms the foundation for understanding evaluation frameworks such as RAGAS, which is usually the next concept architects encounter.
+
+
+
+| Metric           | What It Measures                                         | Key Question                                           | Depends On Retrieved Context? | Can Be True While Correctness Is False? | Example Failure                                                              |
+| ---------------- | -------------------------------------------------------- | ------------------------------------------------------ | ----------------------------- | --------------------------------------- | ---------------------------------------------------------------------------- |
+| **Groundedness** | Whether the answer is supported by retrieved evidence    | **"Is the answer backed by the retrieved documents?"** | Yes                           | Yes                                     | Document says 20 days leave, answer says 25 days                             |
+| **Faithfulness** | Whether the model avoided adding unsupported information | **"Did the model stick to the evidence?"**             | Yes                           | Yes                                     | Document says 20 days leave, answer says 20 days + 10 wellness days          |
+| **Correctness**  | Whether the answer is objectively true in the real world | **"Is the answer actually correct?"**                  | No                            | N/A                                     | Retrieved document is outdated (20 days), actual policy is 25 days           |
+| **Relevance**    | Whether the answer addresses the user's question         | **"Did we answer what was asked?"**                    | No                            | Yes                                     | Answer says "Refer to HR Policy 5.2" instead of giving the leave entitlement |
+
+---
+
+### Same Example Across All Four Metrics
+
+**Retrieved Context**
+
+```text
+Employees receive 20 days annual leave.
+```
+
+**Actual Policy**
+
+```text
+Employees receive 25 days annual leave.
+```
+
+| Answer                                                         | Grounded | Faithful | Correct | Relevant |
+| -------------------------------------------------------------- | -------- | -------- | ------- | -------- |
+| "Employees receive 20 days annual leave."                      | ✅        | ✅        | ❌       | ✅        |
+| "Employees receive 25 days annual leave."                      | ❌        | ❌        | ✅       | ✅        |
+| "Employees receive 20 days annual leave and 10 wellness days." | ❌        | ❌        | Unknown | ✅        |
+| "Refer to HR Policy Section 5.2."                              | ✅        | ✅        | Maybe   | ❌        |
+
+---
+
+### Architect Cheat Sheet
+
+| Metric           | Mental Model          |
+| ---------------- | --------------------- |
+| **Groundedness** | Supported by evidence |
+| **Faithfulness** | No hallucinations     |
+| **Correctness**  | Real-world truth      |
+| **Relevance**    | Answers the question  |
+
+### The Interview One-Liner
+
+> A response can be **grounded and faithful** yet still be **incorrect** if the retrieved information is outdated, and it can be **correct** yet not **grounded** if the model answered from prior knowledge instead of the retrieved evidence.
+
+
+Perfect. The next concept is:
+
+# Precision vs Recall vs Context Precision vs Context Recall
+
+This is where Retrieval Evaluation starts.
+
+---
+
+# Why We Need These Metrics
+
+Suppose the user asks:
+
+> "What are the requirements of APRA CPS 230?"
+
+Your retriever searches 10,000 documents.
+
+The question becomes:
+
+> Did we retrieve the right documents?
+
+That's where Precision and Recall come from.
+
+---
+
+# Traditional Precision
+
+Question:
+
+> Of the documents we retrieved, how many were actually useful?
+
+Example:
+
+Relevant documents:
+
+```text
+Doc A
+Doc B
+Doc C
+Doc D
+```
+
+Retriever returns:
+
+```text
+Doc A
+Doc B
+Doc X
+Doc Y
+```
+
+---
+
+Analysis:
+
+```text
+Retrieved = 4
+
+Relevant = 2
+```
+
+Precision:
+
+Precision = \frac{Relevant\ Retrieved}{Total\ Retrieved}
+
+Result:
+
+```text
+2 / 4 = 50%
+```
+
+---
+
+# Mental Model
+
+```text
+Precision
+=
+How clean are the results?
+```
+
+High precision:
+
+```text
+Retrieved mostly useful documents
+```
+
+---
+
+# Traditional Recall
+
+Question:
+
+> Did we retrieve everything important?
+
+Relevant documents:
+
+```text
+Doc A
+Doc B
+Doc C
+Doc D
+```
+
+Retriever returns:
+
+```text
+Doc A
+Doc B
+```
+
+Recall:
+
+Recall = \frac{Relevant\ Retrieved}{Total\ Relevant}
+
+Result:
+
+```text
+2 / 4 = 50%
+```
+
+---
+
+# Mental Model
+
+```text
+Recall
+=
+How much important information did we find?
+```
+
+---
+
+# Precision vs Recall
+
+Imagine fishing.
+
+### High Precision
+
+```text
+10 fish caught
+9 fish wanted
+```
+
+Very clean.
+
+---
+
+### High Recall
+
+```text
+Found almost every fish
+but caught lots of junk too
+```
+
+Complete but messy.
+
+---
+
+# Why RAG Uses Different Metrics
+
+RAG retrieves:
+
+```text
+Chunks
+Documents
+Passages
+```
+
+not whole search results.
+
+So evaluation evolved into:
+
+* Context Precision
+* Context Recall
+
+---
+
+# Context Precision
+
+Question:
+
+> Was the retrieved context actually useful for answering the question?
+
+Example:
+
+Question:
+
+```text
+What are APRA CPS 230 requirements?
+```
+
+Retrieved:
+
+```text
+Chunk 1 - CPS 230
+Chunk 2 - CPS 230
+Chunk 3 - Holiday Policy
+Chunk 4 - Cafeteria Menu
+```
+
+---
+
+Analysis:
+
+```text
+Useful Chunks = 2
+
+Retrieved Chunks = 4
+```
+
+Context Precision:
+
+```text
+2 / 4 = 50%
+```
+
+---
+
+# Mental Model
+
+```text
+Context Precision
+=
+How much irrelevant context was retrieved?
+```
+
+---
+
+# Context Recall
+
+Question:
+
+> Did retrieval capture all context required to answer the question?
+
+Question:
+
+```text
+What are CPS 230 requirements?
+```
+
+Needed:
+
+```text
+Requirements A
+Requirements B
+Requirements C
+Requirements D
+```
+
+Retrieved:
+
+```text
+Requirements A
+Requirements B
+```
+
+Context Recall:
+
+```text
+50%
+```
+
+---
+
+# Mental Model
+
+```text
+Context Recall
+=
+Did we retrieve enough information?
+```
+
+---
+
+# Why Architects Care
+
+Because different RAG patterns optimize different metrics.
+
+| Pattern              | Improves           |
+| -------------------- | ------------------ |
+| Hybrid RAG           | Precision + Recall |
+| Query Transformation | Recall             |
+| Re-ranking           | Precision          |
+| Parent-Child         | Context Recall     |
+| Router RAG           | Precision          |
+| Graph RAG            | Context Recall     |
+| Multi-Hop            | Recall             |
+| Corrective RAG       | Precision + Recall |
+
+---
+
+# Common Failure Modes
+
+## High Precision, Low Recall
+
+Retrieved:
+
+```text
+Only one perfect chunk
+```
+
+Problem:
+
+```text
+Missing information
+```
+
+Answer becomes incomplete.
+
+---
+
+## High Recall, Low Precision
+
+Retrieved:
+
+```text
+Everything remotely related
+```
+
+Problem:
+
+```text
+Huge prompt
+Higher cost
+More noise
+```
+
+Answer quality drops.
+
+---
+
+# Architect View
+
+Think of retrieval quality as two goals:
+
+```text
+Precision
+=
+Avoid junk
+
+Recall
+=
+Avoid missing information
+```
+
+And for RAG specifically:
+
+```text
+Context Precision
+=
+Relevant context retrieved
+
+Context Recall
+=
+Complete context retrieved
+```
+
+---
+
+# Evaluation Hierarchy So Far
+
+```text
+Retrieval Evaluation
+    ├── Precision
+    ├── Recall
+    ├── Context Precision
+    └── Context Recall
+
+Generation Evaluation
+    ├── Groundedness
+    ├── Faithfulness
+    ├── Correctness
+    └── Relevance
+```
+
+This is the foundation of most RAG evaluation frameworks, including RAGAS.
+
+### One-line definitions
+
+| Metric            | One-Liner                                |
+| ----------------- | ---------------------------------------- |
+| Precision         | How many retrieved items were useful?    |
+| Recall            | How many useful items were found?        |
+| Context Precision | How much retrieved context was relevant? |
+| Context Recall    | How much required context was retrieved? |
+
+The next topic after this is usually **RAGAS**, because it combines many of these metrics into a practical evaluation framework.
+
+
+Excellent. Now we get into the framework you'll hear most often when discussing RAG evaluation:
+
+# RAGAS
+
+**RAGAS = Retrieval-Augmented Generation Assessment**
+
+The important thing is:
+
+> RAGAS is not a RAG framework.
+>
+> RAGAS is an evaluation framework.
+
+Its purpose is:
+
+```text
+Question
+   ↓
+Retrieved Context
+   ↓
+Answer
+   ↓
+Evaluate Quality
+```
+
+---
+
+# Why RAGAS Exists
+
+Traditional software testing:
+
+```text
+Input
+  ↓
+Expected Output
+  ↓
+Pass / Fail
+```
+
+Easy.
+
+---
+
+RAG systems:
+
+```text
+Question
+  ↓
+Retrieval
+  ↓
+LLM
+  ↓
+Answer
+```
+
+There may be many acceptable answers.
+
+So we need evaluation metrics instead of simple pass/fail tests.
+
+---
+
+# What RAGAS Evaluates
+
+Think of RAGAS as evaluating three things:
+
+```text
+Retrieval
+    ↓
+Generation
+    ↓
+Overall Quality
+```
+
+---
+
+# 1. Context Precision
+
+Question:
+
+> Was the retrieved context useful?
+
+Example:
+
+Retrieved:
+
+```text
+CPS 230
+CPS 234
+Holiday Policy
+Cafeteria Menu
+```
+
+Only CPS 230 matters.
+
+Poor precision.
+
+---
+
+Mental model:
+
+```text
+Too much junk?
+```
+
+---
+
+# 2. Context Recall
+
+Question:
+
+> Did we retrieve everything needed?
+
+Needed:
+
+```text
+Requirement A
+Requirement B
+Requirement C
+Requirement D
+```
+
+Retrieved:
+
+```text
+A
+B
+```
+
+Poor recall.
+
+---
+
+Mental model:
+
+```text
+Missing important information?
+```
+
+---
+
+# 3. Faithfulness
+
+Question:
+
+> Did the model invent facts?
+
+Context:
+
+```text
+20 days leave
+```
+
+Answer:
+
+```text
+20 days leave
+```
+
+Good.
+
+---
+
+Answer:
+
+```text
+20 days leave plus wellness leave
+```
+
+Bad.
+
+---
+
+Mental model:
+
+```text
+Hallucination check
+```
+
+---
+
+# 4. Answer Relevance
+
+Question:
+
+> Did the answer address the user's question?
+
+User:
+
+```text
+How many leave days?
+```
+
+Answer:
+
+```text
+See HR Policy 5.2
+```
+
+Not very relevant.
+
+---
+
+Mental model:
+
+```text
+Did we answer the question?
+```
+
+---
+
+# Visual Model
+
+```text
+Question
+   ↓
+Retrieved Context
+   ↓
+Answer
+```
+
+RAGAS evaluates:
+
+```text
+Question ↔ Context
+Question ↔ Answer
+Context ↔ Answer
+```
+
+---
+
+# Architect Mapping
+
+| Relationship       | Metric            |
+| ------------------ | ----------------- |
+| Question ↔ Context | Context Recall    |
+| Context Quality    | Context Precision |
+| Context ↔ Answer   | Faithfulness      |
+| Question ↔ Answer  | Answer Relevance  |
+
+---
+
+# Example End-to-End
+
+Question:
+
+```text
+What are CPS 230 requirements?
+```
+
+Retrieved:
+
+```text
+Requirement A
+Requirement B
+```
+
+Actual document contains:
+
+```text
+A
+B
+C
+D
+```
+
+Answer:
+
+```text
+Requirement A and B
+```
+
+Evaluation:
+
+| Metric            | Result |
+| ----------------- | ------ |
+| Context Precision | High   |
+| Context Recall    | Low    |
+| Faithfulness      | High   |
+| Answer Relevance  | High   |
+
+Interesting observation:
+
+```text
+Great answer
+Wrong retrieval
+```
+
+This happens often.
+
+---
+
+# What RAGAS Does Not Measure Well
+
+This is architect interview territory.
+
+RAGAS does **not** directly measure:
+
+| Area              | Reason             |
+| ----------------- | ------------------ |
+| Latency           | Operational metric |
+| Cost              | Operational metric |
+| Security          | Governance concern |
+| Compliance        | Governance concern |
+| User Satisfaction | Business metric    |
+| Business Outcome  | Business metric    |
+
+RAGAS focuses on retrieval and generation quality.
+
+---
+
+# Production Evaluation Layers
+
+A mature enterprise system typically measures:
+
+## Layer 1 – Retrieval Quality
+
+```text
+Context Precision
+Context Recall
+```
+
+---
+
+## Layer 2 – Generation Quality
+
+```text
+Faithfulness
+Answer Relevance
+Groundedness
+```
+
+---
+
+## Layer 3 – Operational Quality
+
+```text
+Latency
+Availability
+Cost
+Token Usage
+```
+
+---
+
+## Layer 4 – Business Quality
+
+```text
+User Satisfaction
+Task Success
+Adoption
+```
+
+---
+
+# The Big Architect Insight
+
+Many teams obsess over:
+
+```text
+Which LLM should we use?
+```
+
+But most production failures come from:
+
+```text
+Poor Retrieval
+Poor Context
+Poor Evaluation
+```
+
+not from the model itself.
+
+That's why RAGAS became popular—it gives teams a structured way to determine:
+
+> Is the problem retrieval, generation, or both?
+
+---
+
+# Evaluation Chapter Summary So Far
+
+| Category   | Metrics                                              |
+| ---------- | ---------------------------------------------------- |
+| Retrieval  | Precision, Recall, Context Precision, Context Recall |
+| Generation | Groundedness, Faithfulness, Correctness, Relevance   |
+| Framework  | RAGAS                                                |
+
+---
+
+At this point, the next natural topic is **Observability**, which answers:
+
+> "When a user gets a bad answer, how do I find where the failure occurred?"
+
+That's where concepts like tracing, spans, telemetry, LangSmith, Phoenix, and AI observability platforms come in. This is the operational side of running AI systems in production.
+
+
+Not quite.
+
+This is a very important distinction.
+
+# What RAGAS Is
+
+RAGAS is:
+
+> An evaluation framework that implements and calculates a set of RAG evaluation metrics.
+
+Think:
+
+```text id="c0vgfb"
+Metrics
+    ↓
+Framework
+    ↓
+RAGAS
+```
+
+RAGAS is not the definition of the metrics.
+
+The metrics exist independently.
+
+---
+
+# Analogy
+
+Think about software testing.
+
+Metrics:
+
+```text id="wtf1gf"
+Code Coverage
+Defect Count
+Performance
+```
+
+Frameworks:
+
+```text id="i08vcn"
+JUnit
+pytest
+NUnit
+```
+
+The framework measures the metrics.
+
+It didn't invent the concepts.
+
+---
+
+# AI Evaluation Equivalent
+
+Metrics:
+
+```text id="87p5r0"
+Groundedness
+Faithfulness
+Relevance
+Precision
+Recall
+```
+
+Frameworks:
+
+```text id="kt0tfr"
+RAGAS
+TruLens
+LangSmith
+Phoenix
+```
+
+The frameworks measure the metrics.
+
+---
+
+# What We've Learned So Far
+
+## Retrieval Metrics
+
+| Metric            |
+| ----------------- |
+| Precision         |
+| Recall            |
+| Context Precision |
+| Context Recall    |
+
+---
+
+## Generation Metrics
+
+| Metric       |
+| ------------ |
+| Groundedness |
+| Faithfulness |
+| Correctness  |
+| Relevance    |
+
+---
+
+## Operational Metrics
+
+| Metric       |
+| ------------ |
+| Latency      |
+| Throughput   |
+| Availability |
+| Token Usage  |
+| Cost         |
+
+---
+
+## Business Metrics
+
+| Metric            |
+| ----------------- |
+| User Satisfaction |
+| Adoption          |
+| Task Success Rate |
+| Resolution Rate   |
+
+---
+
+# Where RAGAS Fits
+
+RAGAS primarily focuses on:
+
+| Metric            | RAGAS Support |
+| ----------------- | ------------- |
+| Context Precision | ✅             |
+| Context Recall    | ✅             |
+| Faithfulness      | ✅             |
+| Answer Relevance  | ✅             |
+
+These are the original "core" RAGAS metrics.
+
+---
+
+# What RAGAS Does Not Cover Well
+
+| Area              | RAGAS? |
+| ----------------- | ------ |
+| Cost              | ❌      |
+| Latency           | ❌      |
+| Security          | ❌      |
+| Governance        | ❌      |
+| User Satisfaction | ❌      |
+| Adoption          | ❌      |
+| Business Value    | ❌      |
+
+---
+
+# The Complete Evaluation Hierarchy
+
+Think of it like this:
+
+```text id="q8q91u"
+Evaluation
+│
+├── Retrieval Quality
+│   ├── Precision
+│   ├── Recall
+│   ├── Context Precision
+│   └── Context Recall
+│
+├── Generation Quality
+│   ├── Groundedness
+│   ├── Faithfulness
+│   ├── Correctness
+│   └── Relevance
+│
+├── Operational Quality
+│   ├── Latency
+│   ├── Cost
+│   ├── Availability
+│   └── Token Usage
+│
+└── Business Quality
+    ├── User Satisfaction
+    ├── Adoption
+    ├── Task Success
+    └── ROI
+```
+
+RAGAS covers only part of the first two branches.
+
+---
+
+# Architect Interview Answer
+
+If someone asks:
+
+> "Is RAGAS the complete evaluation strategy?"
+
+The answer is:
+
+> No. RAGAS evaluates retrieval and generation quality, but a production AI system also requires operational, security, governance, and business outcome metrics.
+
+That's the architect-level answer.
+
+In fact, if I were building your handbook, I'd summarize the entire Evaluation chapter as:
+
+| Layer                  | Purpose                      | Example Metrics                                      |
+| ---------------------- | ---------------------------- | ---------------------------------------------------- |
+| Retrieval Evaluation   | Was the right context found? | Precision, Recall, Context Precision, Context Recall |
+| Generation Evaluation  | Was the answer good?         | Groundedness, Faithfulness, Correctness, Relevance   |
+| Operational Evaluation | Is the system healthy?       | Latency, Cost, Availability                          |
+| Business Evaluation    | Is the system valuable?      | Satisfaction, Adoption, ROI                          |
+| Evaluation Frameworks  | How do we measure?           | RAGAS, TruLens, LangSmith, Phoenix                   |
+
+And that's really the complete picture of AI evaluation for a Solution Architect.
+
+
+
+# Evaluation & Observability Handbook
+
+## Purpose of This Chapter
+
+Building a RAG system is only half the problem.
+
+The real challenge is determining:
+
+* Is retrieval working?
+* Is the answer correct?
+* Is the answer grounded?
+* Is the system reliable?
+* Is the system delivering business value?
+
+This chapter focuses on:
+
+* Retrieval evaluation
+* Generation evaluation
+* RAG evaluation frameworks
+* Production observability
+
+Detailed discussions on:
+
+* AI Security
+* AI Governance
+* Cost Management
+
+are covered in dedicated chapters.
+
+---
+
+# Why Evaluation Matters
+
+Traditional software can usually be tested using deterministic assertions.
+
+```text
+Input
+  ↓
+Expected Output
+  ↓
+Pass / Fail
+```
+
+AI systems are probabilistic.
+
+```text
+Question
+   ↓
+Retrieval
+   ↓
+LLM
+   ↓
+Answer
+```
+
+Multiple answers may be acceptable.
+
+Evaluation therefore becomes a measurement problem rather than a pass/fail problem.
+
+---
+
+# Evaluation Hierarchy
+
+```text
+Evaluation
+│
+├── Retrieval Evaluation
+│
+├── Generation Evaluation
+│
+├── Operational Evaluation
+│
+└── Business Evaluation
+```
+
+---
+
+# Retrieval Evaluation
+
+Purpose:
+
+Determine whether the retrieval system found the right information.
+
+---
+
+## Precision
+
+### Question
+
+How many retrieved items were actually useful?
+
+### Formula
+
+```text
+Relevant Retrieved
+------------------
+Total Retrieved
+```
+
+### Mental Model
+
+```text
+Avoid Junk
+```
+
+### High Precision
+
+Most retrieved content is relevant.
+
+### Low Precision
+
+Many irrelevant results are retrieved.
+
+---
+
+## Recall
+
+### Question
+
+How many useful items were found?
+
+### Formula
+
+```text
+Relevant Retrieved
+------------------
+Total Relevant
+```
+
+### Mental Model
+
+```text
+Avoid Missing Information
+```
+
+### High Recall
+
+Most relevant information is retrieved.
+
+### Low Recall
+
+Important information is missed.
+
+---
+
+## Context Precision
+
+### Question
+
+How much retrieved context was useful for answering the question?
+
+### Mental Model
+
+```text
+How much irrelevant context was retrieved?
+```
+
+### Example
+
+Retrieved:
+
+* CPS 230
+* CPS 234
+* Holiday Policy
+* Cafeteria Menu
+
+Only CPS 230 is useful.
+
+Context Precision is poor.
+
+---
+
+## Context Recall
+
+### Question
+
+Did retrieval capture all context needed to answer the question?
+
+### Mental Model
+
+```text
+Did we retrieve enough information?
+```
+
+### Example
+
+Required:
+
+* Requirement A
+* Requirement B
+* Requirement C
+* Requirement D
+
+Retrieved:
+
+* Requirement A
+* Requirement B
+
+Context Recall is poor.
+
+---
+
+# Retrieval Pattern Impact
+
+| Pattern              | Improves           |
+| -------------------- | ------------------ |
+| Hybrid RAG           | Precision + Recall |
+| Query Transformation | Recall             |
+| Re-ranking           | Precision          |
+| Parent-Child         | Context Recall     |
+| Router RAG           | Precision          |
+| Graph RAG            | Context Recall     |
+| Multi-Hop            | Recall             |
+| Corrective RAG       | Precision + Recall |
+
+---
+
+# Generation Evaluation
+
+Purpose:
+
+Determine whether the generated answer is good.
+
+---
+
+## Groundedness
+
+### Question
+
+Is the answer supported by retrieved evidence?
+
+### Mental Model
+
+```text
+Supported by evidence?
+```
+
+### Example
+
+Context:
+
+```text
+Employees receive 20 days annual leave.
+```
+
+Answer:
+
+```text
+Employees receive 20 days annual leave.
+```
+
+Grounded = Yes
+
+---
+
+## Faithfulness
+
+### Question
+
+Did the model faithfully use the retrieved evidence?
+
+### Mental Model
+
+```text
+No hallucinations?
+```
+
+### Example
+
+Context:
+
+```text
+20 days leave
+```
+
+Answer:
+
+```text
+20 days leave plus wellness leave
+```
+
+Faithfulness = No
+
+---
+
+## Correctness
+
+### Question
+
+Is the answer objectively true?
+
+### Mental Model
+
+```text
+Real-world truth
+```
+
+### Important Insight
+
+A response may be:
+
+* Grounded
+* Faithful
+
+and still be incorrect if the source information is outdated.
+
+---
+
+## Relevance
+
+### Question
+
+Did the answer address the user's question?
+
+### Mental Model
+
+```text
+Did we answer the question?
+```
+
+### Example
+
+Question:
+
+```text
+How many leave days?
+```
+
+Answer:
+
+```text
+Refer to HR Policy Section 5.2
+```
+
+Relevant = Poor
+
+---
+
+# Comparison Table
+
+| Metric       | Measures                | Key Question                     |
+| ------------ | ----------------------- | -------------------------------- |
+| Groundedness | Evidence support        | Is answer supported by context?  |
+| Faithfulness | Hallucination avoidance | Did model stay within evidence?  |
+| Correctness  | Truth                   | Is answer objectively true?      |
+| Relevance    | User value              | Did answer address the question? |
+
+---
+
+# Important Distinction
+
+A response can be:
+
+* Grounded
+* Faithful
+
+and still be:
+
+* Incorrect
+
+if the retrieved information itself is wrong or outdated.
+
+---
+
+# RAGAS
+
+## What Is RAGAS?
+
+RAGAS stands for:
+
+```text
+Retrieval-Augmented Generation Assessment
+```
+
+RAGAS is an evaluation framework.
+
+It is not a RAG framework.
+
+---
+
+## Purpose
+
+Determine whether retrieval and generation are working properly.
+
+---
+
+## Core Metrics
+
+### Context Precision
+
+Was retrieved context useful?
+
+### Context Recall
+
+Was enough context retrieved?
+
+### Faithfulness
+
+Did the model hallucinate?
+
+### Answer Relevance
+
+Did the answer address the question?
+
+---
+
+## Evaluation Relationships
+
+```text
+Question
+   ↓
+Retrieved Context
+   ↓
+Answer
+```
+
+RAGAS evaluates:
+
+```text
+Question ↔ Context
+Question ↔ Answer
+Context ↔ Answer
+```
+
+---
+
+## Architect View
+
+| Relationship       | Metric            |
+| ------------------ | ----------------- |
+| Question ↔ Context | Context Recall    |
+| Context Quality    | Context Precision |
+| Context ↔ Answer   | Faithfulness      |
+| Question ↔ Answer  | Answer Relevance  |
+
+---
+
+## What RAGAS Does Not Measure
+
+| Area              | Covered? |
+| ----------------- | -------- |
+| Latency           | No       |
+| Cost              | No       |
+| Security          | No       |
+| Governance        | No       |
+| User Satisfaction | No       |
+| Business Value    | No       |
+
+---
+
+# Operational Evaluation
+
+Purpose:
+
+Determine whether the AI system is healthy.
+
+---
+
+## Typical Metrics
+
+| Metric       | Purpose              |
+| ------------ | -------------------- |
+| Latency      | Response speed       |
+| Throughput   | Requests handled     |
+| Availability | Reliability          |
+| Token Usage  | Consumption          |
+| Cost         | Financial efficiency |
+
+---
+
+# Business Evaluation
+
+Purpose:
+
+Determine whether the AI system delivers value.
+
+---
+
+## Typical Metrics
+
+| Metric            | Purpose                |
+| ----------------- | ---------------------- |
+| User Satisfaction | User perception        |
+| Adoption          | Usage                  |
+| Task Success Rate | Outcome quality        |
+| Resolution Rate   | Business effectiveness |
+| ROI               | Financial value        |
+
+---
+
+# Evaluation Framework Landscape
+
+Evaluation frameworks implement metrics.
+
+Metrics and frameworks are not the same thing.
+
+---
+
+## Metrics
+
+### Retrieval
+
+* Precision
+* Recall
+* Context Precision
+* Context Recall
+
+### Generation
+
+* Groundedness
+* Faithfulness
+* Correctness
+* Relevance
+
+### Operations
+
+* Latency
+* Cost
+* Availability
+* Token Usage
+
+### Business
+
+* Satisfaction
+* Adoption
+* Task Success
+* ROI
+
+---
+
+## Frameworks
+
+Examples:
+
+* RAGAS
+* LangSmith
+* TruLens
+* Phoenix
+
+These frameworks help measure and operationalize evaluation.
+
+---
+
+# Architecture Summary
+
+```text
+Evaluation
+│
+├── Retrieval Quality
+│   ├── Precision
+│   ├── Recall
+│   ├── Context Precision
+│   └── Context Recall
+│
+├── Generation Quality
+│   ├── Groundedness
+│   ├── Faithfulness
+│   ├── Correctness
+│   └── Relevance
+│
+├── Operational Quality
+│   ├── Latency
+│   ├── Cost
+│   ├── Availability
+│   └── Token Usage
+│
+└── Business Quality
+    ├── Satisfaction
+    ├── Adoption
+    ├── Task Success
+    └── ROI
+```
+
+---
+
+# Final Interview Summary
+
+Precision
+
+How many retrieved results were useful?
+
+Recall
+
+How many useful results were found?
+
+Context Precision
+
+How much retrieved context was relevant?
+
+Context Recall
+
+How much required context was retrieved?
+
+Groundedness
+
+Is the answer supported by evidence?
+
+Faithfulness
+
+Did the model avoid hallucinating?
+
+Correctness
+
+Is the answer objectively true?
+
+Relevance
+
+Did the answer answer the question?
+
+RAGAS
+
+Framework that evaluates retrieval and generation quality.
+
+Key Insight
+
+Most enterprise AI failures originate from:
+
+* Poor retrieval
+* Poor context
+* Poor evaluation
+
+rather than from the LLM itself.
+
+
+
+Absolutely. I'd put this as the next chapter in your **AI Solution Architect Handbook** immediately after the Advanced RAG Patterns chapter.
+
+# Evaluation & Observability Handbook
+
+## Purpose of This Chapter
+
+Building a RAG system is only half the problem.
+
+The real challenge is determining:
+
+* Is retrieval working?
+* Is the answer correct?
+* Is the answer grounded?
+* Is the system reliable?
+* Is the system delivering business value?
+
+This chapter focuses on:
+
+* Retrieval evaluation
+* Generation evaluation
+* RAG evaluation frameworks
+* Production observability
+
+Detailed discussions on:
+
+* AI Security
+* AI Governance
+* Cost Management
+
+are covered in dedicated chapters.
+
+---
+
+# Why Evaluation Matters
+
+Traditional software can usually be tested using deterministic assertions.
+
+```text
+Input
+  ↓
+Expected Output
+  ↓
+Pass / Fail
+```
+
+AI systems are probabilistic.
+
+```text
+Question
+   ↓
+Retrieval
+   ↓
+LLM
+   ↓
+Answer
+```
+
+Multiple answers may be acceptable.
+
+Evaluation therefore becomes a measurement problem rather than a pass/fail problem.
+
+---
+
+# Evaluation Hierarchy
+
+```text
+Evaluation
+│
+├── Retrieval Evaluation
+│
+├── Generation Evaluation
+│
+├── Operational Evaluation
+│
+└── Business Evaluation
+```
+
+---
+
+# Retrieval Evaluation
+
+Purpose:
+
+Determine whether the retrieval system found the right information.
+
+---
+
+## Precision
+
+### Question
+
+How many retrieved items were actually useful?
+
+### Formula
+
+```text
+Relevant Retrieved
+------------------
+Total Retrieved
+```
+
+### Mental Model
+
+```text
+Avoid Junk
+```
+
+### High Precision
+
+Most retrieved content is relevant.
+
+### Low Precision
+
+Many irrelevant results are retrieved.
+
+---
+
+## Recall
+
+### Question
+
+How many useful items were found?
+
+### Formula
+
+```text
+Relevant Retrieved
+------------------
+Total Relevant
+```
+
+### Mental Model
+
+```text
+Avoid Missing Information
+```
+
+### High Recall
+
+Most relevant information is retrieved.
+
+### Low Recall
+
+Important information is missed.
+
+---
+
+## Context Precision
+
+### Question
+
+How much retrieved context was useful for answering the question?
+
+### Mental Model
+
+```text
+How much irrelevant context was retrieved?
+```
+
+### Example
+
+Retrieved:
+
+* CPS 230
+* CPS 234
+* Holiday Policy
+* Cafeteria Menu
+
+Only CPS 230 is useful.
+
+Context Precision is poor.
+
+---
+
+## Context Recall
+
+### Question
+
+Did retrieval capture all context needed to answer the question?
+
+### Mental Model
+
+```text
+Did we retrieve enough information?
+```
+
+### Example
+
+Required:
+
+* Requirement A
+* Requirement B
+* Requirement C
+* Requirement D
+
+Retrieved:
+
+* Requirement A
+* Requirement B
+
+Context Recall is poor.
+
+---
+
+# Retrieval Pattern Impact
+
+| Pattern              | Improves           |
+| -------------------- | ------------------ |
+| Hybrid RAG           | Precision + Recall |
+| Query Transformation | Recall             |
+| Re-ranking           | Precision          |
+| Parent-Child         | Context Recall     |
+| Router RAG           | Precision          |
+| Graph RAG            | Context Recall     |
+| Multi-Hop            | Recall             |
+| Corrective RAG       | Precision + Recall |
+
+---
+
+# Generation Evaluation
+
+Purpose:
+
+Determine whether the generated answer is good.
+
+---
+
+## Groundedness
+
+### Question
+
+Is the answer supported by retrieved evidence?
+
+### Mental Model
+
+```text
+Supported by evidence?
+```
+
+### Example
+
+Context:
+
+```text
+Employees receive 20 days annual leave.
+```
+
+Answer:
+
+```text
+Employees receive 20 days annual leave.
+```
+
+Grounded = Yes
+
+---
+
+## Faithfulness
+
+### Question
+
+Did the model faithfully use the retrieved evidence?
+
+### Mental Model
+
+```text
+No hallucinations?
+```
+
+### Example
+
+Context:
+
+```text
+20 days leave
+```
+
+Answer:
+
+```text
+20 days leave plus wellness leave
+```
+
+Faithfulness = No
+
+---
+
+## Correctness
+
+### Question
+
+Is the answer objectively true?
+
+### Mental Model
+
+```text
+Real-world truth
+```
+
+### Important Insight
+
+A response may be:
+
+* Grounded
+* Faithful
+
+and still be incorrect if the source information is outdated.
+
+---
+
+## Relevance
+
+### Question
+
+Did the answer address the user's question?
+
+### Mental Model
+
+```text
+Did we answer the question?
+```
+
+### Example
+
+Question:
+
+```text
+How many leave days?
+```
+
+Answer:
+
+```text
+Refer to HR Policy Section 5.2
+```
+
+Relevant = Poor
+
+---
+
+# Comparison Table
+
+| Metric       | Measures                | Key Question                     |
+| ------------ | ----------------------- | -------------------------------- |
+| Groundedness | Evidence support        | Is answer supported by context?  |
+| Faithfulness | Hallucination avoidance | Did model stay within evidence?  |
+| Correctness  | Truth                   | Is answer objectively true?      |
+| Relevance    | User value              | Did answer address the question? |
+
+---
+
+# Important Distinction
+
+A response can be:
+
+* Grounded
+* Faithful
+
+and still be:
+
+* Incorrect
+
+if the retrieved information itself is wrong or outdated.
+
+---
+
+# RAGAS
+
+## What Is RAGAS?
+
+RAGAS stands for:
+
+```text
+Retrieval-Augmented Generation Assessment
+```
+
+RAGAS is an evaluation framework.
+
+It is not a RAG framework.
+
+---
+
+## Purpose
+
+Determine whether retrieval and generation are working properly.
+
+---
+
+## Core Metrics
+
+### Context Precision
+
+Was retrieved context useful?
+
+### Context Recall
+
+Was enough context retrieved?
+
+### Faithfulness
+
+Did the model hallucinate?
+
+### Answer Relevance
+
+Did the answer address the question?
+
+---
+
+## Evaluation Relationships
+
+```text
+Question
+   ↓
+Retrieved Context
+   ↓
+Answer
+```
+
+RAGAS evaluates:
+
+```text
+Question ↔ Context
+Question ↔ Answer
+Context ↔ Answer
+```
+
+---
+
+## Architect View
+
+| Relationship       | Metric            |
+| ------------------ | ----------------- |
+| Question ↔ Context | Context Recall    |
+| Context Quality    | Context Precision |
+| Context ↔ Answer   | Faithfulness      |
+| Question ↔ Answer  | Answer Relevance  |
+
+---
+
+## What RAGAS Does Not Measure
+
+| Area              | Covered? |
+| ----------------- | -------- |
+| Latency           | No       |
+| Cost              | No       |
+| Security          | No       |
+| Governance        | No       |
+| User Satisfaction | No       |
+| Business Value    | No       |
+
+---
+
+# Operational Evaluation
+
+Purpose:
+
+Determine whether the AI system is healthy.
+
+---
+
+## Typical Metrics
+
+| Metric       | Purpose              |
+| ------------ | -------------------- |
+| Latency      | Response speed       |
+| Throughput   | Requests handled     |
+| Availability | Reliability          |
+| Token Usage  | Consumption          |
+| Cost         | Financial efficiency |
+
+---
+
+# Business Evaluation
+
+Purpose:
+
+Determine whether the AI system delivers value.
+
+---
+
+## Typical Metrics
+
+| Metric            | Purpose                |
+| ----------------- | ---------------------- |
+| User Satisfaction | User perception        |
+| Adoption          | Usage                  |
+| Task Success Rate | Outcome quality        |
+| Resolution Rate   | Business effectiveness |
+| ROI               | Financial value        |
+
+---
+
+# Evaluation Framework Landscape
+
+Evaluation frameworks implement metrics.
+
+Metrics and frameworks are not the same thing.
+
+---
+
+## Metrics
+
+### Retrieval
+
+* Precision
+* Recall
+* Context Precision
+* Context Recall
+
+### Generation
+
+* Groundedness
+* Faithfulness
+* Correctness
+* Relevance
+
+### Operations
+
+* Latency
+* Cost
+* Availability
+* Token Usage
+
+### Business
+
+* Satisfaction
+* Adoption
+* Task Success
+* ROI
+
+---
+
+## Frameworks
+
+Examples:
+
+* RAGAS
+* LangSmith
+* TruLens
+* Phoenix
+
+These frameworks help measure and operationalize evaluation.
+
+---
+
+# Architecture Summary
+
+```text
+Evaluation
+│
+├── Retrieval Quality
+│   ├── Precision
+│   ├── Recall
+│   ├── Context Precision
+│   └── Context Recall
+│
+├── Generation Quality
+│   ├── Groundedness
+│   ├── Faithfulness
+│   ├── Correctness
+│   └── Relevance
+│
+├── Operational Quality
+│   ├── Latency
+│   ├── Cost
+│   ├── Availability
+│   └── Token Usage
+│
+└── Business Quality
+    ├── Satisfaction
+    ├── Adoption
+    ├── Task Success
+    └── ROI
+```
+
+---
+
+# Final Interview Summary
+
+Precision
+
+How many retrieved results were useful?
+
+Recall
+
+How many useful results were found?
+
+Context Precision
+
+How much retrieved context was relevant?
+
+Context Recall
+
+How much required context was retrieved?
+
+Groundedness
+
+Is the answer supported by evidence?
+
+Faithfulness
+
+Did the model avoid hallucinating?
+
+Correctness
+
+Is the answer objectively true?
+
+Relevance
+
+Did the answer answer the question?
+
+RAGAS
+
+Framework that evaluates retrieval and generation quality.
+
+Key Insight
+
+Most enterprise AI failures originate from:
+
+* Poor retrieval
+* Poor context
+* Poor evaluation
+
+rather than from the LLM itself.
+
+This chapter now completes your **Evaluation** section and positions you to move next into **Observability (tracing, telemetry, LangSmith, Phoenix, spans, and production debugging)**, which naturally follows evaluation.
+
+
+
+# Retrieval Enhancement & Enterprise Retrieval Orchestration Handbook
+
+## Purpose of This Chapter
+
+Standard RAG retrieves information.
+
+Enterprise RAG retrieves information intelligently.
+
+This chapter focuses on:
+
+* Retrieval quality improvement
+* Retrieval source selection
+* Retrieval validation
+* Retrieval orchestration
+* Enterprise retrieval pipelines
+
+Detailed discussions on:
+
+* Parent-Child Retrieval
+* Multi-Hop Retrieval
+* Graph RAG
+* Agentic RAG
+
+are covered in the Advanced RAG Patterns chapter.
+
+---
+
+# Retrieval Lifecycle
+
+Enterprise retrieval is typically not a single search.
+
+```text
+User Question
+      ↓
+Query Transformation
+      ↓
+Router
+      ↓
+Retrieval
+      ↓
+Retrieval Validation
+      ↓
+Re-ranking
+      ↓
+Context Assembly
+      ↓
+LLM
+```
+
+Each stage solves a different problem.
+
+---
+
+# Query Transformation
+
+## Purpose
+
+Improve retrieval by improving the query.
+
+---
+
+## Problem
+
+Users ask vague questions.
+
+Example:
+
+```text
+leave policy?
+```
+
+instead of:
+
+```text
+annual leave entitlement policy
+```
+
+---
+
+## Retrieval Flow
+
+```text
+User Query
+     ↓
+Query Transformation
+     ↓
+Optimized Query
+     ↓
+Retrieval
+```
+
+---
+
+## Techniques
+
+### Query Rewriting
+
+```text
+Short → Precise
+```
+
+Example:
+
+```text
+leave policy
+```
+
+↓
+
+```text
+annual leave entitlement policy
+```
+
+---
+
+### Query Expansion
+
+```text
+AI
+```
+
+↓
+
+```text
+Artificial Intelligence
+Generative AI
+Machine Learning
+```
+
+---
+
+### Query Decomposition
+
+Break complex questions into smaller questions.
+
+---
+
+### Multi-Query Generation
+
+Generate multiple retrieval variants.
+
+---
+
+### HyDE
+
+Hypothetical Document Embeddings.
+
+Generate a hypothetical answer first.
+
+Use that answer to perform retrieval.
+
+---
+
+### Step-Back Prompting
+
+Move from specific question to broader concept.
+
+---
+
+## Key Insight
+
+Better questions produce better retrieval.
+
+---
+
+# Router RAG
+
+## Purpose
+
+Select the most appropriate retrieval source.
+
+---
+
+## Problem
+
+Searching all repositories is inefficient.
+
+---
+
+## Retrieval Flow
+
+```text
+Question
+    ↓
+Router
+    ↓
+Choose Source
+    ↓
+Retrieval
+```
+
+---
+
+## Example
+
+```text
+Policy Question
+      ↓
+Policy Index
+
+Architecture Question
+      ↓
+Architecture Index
+
+Dependency Question
+      ↓
+Graph
+
+Operational Question
+      ↓
+SQL
+
+External Question
+      ↓
+API
+```
+
+---
+
+## Key Insight
+
+Choose the correct library before searching for the book.
+
+---
+
+# Hybrid RAG
+
+## Purpose
+
+Improve retrieval quality using multiple retrieval techniques.
+
+---
+
+## Components
+
+### Vector Search
+
+Semantic similarity.
+
+### Keyword Search
+
+BM25 and lexical matching.
+
+### Metadata Filtering
+
+Structured filtering.
+
+### Re-ranking
+
+Improve ordering of retrieved results.
+
+---
+
+## Retrieval Flow
+
+```text
+Question
+    ↓
+Vector Search
+    +
+Keyword Search
+    +
+Metadata Filtering
+    ↓
+Merge Results
+    ↓
+Re-ranking
+```
+
+---
+
+## Key Insight
+
+Most enterprise RAG systems are Hybrid RAG systems.
+
+---
+
+# Re-ranking
+
+## Purpose
+
+Improve retrieval precision.
+
+---
+
+## Problem
+
+Relevant results may not appear in the best order.
+
+---
+
+## Flow
+
+```text
+Retrieve Top N
+      ↓
+Re-ranker
+      ↓
+Best K Results
+```
+
+---
+
+## Mental Model
+
+Retrieval finds candidates.
+
+Re-ranking chooses winners.
+
+---
+
+## Typical Models
+
+Cross-Encoders
+
+Dedicated Re-ranking Models
+
+Judge LLMs
+
+---
+
+# Corrective RAG (CRAG)
+
+## Purpose
+
+Validate retrieval quality before generating an answer.
+
+---
+
+## Problem
+
+Poor retrieval produces poor answers.
+
+---
+
+## Retrieval Flow
+
+```text
+Retrieve
+    ↓
+Evaluate Quality
+    ↓
+Good?
+ ┌───┴───┐
+Yes      No
+ ↓        ↓
+LLM    Correct
+```
+
+---
+
+## Corrective Actions
+
+### Retry Retrieval
+
+### Reformulate Query
+
+### Expand Search
+
+### Use Alternative Retrieval Strategy
+
+### Escalate to Another Knowledge Source
+
+---
+
+## Key Insight
+
+Trust retrieval only after validation.
+
+---
+
+# Self-RAG
+
+## Purpose
+
+Allow the model to decide:
+
+* Whether retrieval is required
+* Whether retrieved evidence is sufficient
+
+---
+
+## Problem
+
+Not all questions require retrieval.
+
+Not all retrieval results are useful.
+
+---
+
+## Retrieval Flow
+
+```text
+Question
+    ↓
+Need Retrieval?
+    ↓
+Retrieve
+    ↓
+Useful?
+    ↓
+Answer
+```
+
+---
+
+## Key Insight
+
+The model evaluates retrieval itself.
+
+---
+
+## Comparison
+
+### Corrective RAG
+
+```text
+Retrieve
+    ↓
+External Evaluator
+    ↓
+Retry
+```
+
+### Self-RAG
+
+```text
+LLM
+ ↓
+Evaluate
+ ↓
+Retrieve
+ ↓
+Evaluate
+ ↓
+Answer
+```
+
+---
+
+# Retrieval Pattern Classification
+
+## Retrieval Quality
+
+* Hybrid RAG
+* Query Transformation
+* Re-ranking
+* Parent-Child Retrieval
+
+---
+
+## Retrieval Selection
+
+* Router RAG
+* Agentic RAG
+
+---
+
+## Retrieval Validation
+
+* Corrective RAG
+* Self-RAG
+
+---
+
+## Relationship Discovery
+
+* Multi-Hop Retrieval
+* Graph RAG
+
+---
+
+# Pattern Composition
+
+Enterprise systems combine patterns.
+
+---
+
+## Enterprise Knowledge Assistant
+
+```text
+Router RAG
+      ↓
+Hybrid Retrieval
+      ↓
+Parent-Child Retrieval
+      ↓
+Re-ranking
+      ↓
+LLM
+```
+
+---
+
+## Enterprise Architecture Assistant
+
+```text
+Agentic RAG
+      ↓
+Graph RAG
+      ↓
+Hybrid Retrieval
+      ↓
+LLM
+```
+
+---
+
+## Compliance Assistant
+
+```text
+Router RAG
+      ↓
+Agentic RAG
+      ↓
+Graph RAG
+      ↓
+Corrective RAG
+      ↓
+LLM
+```
+
+---
+
+# AI Models Across The Retrieval Pipeline
+
+Enterprise AI systems use multiple model types.
+
+---
+
+## Ingestion
+
+| Action              | Model Type      |
+| ------------------- | --------------- |
+| Classification      | Small LLM       |
+| Metadata Extraction | Small LLM       |
+| Entity Extraction   | NER Model       |
+| PII Detection       | Safety Model    |
+| Summarization       | Small LLM       |
+| Embeddings          | Embedding Model |
+
+---
+
+## Query Processing
+
+| Action              | Model Type |
+| ------------------- | ---------- |
+| Intent Detection    | Small LLM  |
+| Query Rewrite       | Small LLM  |
+| Query Expansion     | Small LLM  |
+| Query Decomposition | Small LLM  |
+| Router              | Small LLM  |
+
+---
+
+## Retrieval
+
+| Action               | Model Type      |
+| -------------------- | --------------- |
+| Embedding Generation | Embedding Model |
+| Retrieval            | Search Engine   |
+| Re-ranking           | Re-ranker Model |
+| CRAG Validation      | Judge LLM       |
+
+---
+
+## Context Assembly
+
+| Action                | Model Type |
+| --------------------- | ---------- |
+| Context Compression   | Small LLM  |
+| Context Summarization | Small LLM  |
+
+---
+
+## Generation
+
+| Action         | Model Type |
+| -------------- | ---------- |
+| Planning       | Agent LLM  |
+| Tool Selection | Agent LLM  |
+| Final Answer   | Large LLM  |
+
+---
+
+## Safety & Governance
+
+| Action                  | Model Type   |
+| ----------------------- | ------------ |
+| Moderation              | Safety Model |
+| PII Detection           | Safety Model |
+| Hallucination Detection | Judge LLM    |
+| Policy Validation       | Judge LLM    |
+
+---
+
+# Enterprise Retrieval Pipeline
+
+A mature enterprise retrieval stack often resembles:
+
+```text
+User Question
+      ↓
+Query Transformation
+      ↓
+Router RAG
+      ↓
+Agentic RAG
+      ↓
+Hybrid Retrieval
+      ↓
+Graph / Multi-Hop Retrieval
+      ↓
+Parent-Child Retrieval
+      ↓
+Re-ranking
+      ↓
+Corrective Validation
+      ↓
+Context Assembly
+      ↓
+LLM
+```
+
+---
+
+# Architecture Summary
+
+Query Transformation
+
+Improve the question.
+
+Router RAG
+
+Choose the knowledge source.
+
+Hybrid RAG
+
+Improve retrieval quality.
+
+Re-ranking
+
+Improve retrieval precision.
+
+Corrective RAG
+
+Validate retrieval quality.
+
+Self-RAG
+
+Allow the model to evaluate retrieval.
+
+Agentic RAG
+
+Orchestrate retrieval strategies.
+
+---
+
+# Final Interview Summary
+
+Query Transformation
+
+Ask a better question.
+
+Router RAG
+
+Search the right repository.
+
+Hybrid RAG
+
+Combine retrieval techniques.
+
+Re-ranking
+
+Sort retrieval candidates.
+
+Corrective RAG
+
+Verify retrieval quality.
+
+Self-RAG
+
+Allow the model to decide if retrieval is needed.
+
+Enterprise Retrieval
+
+Multiple retrieval patterns working together to maximize retrieval quality, answer completeness, and explainability.
+
+
+
+**Almost, but not quite.**
+
+I'd say the two chapters cover about **90–95%** of what we discussed in this session.
+
+---
+
+# Covered Well ✅
+
+## Retrieval Enhancement & Orchestration
+
+* Query Transformation
+* Router RAG
+* Hybrid RAG
+* Re-ranking
+* Corrective RAG
+* Self-RAG
+* Pattern composition
+* Enterprise retrieval stack
+* AI models throughout retrieval lifecycle
+
+---
+
+## Evaluation
+
+* Precision
+* Recall
+* Context Precision
+* Context Recall
+* Groundedness
+* Faithfulness
+* Correctness
+* Relevance
+* RAGAS
+* Operational metrics
+* Business metrics
+
+---
+
+# Missing / Should Be Added ⚠️
+
+## 1. AI Model Taxonomy
+
+We spent a fair amount of time discussing:
+
+```text
+Embedding Models
+Classification Models
+Extraction Models
+Re-ranking Models
+Generative Models
+Agent Models
+Safety Models
+Judge Models
+```
+
+The retrieval handbook includes pieces of this, but not the final consolidated model family view.
+
+Add:
+
+| Model Family          | Purpose                           |
+| --------------------- | --------------------------------- |
+| Embedding Models      | Convert text into vectors         |
+| Classification Models | Intent, routing, categorization   |
+| Extraction Models     | Metadata, entities, PII           |
+| Re-ranking Models     | Improve retrieval ordering        |
+| Generative LLMs       | Reasoning and answer generation   |
+| Agent Models          | Planning and orchestration        |
+| Safety Models         | Moderation and policy enforcement |
+| Judge Models          | Evaluation and quality scoring    |
+
+---
+
+## 2. Safety Model Placement
+
+We spent quite a bit of time on:
+
+> Where does the Safety Model sit?
+
+That is not fully captured.
+
+Add:
+
+```text
+Ingestion Safety
+Query Safety
+Retrieval Safety
+Prompt Safety
+Generation Safety
+Output Safety
+```
+
+and the insight:
+
+> Safety is a cross-cutting concern, not a single box.
+
+---
+
+## 3. Retrieval Pattern Classification
+
+You have it, but I'd strengthen it because it was one of the most useful insights.
+
+```text
+Retrieval Quality
+    Hybrid
+    Query Transformation
+    Re-ranking
+    Parent-Child
+
+Retrieval Selection
+    Router
+    Agentic
+
+Retrieval Validation
+    Corrective
+    Self-RAG
+
+Relationship Discovery
+    Multi-Hop
+    Graph
+
+Orchestration
+    Agentic
+```
+
+This became our mental model for remembering patterns.
+
+---
+
+## 4. CRAG vs Self-RAG
+
+Currently mentioned, but deserves a dedicated comparison table.
+
+| Pattern        | Who Evaluates Retrieval? |
+| -------------- | ------------------------ |
+| Standard RAG   | Nobody                   |
+| Corrective RAG | External Evaluator       |
+| Self-RAG       | LLM                      |
+| Agentic RAG    | Agent / Planner          |
+
+This distinction came up repeatedly.
+
+---
+
+## 5. Enterprise AI System Model Pipeline
+
+This was a major architect insight.
+
+We evolved from:
+
+```text
+User
+ ↓
+LLM
+ ↓
+Answer
+```
+
+to:
+
+```text
+User
+ ↓
+Many AI Components
+ ↓
+LLM
+ ↓
+Many AI Components
+ ↓
+Answer
+```
+
+And then:
+
+```text
+Embedding
+Classification
+Routing
+Retrieval
+Re-ranking
+Generation
+Safety
+Evaluation
+```
+
+This deserves a dedicated section because it's a mindset shift from "one model" to "many specialized models".
+
+---
+
+# Not Yet Covered (Future Chapters)
+
+These are not missing; we simply haven't done them yet.
+
+## Observability
+
+* Traces
+* Spans
+* Telemetry
+* Debugging AI systems
+* LangSmith
+* Phoenix
+
+---
+
+## Security
+
+* Prompt Injection
+* Jailbreaks
+* Data Leakage
+* PII Protection
+* Access Control
+
+---
+
+## Governance
+
+* Model Governance
+* Responsible AI
+* Compliance
+* Auditability
+
+---
+
+# My Verdict
+
+If I were merging the handbook today:
+
+| Chapter                                              | Completeness |
+| ---------------------------------------------------- | ------------ |
+| Advanced RAG Patterns                                | 100%         |
+| Retrieval Enhancement & Orchestration                | 90%          |
+| Evaluation & Observability (Evaluation section only) | 95%          |
+
+Before merging, I would make **one final appendix chapter**:
+
+> **AI Model Taxonomy & Enterprise AI Processing Pipeline**
+
+(3–5 pages)
+
+because that captures the biggest architect insight from today's discussion:
+
+> An enterprise AI system is not one LLM. It is a pipeline of specialized AI models, retrieval systems, safety systems, and evaluation systems working together.
+
+
+
+# AI Solution Architect Learning Notes
+
+# Session Consolidation – Retrieval Orchestration, Evaluation & Enterprise AI Systems
+
+---
+
+# Purpose
+
+This chapter consolidates all concepts discussed during this learning session.
+
+Topics include:
+
+* Retrieval enhancement patterns
+* Retrieval orchestration
+* Self-RAG
+* Corrective RAG
+* Enterprise retrieval pipelines
+* AI model taxonomy
+* Safety model placement
+* Evaluation metrics
+* RAGAS
+* Enterprise AI architecture insights
+
+This chapter is intended as a temporary consolidation chapter before merging into dedicated handbook chapters.
+
+---
+
+# Learning Progress Review
+
+## Completed Advanced RAG Patterns
+
+### Parent-Child Retrieval
+
+Search small.
+
+Generate large.
+
+Key idea:
+
+```text
+Search Unit ≠ Generation Unit
+```
+
+---
+
+### Multi-Hop Retrieval
+
+Search → Discover → Search Again
+
+Key idea:
+
+```text
+Relationship Discovery at Runtime
+```
+
+---
+
+### Graph RAG
+
+Store relationships during ingestion.
+
+Traverse relationships during retrieval.
+
+Key idea:
+
+```text
+Relationship Discovery at Ingestion Time
+```
+
+---
+
+### Agentic RAG
+
+Developer defines tools.
+
+LLM defines tool sequence.
+
+Key idea:
+
+```text
+Retrieval Orchestration
+```
+
+---
+
+# Advanced Pattern Evolution
+
+```text
+Standard RAG
+    ↓
+Parent-Child
+    ↓
+Multi-Hop
+    ↓
+Graph RAG
+    ↓
+Agentic RAG
+```
+
+---
+
+# Retrieval Enhancement Patterns
+
+These patterns improve retrieval quality and orchestration.
+
+---
+
+## Hybrid RAG
+
+### Purpose
+
+Improve retrieval quality.
+
+### Components
+
+* Vector Search
+* Keyword Search
+* Metadata Filtering
+* Re-ranking
+
+### Flow
+
+```text
+Question
+    ↓
+Vector Search
+    +
+Keyword Search
+    +
+Metadata Filter
+    ↓
+Merge Results
+    ↓
+Re-rank
+```
+
+### Key Insight
+
+Most enterprise RAG systems are Hybrid RAG systems.
+
+---
+
+## Router RAG
+
+### Purpose
+
+Select the correct retrieval source.
+
+### Flow
+
+```text
+Question
+    ↓
+Router
+    ↓
+Choose Knowledge Source
+```
+
+### Examples
+
+Policy Question
+
+↓
+
+Policy Index
+
+Architecture Question
+
+↓
+
+Architecture Index
+
+Dependency Question
+
+↓
+
+Graph
+
+Operational Question
+
+↓
+
+SQL
+
+External Question
+
+↓
+
+API
+
+### Key Insight
+
+Choose the right library before searching for the book.
+
+---
+
+## Query Transformation
+
+### Purpose
+
+Improve retrieval by improving the query.
+
+### Techniques
+
+#### Query Rewriting
+
+```text
+leave policy
+```
+
+↓
+
+```text
+annual leave entitlement policy
+```
+
+---
+
+#### Query Expansion
+
+```text
+AI
+```
+
+↓
+
+```text
+Artificial Intelligence
+Generative AI
+Machine Learning
+```
+
+---
+
+#### Query Decomposition
+
+Break complex questions into smaller questions.
+
+---
+
+#### Multi-Query Generation
+
+Generate multiple retrieval variants.
+
+---
+
+#### HyDE
+
+Hypothetical Document Embeddings.
+
+Generate hypothetical answer.
+
+Retrieve using generated answer.
+
+---
+
+#### Step-Back Prompting
+
+Move from specific question to broader concept.
+
+---
+
+### Key Insight
+
+Better questions produce better retrieval.
+
+---
+
+## Re-ranking
+
+### Purpose
+
+Improve retrieval precision.
+
+### Flow
+
+```text
+Retrieve Top N
+      ↓
+Re-ranker
+      ↓
+Best K
+```
+
+### Key Insight
+
+Retrieval finds candidates.
+
+Re-ranking chooses winners.
+
+---
+
+## Corrective RAG (CRAG)
+
+### Purpose
+
+Validate retrieval quality.
+
+### Flow
+
+```text
+Retrieve
+    ↓
+Evaluate
+    ↓
+Good?
+ ┌───┴───┐
+Yes      No
+ ↓        ↓
+Answer   Correct
+```
+
+### Typical Actions
+
+* Retry retrieval
+* Reformulate query
+* Expand search
+* Change retrieval strategy
+* Escalate to another source
+
+### Key Insight
+
+Trust retrieval only after validation.
+
+---
+
+## Self-RAG
+
+### Purpose
+
+Allow the model to evaluate retrieval itself.
+
+### Questions
+
+```text
+Do I need retrieval?
+```
+
+```text
+Is retrieved information sufficient?
+```
+
+---
+
+### Flow
+
+```text
+Question
+    ↓
+Need Retrieval?
+    ↓
+Retrieve
+    ↓
+Useful?
+    ↓
+Answer
+```
+
+---
+
+### Key Insight
+
+The model evaluates retrieval quality itself.
+
+---
+
+# CRAG vs Self-RAG
+
+| Pattern        | Retrieval Evaluator |
+| -------------- | ------------------- |
+| Standard RAG   | Nobody              |
+| Corrective RAG | External Evaluator  |
+| Self-RAG       | LLM                 |
+| Agentic RAG    | Agent / Planner     |
+
+---
+
+# Retrieval Pattern Classification
+
+## Retrieval Quality
+
+* Hybrid RAG
+* Query Transformation
+* Re-ranking
+* Parent-Child Retrieval
+
+Purpose:
+
+Improve retrieval quality.
+
+---
+
+## Retrieval Selection
+
+* Router RAG
+* Agentic RAG
+
+Purpose:
+
+Select retrieval strategy.
+
+---
+
+## Retrieval Validation
+
+* Corrective RAG
+* Self-RAG
+
+Purpose:
+
+Validate retrieval quality.
+
+---
+
+## Relationship Discovery
+
+* Multi-Hop Retrieval
+* Graph RAG
+
+Purpose:
+
+Discover relationships.
+
+---
+
+## Orchestration
+
+* Agentic RAG
+
+Purpose:
+
+Coordinate retrieval execution.
+
+---
+
+# Pattern Composition
+
+## Enterprise Knowledge Assistant
+
+```text
+Router RAG
+      ↓
+Hybrid Retrieval
+      ↓
+Parent-Child
+      ↓
+Re-ranking
+      ↓
+LLM
+```
+
+---
+
+## Enterprise Architecture Assistant
+
+```text
+Agentic RAG
+      ↓
+Graph RAG
+      ↓
+Hybrid Retrieval
+      ↓
+LLM
+```
+
+---
+
+## Compliance Assistant
+
+```text
+Router RAG
+      ↓
+Agentic RAG
+      ↓
+Graph RAG
+      ↓
+Corrective RAG
+      ↓
+LLM
+```
+
+---
+
+# Enterprise Retrieval Pipeline
+
+```text
+User Question
+      ↓
+Query Transformation
+      ↓
+Router RAG
+      ↓
+Agentic RAG
+      ↓
+Hybrid Retrieval
+      ↓
+Graph / Multi-Hop Retrieval
+      ↓
+Parent-Child Retrieval
+      ↓
+Re-ranking
+      ↓
+Corrective Validation
+      ↓
+Context Assembly
+      ↓
+LLM
+```
+
+---
+
+# Enterprise AI Systems
+
+## Key Architecture Insight
+
+Most people think:
+
+```text
+User
+ ↓
+LLM
+ ↓
+Answer
+```
+
+Enterprise systems look more like:
+
+```text
+User
+ ↓
+Many AI Components
+ ↓
+LLM
+ ↓
+Many AI Components
+ ↓
+Answer
+```
+
+---
+
+# AI Model Taxonomy
+
+## Embedding Models
+
+Purpose:
+
+Convert text into vectors.
+
+Examples:
+
+* OpenAI Embeddings
+* BGE
+* E5
+
+---
+
+## Classification Models
+
+Purpose:
+
+Intent detection, routing, categorization.
+
+---
+
+## Extraction Models
+
+Purpose:
+
+Metadata extraction.
+
+Entity extraction.
+
+PII detection.
+
+---
+
+## Re-ranking Models
+
+Purpose:
+
+Improve retrieval ordering.
+
+---
+
+## Generative Models
+
+Purpose:
+
+Reasoning and answer generation.
+
+---
+
+## Agent Models
+
+Purpose:
+
+Planning and orchestration.
+
+---
+
+## Safety Models
+
+Purpose:
+
+Moderation and policy enforcement.
+
+---
+
+## Judge Models
+
+Purpose:
+
+Evaluation and quality scoring.
+
+---
+
+# AI Models Across The Pipeline
+
+## Ingestion
+
+| Action              | Model Type       |
+| ------------------- | ---------------- |
+| Classification      | Small LLM        |
+| Metadata Extraction | Small LLM        |
+| Entity Extraction   | Extraction Model |
+| PII Detection       | Safety Model     |
+| Summarization       | Small LLM        |
+| Embeddings          | Embedding Model  |
+
+---
+
+## Query Processing
+
+| Action           | Model Type |
+| ---------------- | ---------- |
+| Intent Detection | Small LLM  |
+| Query Rewrite    | Small LLM  |
+| Query Expansion  | Small LLM  |
+| Router           | Small LLM  |
+
+---
+
+## Retrieval
+
+| Action          | Model Type       |
+| --------------- | ---------------- |
+| Query Embedding | Embedding Model  |
+| Re-ranking      | Re-ranking Model |
+| CRAG Validation | Judge LLM        |
+
+---
+
+## Context Assembly
+
+| Action        | Model Type |
+| ------------- | ---------- |
+| Compression   | Small LLM  |
+| Summarization | Small LLM  |
+
+---
+
+## Generation
+
+| Action         | Model Type |
+| -------------- | ---------- |
+| Planning       | Agent LLM  |
+| Tool Selection | Agent LLM  |
+| Final Answer   | Large LLM  |
+
+---
+
+## Governance
+
+| Action                  | Model Type   |
+| ----------------------- | ------------ |
+| Moderation              | Safety Model |
+| Hallucination Detection | Judge LLM    |
+| Compliance Validation   | Judge LLM    |
+
+---
+
+# Safety Model Placement
+
+## Key Insight
+
+Safety is not a single component.
+
+Safety is a cross-cutting concern.
+
+---
+
+## Ingestion Safety
+
+Prevent sensitive information entering the system.
+
+---
+
+## Query Safety
+
+Detect malicious prompts.
+
+Prompt injection attempts.
+
+---
+
+## Retrieval Safety
+
+Prevent retrieval of restricted content.
+
+---
+
+## Prompt Safety
+
+Validate context before prompt construction.
+
+---
+
+## Generation Safety
+
+Apply safety controls during generation.
+
+---
+
+## Output Safety
+
+Validate response before returning to user.
+
+---
+
+# Evaluation Hierarchy
+
+```text
+Evaluation
+│
+├── Retrieval Evaluation
+│
+├── Generation Evaluation
+│
+├── Operational Evaluation
+│
+└── Business Evaluation
+```
+
+---
+
+# Retrieval Evaluation
+
+## Precision
+
+Question:
+
+How many retrieved items were useful?
+
+Mental Model:
+
+```text
+Avoid Junk
+```
+
+---
+
+## Recall
+
+Question:
+
+How many useful items were found?
+
+Mental Model:
+
+```text
+Avoid Missing Information
+```
+
+---
+
+## Context Precision
+
+Question:
+
+How much retrieved context was useful?
+
+---
+
+## Context Recall
+
+Question:
+
+Did retrieval capture enough information?
+
+---
+
+# Generation Evaluation
+
+## Groundedness
+
+Question:
+
+Is the answer supported by evidence?
+
+Mental Model:
+
+```text
+Supported by evidence
+```
+
+---
+
+## Faithfulness
+
+Question:
+
+Did the model avoid hallucinations?
+
+Mental Model:
+
+```text
+No hallucinations
+```
+
+---
+
+## Correctness
+
+Question:
+
+Is the answer objectively true?
+
+Mental Model:
+
+```text
+Real-world truth
+```
+
+---
+
+## Relevance
+
+Question:
+
+Did the answer address the question?
+
+Mental Model:
+
+```text
+Answer the question
+```
+
+---
+
+# Metric Comparison
+
+| Metric       | Key Question                     |
+| ------------ | -------------------------------- |
+| Groundedness | Is answer supported by evidence? |
+| Faithfulness | Did model stay within evidence?  |
+| Correctness  | Is answer objectively true?      |
+| Relevance    | Did answer address the question? |
+
+---
+
+# Important Architect Insight
+
+A response may be:
+
+* Grounded
+* Faithful
+
+and still be:
+
+* Incorrect
+
+if the source information is outdated.
+
+---
+
+# RAGAS
+
+## Definition
+
+Retrieval-Augmented Generation Assessment.
+
+---
+
+## Purpose
+
+Evaluate retrieval and generation quality.
+
+---
+
+## Core Metrics
+
+* Context Precision
+* Context Recall
+* Faithfulness
+* Answer Relevance
+
+---
+
+# RAGAS Relationship Model
+
+```text
+Question
+   ↓
+Context
+   ↓
+Answer
+```
+
+Evaluation occurs between:
+
+```text
+Question ↔ Context
+Question ↔ Answer
+Context ↔ Answer
+```
+
+---
+
+# What RAGAS Does Not Measure
+
+* Cost
+* Latency
+* Security
+* Governance
+* Adoption
+* ROI
+
+---
+
+# Operational Metrics
+
+* Latency
+* Throughput
+* Availability
+* Token Usage
+* Cost
+
+---
+
+# Business Metrics
+
+* User Satisfaction
+* Adoption
+* Task Success
+* Resolution Rate
+* ROI
+
+---
+
+# Final Session Takeaways
+
+## Retrieval Enhancement
+
+Improve retrieval quality.
+
+---
+
+## Retrieval Selection
+
+Choose the correct knowledge source.
+
+---
+
+## Retrieval Validation
+
+Verify retrieval quality.
+
+---
+
+## Retrieval Orchestration
+
+Coordinate retrieval strategies.
+
+---
+
+## Enterprise AI
+
+Multiple AI models collaborate.
+
+Not all problems require a large LLM.
+
+---
+
+## Evaluation
+
+Evaluate retrieval.
+
+Evaluate generation.
+
+Evaluate operations.
+
+Evaluate business value.
+
+---
+
+## Key Architect Insight
+
+Enterprise AI is not:
+
+```text
+User
+ ↓
+LLM
+ ↓
+Answer
+```
+
+Enterprise AI is:
+
+```text
+User
+ ↓
+Specialized AI Models
+ ↓
+Retrieval Systems
+ ↓
+Safety Systems
+ ↓
+LLM
+ ↓
+Evaluation Systems
+ ↓
+Answer
+```
+
+The architecture challenge is not selecting a single model.
+
+The architecture challenge is orchestrating the right combination of models, retrieval systems, safety controls, and evaluation mechanisms to deliver accurate, explainable, secure, and cost-effective outcomes.

@@ -1,0 +1,346 @@
+For consistent, handbook-quality diagrams, I would give me prompts using a structured template rather than a simple "draw X".
+
+## Template
+
+```text
+Create a professional enterprise architecture diagram.
+
+Topic:
+[diagram name]
+
+Audience:
+AI Solution Architect
+
+Style:
+Clean enterprise architecture diagram
+Microsoft / AWS whitepaper style
+Minimalist
+Presentation quality
+White background
+Consistent colors
+Readable labels
+Vector-style graphics
+Suitable for handbook and interview preparation
+
+Show:
+[list components]
+
+Flow:
+[step-by-step flow]
+
+Include:
+[key relationships]
+
+Exclude:
+No decorative artwork
+No cartoon elements
+No excessive colors
+No marketing style graphics
+
+Output:
+Landscape
+High resolution
+Professional technical illustration
+```
+
+---
+
+## Example 1 — End-to-End RAG Architecture
+
+```text
+Create a professional enterprise architecture diagram.
+
+Topic:
+End-to-End RAG Architecture
+
+Audience:
+AI Solution Architect
+
+Style:
+Microsoft architecture reference diagram
+Clean white background
+Professional handbook quality
+
+Show:
+
+Enterprise Sources
+Connectors
+Parsing
+Chunking
+Metadata Enrichment
+Embedding Model
+Vector Database
+
+User
+Question
+Query Embedding
+Security Filtering
+Retrieval
+Re-ranking
+Context Assembly
+Prompt Construction
+LLM
+Response
+
+Flow:
+
+Enterprise Sources
+→ Connectors
+→ Parsing
+→ Chunking
+→ Metadata
+→ Embeddings
+→ Vector Database
+
+User Question
+→ Query Embedding
+→ Security Filter
+→ Retrieval
+→ Re-ranking
+→ Context Assembly
+→ Prompt Construction
+→ LLM
+→ Response
+
+Include:
+Offline ingestion section
+Runtime section
+Clear separation line between ingestion and runtime
+
+Output:
+Landscape
+High resolution
+Technical architecture illustration
+```
+
+---
+
+## Example 2 — Cascade Principle
+
+```text
+Create a professional educational architecture diagram.
+
+Topic:
+RAG Cascade Principle
+
+Style:
+Enterprise handbook illustration
+
+Show:
+
+Source Quality
+Chunking
+Embeddings
+Retrieval
+Re-ranking
+Context Assembly
+Prompt Construction
+LLM
+Answer
+
+Use a vertical flow.
+
+Add a side note:
+
+"Quality lost early cannot be recovered later"
+
+Use subtle warning icons on each stage.
+
+Output:
+Portrait orientation
+Professional infographic
+```
+
+---
+
+## Example 3 — Retrieval vs Re-ranking
+
+```text
+Create a professional AI architecture diagram.
+
+Topic:
+Retrieval vs Re-ranking
+
+Show:
+
+User Question
+
+Retriever
+Top 50 Chunks
+
+Re-ranker
+Top 5 Chunks
+
+LLM
+Answer
+
+Highlight:
+
+Retriever = Recall
+
+Re-ranker = Precision
+
+Add annotations showing:
+"Cast wide net"
+and
+"Select best candidates"
+
+Output:
+Landscape
+Enterprise architecture style
+```
+
+---
+
+## Example 4 — Graph RAG
+
+```text
+Create a professional AI architecture diagram.
+
+Topic:
+Graph RAG
+
+Show:
+
+Documents
+
+Entity Extraction
+
+Knowledge Graph
+
+Entities:
+Customer
+Account
+Transaction
+Policy
+
+Relationships:
+owns
+approved
+related_to
+
+Graph Traversal
+
+LLM
+
+Response
+
+Include comparison note:
+
+Vector Search = Similar Text
+
+Graph Search = Connected Facts
+
+Output:
+High resolution
+Handbook quality
+```
+
+---
+
+## Example 5 — Enterprise AI Platform
+
+```text
+Create a professional enterprise AI platform reference architecture.
+
+Audience:
+Enterprise Architects
+
+Show:
+
+Users
+
+Applications
+
+AI Gateway
+
+Shared RAG Services
+
+Agent Platform
+
+Model Services
+
+Embedding Models
+
+LLMs
+
+Vector Platform
+
+Governance Layer
+
+Observability Layer
+
+Security Layer
+
+Show governance, security and observability as cross-cutting layers.
+
+Output:
+Landscape
+Executive architecture diagram
+Reference architecture style
+```
+
+---
+
+For your handbook, the prompt I'd use most often is:
+
+```text
+Create a professional enterprise architecture diagram for AI Solution Architects.
+
+Use Microsoft/AWS reference architecture style.
+
+White background.
+Clean layout.
+High resolution.
+Presentation quality.
+
+Include:
+[components]
+
+Show:
+[data flow]
+
+Highlight:
+[key architecture concepts]
+
+Suitable for handbook publication and interview preparation.
+```
+
+That wording consistently produces diagrams that look much closer to IBM, Microsoft Learn, AWS, Gartner, or architecture handbook visuals rather than generic AI art.
+
+
+
+
+Based on your learning materials, here are the **high-value diagrams** that would complement your RAG Architecture diagram:
+
+## **Core Architecture & Design**
+
+1. **Pattern Selection Decision Tree** — Visual flowchart showing "Is your question vague?" → Multi-Query / "Do facts need context?" → Parent-Child / "Multi-hop relationships?" → Graph RAG. Shows when Naive/Hybrid/Agentic/Adaptive make sense.
+
+2. **The Cascade Principle** — Visual showing how quality flows through the pipeline: "Source Quality → Chunking → Embedding → Retrieval → Re-ranking → Context Assembly → Prompt → Answer" with annotations that each stage can only preserve or destroy, never recover.
+
+3. **Component Relationships Map** — Diagram showing how critical dependencies work: Chunking ↔ Embedding, Metadata ↔ Security, Retrieval ↔ Re-ranking, Context Assembly ↔ Prompt Construction.
+
+4. **Source of Truth / Index Lifecycle** — Shows "Enterprise Sources ↔ RAG Index" relationship, then the refresh loop: Change Detection → Re-chunk → Re-embed → Re-index with Batch/Incremental/Real-time options.
+
+## **Decision-Making**
+
+5. **RAG vs. Alternatives Comparison** — Visual matrix: Fine-tuning / Long-Context / Agents / Workflows / Knowledge Graphs / Plain Search / RAG on axes like "Knowledge Changeability / Traceability Needs / Reasoning Required / Skill vs. Fact."
+
+6. **Failure Diagnosis Flowchart** — "Why is the answer bad?" decision tree from your Section 6 — walks through Symptom → Most Likely Stage → What to Check. High practical value for debugging.
+
+7. **Security Model Decision Matrix** — RBAC / ABAC / ACL / RLS / Tenant Isolation showing trade-offs: Simplicity / Flexibility / Drift Risk.
+
+8. **Requirements Gathering Checklist (Visual)** — The Week 1 discovery questions laid out visually: Corpus Questions / Query Questions / Access Control / Sizing.
+
+## **Cost & Operations**
+
+9. **Cost Breakdown & Levers** — Shows where costs live (Embedding / Retrieval / Re-ranking / LLM Gen / Storage), which are one-time vs. perpetual, and which dominate at scale. Visual would make the "context size is your biggest lever" insight concrete.
+
+10. **Evaluation & Observability Metrics Dashboard** — What to watch (Latency / Recall / Hallucination Rate / Citation Accuracy / Cost / Security Events) and what a problem looks like for each.
+
+11. **Chunking Strategy Trade-off Matrix** — Fixed-size / Recursive / Semantic / Structure-aware / Parent-Child on axes of Precision / Context Preserved / Complexity.
+
+---
+
+**Quick pick for highest ROI:** Diagrams **#1** (Pattern Selection), **#2** (Cascade), and **#6** (Failure Diagnosis). These three turn your handbook's most repeatable decision-making logic into visual tools an architect or engineer can apply at a glance.
