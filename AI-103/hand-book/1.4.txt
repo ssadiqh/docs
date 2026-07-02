@@ -1,0 +1,773 @@
+Develop generative AI apps that use tools
+3 min remaining
+Module
+8 of 9 units completed
+Beginner
+AI Engineer
+Developer
+Microsoft Foundry
+Tools enable models to perform tasks and interact with external systems, enabling them to extend their capabilities beyond basic chat interactions.
+
+Learning objectives
+After completing this module, you'll be able to:
+
+Describe the capabilities of generative AI tools.
+Use the code_interpreter tool to run code and analyze data.
+Use the web_search tool to retrieve real-time information from the internet.
+Use the file_search tool to access and analyze files.
+Use the function tool to run custom code.
+Prerequisites
+Before starting this module, you should:
+
+Be familiar with Microsoft Foundry and generative AI models.
+Have some programming experience.
+This module is part of these learning paths
+Develop generative AI apps in Azure
+Introduction
+1 min
+What are tools?
+5 min
+Use the code_interpreter tool
+5 min
+Use the web_search tool
+5 min
+Use the file_search tool
+5 min
+Use the function tool
+5 min
+Exercise - Create a generative AI chat app that uses tools
+30 min
+Module assessment
+3 min
+Summary
+1 min
+Module assessment
+Assess your understanding of this module. Sign in and answer all questions correctly to earn a pass designation on your profile.
+
+
+Introduction
+Completed
+100 XP
+1 minute
+Choose your preferred content format
+Generative AI models are powerful at understanding and generating text, but they operate within a knowledge boundary. They can only reason about information in their training data. By integrating tools into your generative AI interactions, you unlock capabilities far beyond what the model alone can do.
+
+ Note
+
+The use of tools in generative AI model prompts shouldn't be confused with Foundry Tools; which are Azure AI APIs that you can use in your applications and agents.
+
+Why tools matter
+Tools bridge the gap between AI reasoning and real-world actions. They enable your generative AI applications to:
+
+Access real-time information: Fetch current data, weather, stock prices, or API responses that weren't in the model's training data
+Take actions: perform tasks like sending emails, creating database records, or triggering workflows based on AI decisions
+Ground responses in facts: Retrieve specific, authoritative information to reduce incorrect information and improve accuracy
+Extend functionality: Connect to your existing systems, databases, and business logic seamlessly
+Build intelligent workflows: Chain multiple operations together so AI coordinates complex, multi-step processes
+Without tools, generative AI works in isolation. With tools, it becomes an intelligent assistant that can observe, reason, and act on the world around it.
+
+In this module, we'll focus on specifying tools in prompts that a client application submits to a model. In this kind of solution, the tool configuration is managed by the client application - essentially creating a custom generative AI powered assistant within the application logic itself. Learning how to use tools on-demand with a generative AI model is a useful first step in learning how to build agentic AI solutions, in which the model, instructions, and tools are encapsulated and persisted in a named agent.
+
+ Tip
+
+You can learn more about how to use the Microsoft Foundry Agents SDK to create agents with persisted configurations in Develop AI agents on Azure.
+
+ Note
+
+We recognize that different people like to learn in different ways. You can choose to complete this module in video-based format or you can read the content as text and images. The text contains greater detail than the videos, so in some cases you might want to refer to it as supplemental material to the video presentation.
+
+Next unit: What are tools?
+
+What are tools?
+Completed
+100 XP
+5 minutes
+Choose your preferred content format
+Microsoft Foundry Models includes models that are capable of using tools to find information or perform tasks. You can use tool support in models by specifying which tools you want the model to use in prompts submitted through the OpenAI Responses API.
+
+Diagram of an application configuring a model to use tools.
+
+When you develop a generative AI application using Microsoft Foundry, you can search Foundry Models for a model with tool calling capabilities and deploy it. Then, you can develop client applications that use the OpenAI Responses API to submit prompts to the deployed model, specifying the tools that the model can use.
+
+ Note
+
+By default, the model chooses when to use a tool (and which one), based on the prompt. You can configure tool selection rules and use the Instructions (system prompt) parameter to guide this choice.
+
+Some of the commonly used tools available in the Responses API, include:
+
+code_interpreter: A Python environment in which the model can generate and run code.
+web_search: A tool that enables the model to find general information on the Internet, which allows it to base responses on more current data than it was trained on.
+file_search: A tool that enables the model to search specific files that you upload to a dedicated vector search index - enabling it to ground responses in specific knowledge.
+function: A tool that enables the model to call custom functions in your application code.
+We'll explore these tools in this module.
+
+ Tip
+
+These represent only some of the available tools; and development of tools for agentic AI solutions is a growing area. To learn more about tools supported in the OpenAI Response API, see the OpenAI developer guide
+
+Specifying tools in the Responses API
+You can specify one or more tools in a call to the responses.create() method when generating a response from a model. The following Python pseudocode example indicates where the list of callable tools is specified:
+
+Python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url={openai_endpoint},
+    api_key={auth_key_or_token}
+)
+
+response = client.responses.create(
+    model={model_deployment},
+    instructions="You are a helpful AI assistant.",
+    input="Find me some information about vintage computers.",
+    # Specify available tools as a JSON list
+    tools=[
+        { 
+            # A tool definition
+            "type": "{tool_type}",
+            "{tool-specific-setting}": "{value}",
+                ...
+        },
+        { 
+            # Another tool definition
+            "type": "{another_tool_type}",
+            "{tool-specific-setting}": "{value}",
+                ...
+        }
+    ]
+)
+print(response.output_text)
+ Tip
+
+To learn more about using the Responses API to submit a prompt to a model in Microsoft Foundry, see the Develop a generative AI chat app with Microsoft Foundry module.
+
+Next unit: Use the code_interpreter tool
+
+Use the code_interpreter tool
+Completed
+100 XP
+5 minutes
+Choose your preferred content format
+The code_interpreter tool provides your model with a Python runtime in which it can generate and run Python code.
+
+What is the code_interpreter tool?
+The code_interpreter tool enables generative AI models to write and run Python code dynamically during a conversation. Rather than just discussing code or algorithms, the model can test its logic, process data, and return actual results from code. This transforms the model from a thinker into a doer.
+
+Key features include:
+
+Dynamic Python Execution: The model writes and runs Python code in a sandboxed environment
+File Handling: Upload, process, and download files (CSV, JSON, images, and so on)
+Data Analysis: Perform calculations, statistical analysis, and data transformations on the fly
+Real-time Feedback: The model sees code execution results and can iterate or fix errors
+Complex Problem Solving: Tackle math problems, simulations, and logic puzzles through executable code
+Common use cases
+Use Case	Example
+Data Analysis	Parse a CSV file and generate summary statistics
+Math & Physics	Solve differential equations or simulate physics scenarios
+File Conversion	Convert between data formats (JSON ↔ CSV, and so on)
+Prototyping	Test algorithms and ideas before formal implementation
+A simple example
+Here's how to use code_interpreter with the OpenAI Responses API:
+
+Python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url={openai_endpoint},
+    api_key={auth_key_or_token}
+)
+
+# Get response using the code_interpreter tool
+response = client.responses.create(
+    model={model_deployment},
+    instructions="You are an AI assistant that provides information. Use the python tool to run code for math problems.",
+    input="What is the square root of 16?",
+    tools=[{"type": "code_interpreter",
+            "container": {"type": "auto"}}]
+)
+print(response.output_text)
+The output from this code is similar to this:
+
+The square root of 16 is 4.
+More importantly, inspecting the details of the response object returned by the model reveals that the result was calculated and returned to the model using dynamically generated Python code like this:
+
+Python
+import math
+
+# Calculate the square root of 16
+square_root = math.sqrt(16)
+square_root
+How the code_interpreter tool works
+The general process for using the code_interpreter tool is:
+
+You send a request: Include code_interpreter in your tools array.
+Model analyzes the task: The model determines if code execution is needed.
+Model generates code: The model writes Python code to accomplish the task.
+Code runs: The code runs in a sandboxed environment with access to common libraries (for example, pandas, numpy, and math).
+Results returned: The model receives the output and incorporates it into its response.
+Best practices
+Be specific: Describe the data format and expected output clearly. Many models internally use the name python tool to identify the code_interpreter tool - so use this language in your instructions.
+Provide context: Include relevant domain knowledge in your prompts
+Validate results: Always review AI-generated code for correctness before using in production
+Monitor costs: Code execution adds tokens; complex operations may use more resources
+Leverage libraries: Common packages like pandas, numpy, and matplotlib are pre-installed
+Error handling: The model can see errors and will attempt to fix them automatically
+Limitations to know about
+Executions run in a sandboxed environment with no external network access
+Some libraries may not be available; let the model know if a standard library fails
+Timeout limits apply to long-running operations
+Code runs with memory constraints—massive datasets may need streaming or chunking
+Next unit: Use the web_search tool
+
+Use the web_search tool
+Completed
+100 XP
+5 minutes
+Choose your preferred content format
+The web_search tool enables your model to retrieve fresh information from the web while generating a response.
+
+What is the web_search tool?
+The web_search tool gives a generative AI model access to current, external information at runtime. Instead of relying only on training data, the model can issue a search query, review relevant sources, and produce an answer grounded in up-to-date content.
+
+This is especially useful when facts may change frequently, such as pricing, product releases, policy updates, or current events.
+
+Key features include:
+
+Live information retrieval - Get recent information not available in static model training data
+Source-grounded responses - Build answers from retrieved web content
+Reduced hallucination risk - Improve reliability by checking external sources
+Automatic query generation - The model decides when and how to search based on user intent
+Seamless user experience - Search and response generation happen in one flow
+Common use cases
+Use Case	Example
+Current Events	Summarize key updates on a breaking technology announcement
+Market Research	Compare recent product features or pricing across vendors
+Policy Monitoring	Check whether regulations or guidance have changed
+Fact Verification	Validate claims against reputable public sources
+A simple example
+Here's a minimal example using the OpenAI Responses API with web search enabled:
+
+Python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url={openai_endpoint},
+    api_key={auth_key_or_token}
+)
+
+# Get response using the web_search tool
+response = client.responses.create(
+    model={model_deployment},
+    instructions="You are an AI assistant. Use web search when current information is required.",
+    input="What are three major announcements from Microsoft Build this week?",
+    tools=[{"type": "web_search"}]
+)
+
+print(response.output_text)
+The output will vary based on current web results, but it should include a concise answer grounded in recent sources.
+
+How the web_search tool works
+The general process for using the web_search tool is:
+
+You send a request - Include a web search tool in the tools array.
+Model evaluates the question - It decides whether fresh web data is needed.
+Search is performed - The model issues one or more search queries.
+Results are reviewed - Relevant pages are selected and summarized.
+Response is generated - The model combines search findings into the final answer.
+Best practices
+Ask time-aware questions clearly - Include words like "latest", "current", or date ranges when needed
+Set expectations for sources - Prompt for reputable or official sources when accuracy matters
+Request concise outputs - Ask for short summaries with key points to reduce noise
+Verify critical facts - For high-stakes scenarios, independently validate important claims
+Track usage and latency - Web retrieval can increase response time and token usage
+Limitations to know about
+Results depend on what is publicly available and indexable at query time
+Source quality can vary, so output may still require human review
+Retrieved content may change over time, so repeated runs can produce different answers
+Some environments may apply regional, policy, or network restrictions to web access
+Used well, web_search helps your model move from static knowledge to timely, source-aware answers that are more useful in real-world workflows.
+
+Next unit: Use the file_search tool
+
+Use the file_search tool
+Completed
+100 XP
+5 minutes
+Choose your preferred content format
+The file_search tool lets your model retrieve relevant information from your own uploaded documents during a response.
+
+What is the file_search tool?
+The file_search tool helps a model answer questions using private or domain-specific files, such as policy documents, manuals, contracts, and internal knowledge bases. Instead of relying only on general training data, the model can search indexed file content and return grounded answers.
+
+This is especially useful when you need accurate responses from trusted internal documents.
+
+Key features include:
+
+Document-grounded answers - Responses are based on your uploaded files
+Semantic retrieval - Finds relevant passages by meaning, not only exact keyword matches
+Vector store integration - Search across one or more indexed document collections
+Citations and transparency - Include matched results for debugging and traceability
+Better enterprise relevance - Use organization-specific knowledge in model outputs
+Common use cases
+Use Case	Example
+Policy Q&A	Answer employee questions from HR policy PDFs
+Support Assistants	Retrieve product steps from internal troubleshooting guides
+Legal Review	Locate specific clauses across contract documents
+Knowledge Discovery	Summarize answers from technical documentation sets
+A simple example
+Here's an example using the OpenAI Responses API with file_search enabled:
+
+Python
+from openai import OpenAI
+
+client = OpenAI(
+    base_url={openai_endpoint},
+    api_key={auth_key_or_token}
+)
+
+# Create vector store and upload a file
+vector_store = client.vector_stores.create(name="policy-docs")
+client.vector_stores.files.upload_and_poll(
+    vector_store_id=vector_store.id,
+    file=open("expenses_policy.pdf", "rb")
+)
+
+# Get response using the file_search tool
+response = client.responses.create(
+    model=model_deployment,
+    instructions="You are an AI assistant that provides information from HR policy documents.",
+    input="What's the maximum amount I can claim for a taxi ride?",
+    tools=[{
+        "type": "file_search",
+        "vector_store_ids": [vector_store.id]
+    }],
+    include=["file_search_call.results"]
+)
+print(response.output_text)
+In this flow, the model searches the indexed policy file and uses the retrieved passages to produce a grounded answer.
+
+How the file_search tool works
+The general process for using the file_search tool is:
+
+You prepare files - Upload documents to a vector store.
+You send a request - Include file_search in the tools array with vector store IDs.
+Model performs retrieval - It searches indexed chunks for relevant content.
+Results are injected - Matching passages are provided to the model.
+Response is generated - The model answers using retrieved document context.
+Best practices
+Use high-quality source files - Clean, current documents improve retrieval accuracy
+Write focused prompts - Ask specific questions to reduce ambiguous matches
+Scope vector stores carefully - Separate domains (HR, legal, finance) when helpful
+Include retrieval results in development - Use response includes for troubleshooting
+Review answers for critical workflows - Keep human validation in high-stakes scenarios
+Limitations to know about
+Answer quality depends on document quality, coverage, and chunk relevance
+Very large or mixed-domain stores can return less focused context
+Updated source files may require re-indexing before new content is searchable
+Retrieval improves grounding but doesn't replace human review for sensitive decisions
+Used well, file_search turns a general-purpose model into a domain-aware assistant that can answer from the documents your team actually uses.
+
+ Note
+
+The file_search tool is a great way to ground a model in a specific set of documents or data files. However, for enterprise-scale agents that need to access large quantities of data in multiple data stores, you should consider using the Foundry IQ knowledge store solution with a Microsoft Foundry agent. To learn more, see Build knowledge-enhanced AI agents with Foundry IQ
+
+Next unit: Use the function tool
+
+Use the function tool
+Completed
+100 XP
+5 minutes
+Choose your preferred content format
+The function tool allows your model to call developer-defined functions to retrieve data or trigger actions during a response.
+
+What is the function tool?
+The function tool (function calling) lets a model decide when to call named tools you expose in your application. The model doesn't run your business logic directly. Instead, it returns a structured function call, your code runs the function, and then you pass the function output back to the model.
+
+This pattern is ideal for connecting model reasoning to real-world systems like APIs, databases, business workflows, and utility functions.
+
+Key features include:
+
+Structured tool calls - The model emits explicit function-call requests
+Developer-controlled execution - Your application decides how and where functions run
+Reliable integration pattern - Call APIs, internal services, or helper utilities safely
+Multi-turn orchestration - Return tool output and let the model continue reasoning
+Grounded responses - Answers can include live, system-generated data
+Common use cases
+Use Case	Example
+System Integration	Call an internal API for account or order details
+Task Automation	Trigger workflows like ticket creation or notifications
+Data Lookup	Query business rules or reference tables before answering
+A simple example
+Here's an example that exposes a get_time function and lets the model call it when needed:
+
+Python
+import time
+from openai import OpenAI
+
+# Function to get the current time
+def get_time():
+    return f"The time is {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())}"
+
+
+# Main function
+def main():
+    client = OpenAI(
+        base_url={openai_endpoint},
+        api_key={auth_key_or_token}
+    )
+
+    function_tools = [
+        {
+            "type": "function",
+            "name": "get_time",
+            "description": "Get the current time"
+        }
+    ]
+
+    # Initialize messages with a system prompt
+    messages = [
+        {"role": "developer", "content": "You are an AI assistant that provides information."},
+    ]
+
+    # Loop until the user types 'quit'
+    while True:
+        prompt = input("\nEnter a prompt (or type 'quit' to exit)\n")
+        if prompt.lower() == "quit":
+            break
+
+        # Append the user prompt to the messages
+        messages.append({"role": "user", "content": prompt})
+
+        # Get initial response
+        response = client.responses.create(
+            model=model_deployment,
+            input=messages,
+            tools=function_tools
+        )
+
+        # Append model output to the messages
+        messages += response.output
+
+        # Was there a function call?
+        for item in response.output:
+            if item.type == "function_call" and item.name == "get_time":
+                current_time = get_time()
+                messages.append({
+                    "type": "function_call_output",
+                    "call_id": item.call_id,
+                    "output": current_time
+                })
+
+                # Get a follow up response using the tool output
+                response = client.responses.create(
+                    model=model_deployment,
+                    instructions="Answer only with the tool output.",
+                    input=messages,
+                    tools=function_tools
+                )
+
+        print(response.output_text)
+
+
+# Run the main function when the script starts
+if __name__ == '__main__':
+    main()
+In this flow, the model decides when to call get_time, your code runs the function, and the model then returns a grounded final answer. Since the user can enter any prompt, the model must determine when it needs to call the function. If it does, the response to the prompt will include a function call, that the application code must implement before submitting a new prompt with the output from the function for the model to process.
+
+The output might look something like this:
+
+Enter a prompt (or type 'quit' to exit)
+Hello
+
+Hello! How can I help you today?
+
+Enter a prompt (or type 'quit' to exit)
+What time is it?
+
+The time is 2026-03-19 17:17:41.
+
+Enter a prompt (or type 'quit' to exit)
+The first user prompt ("Hello") didn't require the use of the function tool, so the model responded normally. The second prompt ("What time is it?") triggered the model to select the get_time function, which it indicated in its response. The application code then ran the function and returned the results to the model, which then sent a second response with the results from the function.
+
+ Tip
+
+This example uses a single function with no parameters. You can configure the tool to use multiple functions, with or without parameters. For more information about specifying function details, see the OpenAI developers guide.
+
+How the function tool works
+The general process for using the function tool is:
+
+You define tools - Provide one or more function definitions in the tools array.
+Model evaluates the prompt - It determines whether a function call is needed.
+Model emits a function call - The response includes the function name and call metadata.
+Your app runs logic - Run the matching function in your code.
+You return function output - Send a function_call_output item with the result.
+Model completes the answer - It incorporates tool results into the final response.
+Best practices
+Keep tools focused - Small, single-purpose functions are easier to control and test
+Validate function inputs - Never trust tool arguments blindly in production systems
+Handle errors safely - Return clear error outputs the model can reason about
+Log tool usage - Track calls, latency, and failure rates for debugging and governance
+Limit sensitive operations - Require explicit authorization for high-impact actions
+Limitations to know about
+The model requests function calls, but your application must run them
+Incorrect or unexpected tool arguments can occur and should be validated
+Tool latency can increase end-to-end response time
+Function calling improves reliability, but final outputs still need review for critical decisions
+Used well, the function tool turns a model from a text generator into an orchestrator that can interact with real systems in a controlled, auditable way.
+
+Next unit: Exercise - Create a generative AI chat app that uses tools
+
+
+Create a generative AI app that uses tools
+In this exercise, you’ll use the Microsoft Foundry portal and the Responses API to build an AI chat application. Then you’ll integrate knowledge into your application by using the web_search and file_search tools.
+
+This exercise takes approximately 30 minutes.
+
+Note: Some of the technologies used in this exercise are in preview or in active development. You may experience some unexpected behavior, warnings, or errors.
+
+Prerequisites
+Before starting this exercise, ensure you have:
+
+An active Azure subscription
+Visual Studio Code installed
+Python version 3.13.xx installed*
+Git installed and configured
+Azure CLI installed
+* Python 3.14 is available, but some dependencies are not yet compiled for that release. The lab has been successfully tested with Python 3.13.12.
+
+Create a Microsoft Foundry project
+Microsoft Foundry uses projects to organize models, resources, data, and other assets used to develop an AI solution.
+
+In a web browser, open the Microsoft Foundry portal at https://ai.azure.com to start building; signing in using your Azure credentials. Close any tips or quick start panes that are opened the first time you sign in.
+
+If it is not already enabled, in the tool bar the top of the page, enable the New Foundry option. Then, if prompted, create a new project with a unique name; expanding the Advanced options area to specify the following settings for your project:
+Foundry resource: Use the default name for your resource (usually {project_name}-resource)
+Subscription: Your Azure subscription
+Resource group: Create or select a resource group
+Region: Select any of the AI Foundry recommended regions in this list
+Wait for your project to be created. Then view its home page.
+Deploy a model
+Next, let’s deploy a model that you’ll use in your chat application.
+
+Now you’re ready to explore models. On the Discover page, select the Models tab to view the Microsoft Foundry model catalog.
+In the model catalog, search for gpt-4.1.
+Review the model card, and then deploy it using the default settings.
+When the model has been deployed, it will open in the model playground.
+Experiment with tools in the playground
+Before developing a chat application, let’s explore how the model responds in the playground. This will help you understand why grounding data matters.
+
+After deploying your model, you should be in the playground with that model selected. If not, select Build in the top menu bar, then select Deployments on the left, and then select the model you deployed.
+In the model playground, in the pane on the left, ensure that your gpt-4.1 model is selected.
+
+In the Instructions field, enter the following prompt:
+
+code
+You are a travel assistant that provides information on travel services available from Margie's Travel.
+In the chat pane, enter the query What are some recommended tourist activities in New York next month? and review the response.
+
+The response should be fairly generic — the model provides general knowledge based on its training data, but doesn’t have access to current information about what’s happening in New York next month.
+
+In the pane on the left, under the instructions, in the Tools section, select Add and add the web_search tool.
+
+In the chat pane, enter the same query What are some recommended tourist activities in New York next month? and review the response.
+
+This time, the model uses the web_search tool to find current information about activities in New York.
+
+Create an app that uses tools
+Now that you’ve seen how tools can extend a model’s capabilities in the playground, let’s build a client application that uses tools to provide travel advice for Margie’s Travel customers.
+
+Get the endpoint
+You’ll need an endpoint to connect to the model from a client application. In this exercise, we’re going to use the OpenAI SDK to chat with the model; and we’ll use the Azure OpenAI endpoint with Entra ID authentication to connect to it.
+
+Note: As an alternative to Entra ID authentication, you could use the API Key for the project. using Entra ID authentication is preferred whenever possible.
+
+On the menu bar, select the Home page.
+Note the Azure OpenAI Endpoint displayed there.
+
+Tip: You’ll use the Azure OpenAI Endpoint in this exercise, not the project endpoint!
+
+Get the application files from GitHub
+The initial application files you’ll need to develop your chat application are provided in a GitHub repo.
+
+Open Visual Studio Code.
+Open the command palette (Ctrl+Shift+P) and use the Git:clone command to clone the https://github.com/microsoftlearning/mslearn-ai-studio repo to a local folder (it doesn’t matter which one). Then open it.
+
+You may be prompted to confirm you trust the authors.
+
+Prepare the application configuration
+In Visual Studio Code, view the Extensions pane; and if it is not already installed, install the Python extension.
+In the Command Palette, use the command python:select interpreter. Then select an existing environment if you have one, or create a new Venv environment based on your Python 3.1x installation.
+
+Tip: If you are prompted to install dependencies, you can install the ones in the requirements.txt file in the /labfiles/tools/python/tools-app folder; but it’s OK if you don’t - we’ll install them later!
+
+In the Explorer pane, navigate to the folder containing the application code files at /labfiles/tools/python/tools-app. The application files include:
+brochures (a folder containing Margie’s Travel brochures)
+.env (the application configuration file)
+requirements.txt (the Python package dependencies that need to be installed)
+tools-app.py (the code file for the application)
+In the Explorer pane, right-click the tools-app folder containing the application files, and select Open in integrated terminal (or open a terminal in the Terminal menu and navigate to the /labfiles/tools/python/tools-app folder.)
+
+Note: Opening the terminal in Visual Studio Code will automatically activate the Python environment. You may need to enable running scripts on your system.
+
+Ensure that the terminal is open in the /labfiles/tools/python/tools-app folder with the prefix (.venv) to indicate that the Python environment you created is active.
+Install the OpenAI SDK, Azure identity, and other required packages by running the following command:
+
+code
+ pip install -r requirements.txt
+In the Explorer pane, in the /labfiles/tools/python/tools-app folder, select the .env file to open it. Then update the configuration values to include the Azure OpenAI Endpoint and the name assigned to the deployment for the gpt-4.1 model.
+
+Tip: Copy the Azure OpenAI Endpoint (not the project endpoint!) from the project home page in the Foundry portal, and enter the exact deployment name assigned to your deployment in the MODEL_DEPLOYMENT setting.
+
+Save the modified configuration file.
+
+Write code to implement chat with tools
+In the Explorer pane, in the /labfiles/tools/python/tools-app folder, select the tools-app.py file to open it.
+Review the existing code. You will add code to use the OpenAI SDK to access your model.
+
+Tip: As you add code to the code file, be sure to maintain the correct indentation.
+
+At the top of the code file, under the existing namespace references, find the comment Import namespaces and add the following code to import the namespace you will need to use the OpenAI SDK:
+
+code
+# import namespaces
+from openai import OpenAI
+from azure.identity import DefaultAzureCredential, get_bearer_token_provider
+In the main function, note that code to load the endpoint and key from the configuration file has already been provided. Then find the comment Initialize the OpenAI client, and add the following code to create a client for the OpenAI API:
+
+code
+# Initialize the OpenAI client
+token_provider = get_bearer_token_provider(
+     DefaultAzureCredential(), "https://ai.azure.com/.default"
+)
+    
+openai_client = OpenAI(
+     base_url=azure_openai_endpoint,
+     api_key=token_provider
+)
+In the main function, find the comment Create vector store and upload files, and add the following code:
+
+code
+# Create vector store and upload files
+print("Creating vector store and uploading files...")
+vector_store = openai_client.vector_stores.create(
+     name="travel-brochures"
+)
+file_streams = [open(f, "rb") for f in glob.glob("brochures/*.pdf")]
+if not file_streams:
+     print("No PDF files found in the brochures folder!")
+     return
+file_batch = openai_client.vector_stores.file_batches.upload_and_poll(
+     vector_store_id=vector_store.id,
+     files=file_streams
+)
+for f in file_streams:
+     f.close()
+print(f"Vector store created with {file_batch.file_counts.completed} files.")
+This code creates a vector store for your model, and uploads the brochures to it. We’ll use this vector store with the file_search tool.
+
+In the main function, note that code to request a user prompt until the user quits the app has been provided. Within this loop, find the Get a response using tools comment, and add the following code:
+
+code
+# Get a response using tools
+response = openai_client.responses.create(
+     model=model_deployment,
+     instructions="""
+     You are a travel assistant that provides information on travel services available from Margie's Travel.
+     Answer questions about services offered by Margie's Travel using the provided travel brochures.
+     Search the web for general information about destinations or current travel advice.
+     """,
+     input=input_text,
+     previous_response_id=last_response_id,
+     tools=[
+         {
+             "type": "file_search",
+             "vector_store_ids": [vector_store.id]
+         },
+         {
+             "type": "web_search"
+         }
+     ]
+)
+print(response.output_text)
+last_response_id = response.id
+This code submits a prompt and specifies that the file_search tool can be used to search the vector store and the web_search tool can be used or general web searches.
+
+Save the changes to the code file. Then, in the terminal pane, use the following command to sign into Azure.
+
+code
+ az login
+Note: In most scenarios, just using az login will be sufficient. However, if you have subscriptions in multiple tenants, you may need to specify the tenant by using the –tenant parameter. See Sign into Azure interactively using the Azure CLI for details.
+
+When prompted, follow the instructions to sign into Azure. Then complete the sign in process in the command line, viewing (and confirming if necessary) the details of the subscription containing your Foundry resource.
+After you have signed in, enter the following command to run the application:
+
+code
+python tools-app.py
+The program should run in the terminal (if not, resolve any errors and try again).
+
+When prompted, enter What's happening in San Francisco next month? and review the response from your generative AI model.
+
+The response should include information retrieved using the web_search tool.
+
+Try this follow-up question: What hotels does Margie's Travel offer there?
+
+The response should include information retrieved using the file_search tool.
+
+When you’re finished, enter quit to exit the program.
+Clean up
+If you’ve finished exploring Microsoft Foundry, you should delete the resources you have created in this exercise to avoid incurring unnecessary Azure costs.
+
+Open the Azure portal and view the contents of the resource group where you deployed the resources used in this exercise.
+On the toolbar, select Delete resource group.
+Enter the resource group name and confirm that you want to delete it.
+
+Module assessment
+200 XP
+3 minutes
+
+1. Which tool should you use when a model needs to answer questions from your own uploaded policy documents?
+
+web_search
+
+file_search
+
+code_interpreter
+2. In a function-calling workflow, what should your application do after the model returns a function_call item?
+
+Wait for the model to run the function automatically
+
+Run the function in your code and send a function_call_output back to the model
+
+Convert the function call into a web_search request
+3. Which statement about the code_interpreter tool is correct?
+
+It can run Python code in a sandboxed runtime to help solve tasks
+
+It can browse external websites directly during code execution
+
+It only supports file uploads and can't perform calculations
+Next unit: Summary
+
+Summary
+Completed
+100 XP
+1 minute
+Choose your preferred content format
+In this module, you learned how tool calling extends a generative AI model from text-only reasoning to practical, grounded action.
+
+You explored how to configure tools in OpenAI Responses API requests and how each tool adds a different capability:
+
+The code_interpreter tool lets the model generate and run Python code for calculations, data analysis, and iterative problem solving.
+The web_search tool enables retrieval of current external information so responses can include timely, source-grounded content.
+The file_search tool helps the model answer questions from your own indexed documents and knowledge files.
+The function tool allows your application to run custom business logic and return results back to the model.
+Across all tools, the same core implementation pattern applies: define the tool in your request, let the model decide when to use it, return tool output when required, and validate responses for correctness and safety.
+
+As a next step, you can combine these techniques to build more capable assistants and evolve toward full agentic solutions with persisted instructions, tools, and orchestration.
+
+Further reading
+To learn more about using tools with models, see the following resources:
+
+OpenAI developer guide: Tools
+OpenAI developers Guide: Function calling
+Module incomplete:

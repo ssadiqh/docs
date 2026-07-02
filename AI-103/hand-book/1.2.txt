@@ -1,0 +1,647 @@
+Select, deploy, and evaluate Microsoft Foundry models
+1 hr 3 min
+Module
+8 Units
+Module assessment passed
+Intermediate
+Data Scientist
+AI Engineer
+Microsoft Foundry
+Explore how to select appropriate models from the model catalog using benchmarks, deploy them to endpoints, and evaluate their performance using manual and automated approaches in Microsoft Foundry portal.
+
+Learning objectives
+By the end of this module, you'll be able to:
+
+Explore and filter models in the model catalog
+Compare models using benchmark metrics for quality, safety, cost, and performance
+Deploy a model to an endpoint and test it in the playground
+Evaluate model performance using manual and automated approaches
+Understand different evaluation metrics and when to use them
+Prerequisites
+Before starting this module, you should be familiar with fundamental AI concepts and services in Azure.
+
+This module is part of these learning paths
+Develop generative AI apps in Azure
+Introduction
+3 min
+Explore the model catalog
+7 min
+Select models using benchmarks
+9 min
+Deploy models to endpoints
+8 min
+Evaluate model performance
+10 min
+Exercise - Select, deploy, and evaluate models
+20 min
+Knowledge check
+3 min
+Summary
+3 min
+Module assessment
+Assess your understanding of this module. Sign in and answer all questions correctly to earn a pass designation on your profile.
+
+
+
+Introduction
+Completed
+100 XP
+3 minutes
+Choose your preferred content format
+Building effective generative AI applications requires selecting the right foundation model for your specific use case. With thousands of models available, you need a structured approach to discover, compare, deploy, and validate that a model meets your requirements.
+
+Consider a scenario where you're building an AI-powered customer support chatbot for a retail company. You need to select a language model that can understand customer questions, provide accurate responses, and maintain appropriate tone and safety standards. But how do you choose from the vast catalog of available models? How do you know if a model performs well for your specific needs? And once deployed, how do you measure and improve its performance?
+
+The Microsoft Foundry portal provides a comprehensive platform for this entire workflow. You can explore over 1,900 models from providers like Microsoft, Anthropic, OpenAI, Meta, and Hugging Face. You can compare models using industry-standard benchmarks for quality, safety, cost, and performance. After selecting a model, you deploy it to an endpoint where your application can consume it. Finally, you evaluate the model's performance using both automated metrics and manual testing to ensure it meets your quality and safety requirements.
+
+In this module, you explore how to use the Microsoft Foundry portal to select, deploy, and evaluate models from the model catalog. You learn how to make informed decisions about model selection, understand different deployment options, and assess model performance using various evaluation approaches.
+
+By the end of this module, you'll be able to:
+
+Explore and filter models in the model catalog
+Compare models using benchmark metrics for quality, safety, cost, and performance
+Deploy a model to an endpoint and test it in the playground
+Evaluate model performance using manual and automated approaches
+Understand different evaluation metrics and when to use them
+ Note
+
+We recognize that different people like to learn in different ways. You can choose to complete this module in video-based format or you can read the content as text and images. The text contains greater detail than the videos, so in some cases you might want to refer to it as supplemental material to the video presentation.
+
+All units complete:
+
+Explore the model catalog
+Completed
+100 XP
+7 minutes
+Choose your preferred content format
+The Foundry Models catalog serves as your central hub for discovering and comparing AI models. With over 1,900 models available from various providers, you need effective ways to filter and find models that match your specific requirements.
+
+The model catalog includes two broad categories of model:
+
+Foundry Models sold directly by Azure
+
+These models are billed directly through your Azure subscription, and include Azure OpenAI models as well as models from Microsoft and other providers.
+
+Foundry Models from partners and community
+
+These models are provided by trusted partners and the community; each with their own licensing and pricing.
+
+Finding models in the model catalog
+The model catalog user interface in the Foundry Portal provides an easy way to search for the right model for your needs. Each model has a model card showing its key information; including the provider, capabilities, benchmark metrics, responsible AI considerations, and deployment options.
+
+Screenshot of the model catalog in Microsoft Foundry portal.
+
+You can search for models by keyword, and you can filter based on the following attributes:
+
+Collection: Models are organized into collections, such as models that are provided directly in Azure, or models in the Hugging Face repository.
+Capabilities: Specific model abilities, including reasoning (complex problem-solving), tool calling (API and function integration), or multimodal processing (text, images, audio).
+Source: The model provider, including Azure OpenAI, Microsoft, Cohere, Mistral, Meta, Anthropic, and others.
+Inference tasks: Specific tasks like text generation, summarization, translation, image-generation, speech synthesis, or other common AI tasks.
+Fine-tuning methods: Supported techniques for fine-tuning a model.
+Industry: Models trained on industry-specific datasets. These specialized models often outperform general-purpose models in their respective domains.
+Understand generative AI model types
+As you explore the catalog, you encounter different categories of models designed for various use cases. In broad terms, you can categorize language models as:
+
+Large Language Models (LLMs) like GPT-5, Mistral Large, and Llama 3 70B that are designed for tasks requiring deep reasoning, complex content generation, and extensive context understanding. These models excel at sophisticated applications but require more computational resources.
+Small Language Models (SLMs) like Phi-4, Mistral OSS models, and Llama 3 8B that offer efficiency and cost-effectiveness while handling common natural language processing tasks. They're ideal for scenarios where speed and cost matter more than handling the most complex reasoning tasks. SLMs can run on lower-end hardware or edge devices.
+Chat completion and reasoning models
+Most language models in the catalog are chat completion models designed to generate coherent, contextually appropriate text responses. These models power conversational interfaces and content generation applications.
+
+For scenarios requiring higher performance in complex tasks like mathematics, coding, science, strategy, and logistics, reasoning models like Claude Opus 4.6 provide enhanced problem-solving capabilities. These models can break down complex problems and show their reasoning process.
+
+Specialized models
+The catalog also includes task-specific models:
+
+Embedding models like Ada and Cohere convert text into numerical representations. These models enable semantic search, recommendation systems, and Retrieval Augmented Generation (RAG) scenarios where you need to find relevant information based on meaning rather than exact keyword matches.
+
+Image generation models like GPT-image-1 create images from text descriptions. Use these for generating marketing materials, illustrations, or design mockups.
+
+Video generation models like Sora 2 create video content from text descriptions.
+
+Image analysis models like GPT-4.1 can accept multimodal input, including text and images; and generate natural language output based on prompts that include images for analysis.
+
+Text to speech models like GPT-4o-tts can convert text-based input to synthesized speech.
+
+Speech to text models like GPT-4o-transcribe can convert audio data containing speech into text transcriptions.
+
+Regional and domain-specific models
+Some models are optimized for specific languages, regions, or industries. When you need specialized performance in a particular domain or language, these models often outperform general-purpose alternatives. Examples include models trained on medical literature, legal documents, or specific language corpora.
+
+All units complete:
+Select models using benchmarks
+Completed
+100 XP
+9 minutes
+Choose your preferred content format
+Before deploying a model, you want to understand how it performs across different dimensions. Model benchmarks provide objective, measurable data to help you compare models and make informed selection decisions. The Microsoft Foundry portal offers comprehensive benchmarking tools organized into quality, safety, cost, and performance metrics.
+
+Access model benchmarks
+You can explore benchmarks in two ways within the Microsoft Foundry portal:
+
+In the model catalog, view the Model leaderboard to see comparative rankings across all available models. This view helps you identify top-performing models for specific metrics or scenarios. The leaderboard displays top models ranked by quality, safety, estimated cost, and throughput.
+
+For detailed benchmarks on a specific model, open its model card and select the Benchmarks tab. This view shows how the individual model performs across various metrics and datasets, with comparison charts placing it relative to similar models.
+
+Quality benchmarks
+Quality benchmarks assess how well a model generates accurate, coherent, and contextually appropriate responses. These metrics use public datasets and standardized evaluation methods to ensure consistency.
+
+The Quality index provides a high-level overview by averaging accuracy scores across multiple benchmark datasets that measure reasoning, knowledge, question answering, mathematical capabilities, and coding skills. Higher quality index values indicate stronger overall performance across general-purpose language tasks.
+
+Quality benchmarks use datasets such as:
+
+Arena-Hard - adversarial question answering
+BIG-Bench Hard - reasoning capabilities
+GPQA - graduate-level multi-discipline questions
+HumanEval+ and MBPP+ - code generation tasks
+MATH - mathematical reasoning
+MMLU-Pro - general knowledge assessment
+IFEval - instruction following
+Benchmark scores are normalized indexes ranging from zero to one, where higher values indicate better performance.
+
+Screenshot of model leaderboard in Microsoft Foundry portal.
+
+Safety benchmarks
+Safety metrics ensure models don't generate harmful, biased, or inappropriate content. These benchmarks are crucial for applications exposed to end users, especially in regulated industries or customer-facing scenarios.
+
+Microsoft Foundry evaluates models across multiple safety dimensions:
+
+Harmful behavior detection uses the HarmBench benchmark to measure how well models resist generating unsafe content. The evaluation calculates Attack Success Rate (ASR), where lower values indicate safer, more robust models. HarmBench tests three functional areas:
+
+Standard harmful behaviors - cybercrime, illegal activities, general harm
+Contextually harmful behaviors - misinformation, harassment, bullying
+Copyright violations - reproducing copyrighted material
+Toxic content detection uses the ToxiGen dataset to measure how well models identify adversarial and implicit hate speech. Higher F1 scores indicate better detection performance across references to minority groups.
+
+Sensitive domain knowledge uses the WMDP (Weapons of Mass Destruction Proxy) benchmark to measure model knowledge in biosecurity, cybersecurity, and chemical security. Higher WMDP scores indicate more knowledge of potentially dangerous capabilities.
+
+Safety scores help you understand model robustness, especially important for customer-facing applications where harmful output poses significant concerns.
+
+Cost benchmarks
+Understanding the financial impact of model usage helps you balance quality requirements with budget constraints. Cost benchmarks in Microsoft Foundry display pricing for serverless API deployments and Azure OpenAI models.
+
+Cost per input tokens shows the price for processing 1 million input tokens (the text you send to the model).
+
+Cost per output tokens indicates the price for generating 1 million output tokens (the text the model produces).
+
+Estimated cost combines input and output costs using a typical 3:1 ratio (three input tokens for every output token), giving you a single number for comparison. Lower values indicate more cost-effective models.
+
+Cost benchmarks help you identify models that deliver the quality you need at a price point that fits your application's usage patterns and budget.
+
+Performance benchmarks
+Performance metrics measure how quickly and efficiently models respond to requests. These benchmarks matter for real-time applications where user experience depends on responsiveness.
+
+Latency measurements include:
+
+Latency mean - average time in seconds to process a request
+Latency P50 (median) - 50% of requests complete faster than this time
+Latency P90 - 90% of requests complete faster than this time
+Latency P95 - 95% of requests complete faster than this time
+Latency P99 - 99% of requests complete faster than this time
+Time to first token (TTFT) - time until the first token arrives when using streaming
+Throughput measurements include:
+
+Generated tokens per second (GTPS) - output tokens generated per second
+Total tokens per second (TTPS) - combined input and output tokens processed per second
+Time between tokens - interval between receiving consecutive tokens
+The leaderboard summarizes performance using mean time to first token (lower is better) and mean generated tokens per second (higher is better). High-throughput, low-latency models provide better user experiences in interactive applications. For batch processing jobs where speed matters less than cost, you can prioritize other factors.
+
+Use leaderboards and comparison features
+The model leaderboard lets you view top models for specific metrics. You can sort by quality, safety, estimated cost, and throughput to identify models that best match your requirements.
+
+Scenario leaderboards help you find models optimized for specific use cases like reasoning, coding, math, question answering, or groundedness. If your application maps to a particular scenario, start with the relevant scenario leaderboard rather than relying solely on overall quality index.
+
+Trade-off charts display two metrics simultaneously, such as quality versus cost or quality versus throughput. These visualizations help you find the optimal balance for your requirements. Use the dropdown to compare quality against cost, throughput, or safety. Models closer to the top-right corner of the chart perform well on both metrics. A model that's slightly less accurate but significantly faster or cheaper might better serve your needs.
+
+Side-by-side comparison lets you select two or three models from the leaderboard and compare them across multiple dimensions:
+
+Performance benchmarks (quality, safety, throughput)
+Model details (context window, training data, supported languages)
+Supported endpoints (deployment options)
+Feature support (function calling, structured output, vision)
+Select models by checking boxes next to their names, then choose Compare to open the detailed comparison view.
+
+All units complete:
+Deploy models to endpoints
+Completed
+100 XP
+8 minutes
+Choose your preferred content format
+After selecting a model from the catalog, you deploy it to make it accessible through endpoints that your applications can use. The Microsoft Foundry portal guides you through the deployment process and provides tools to test your deployed model immediately.
+
+Screenshot of the Deploy model interface in Foundry portal.
+
+Understand deployment types
+Microsoft Foundry supports several deployment types, each offering different characteristics for data residency, scaling, and billing:
+
+Global Standard model deployments can use any Azure region on a pay-per-token basis. They're best for general workloads, and provide the highest quota.
+Global Provisioned deployments can use any Azure region, and their use is based on a reserved provision throughput units(PTU) basis to provide predictable high-throughput.
+Global Batch deployments can use any Azure region at a 50% discount for large asynchronous jobs within 24-hours.
+Data Zone Standard deployments ensure data stays within a specific data zone on a pay-per-token basis. They're best for scenarios where EU/US data zone compliance is required.
+Data Zone Provisioned deployments provide predictable throughput based on reserved PTUs within a data zone.
+Data Zone Batch deployments are designed for large asynchronous batch jobs within a data zone/
+Standard deployments are deployed within a single region on a pay-per-token basis. They're great when you need regional data residency compliance or for low-volume scenarios.
+Regional Provisioned deployments provide reserved PTUs within a single region.
+Developer Developer deployments use any Azure region on a pay-per-token basis and are for fine-tuned model evaluation only.
+Each model in the catalog indicates which deployment types it supports. The portal automatically selects the best deployment option based on your environment and model requirements. Global Standard deployments in Foundry resources should be used whenever possible for maximum capabilities.
+
+Deploy a model
+To deploy a model from the Microsoft Foundry portal:
+
+First, navigate to the model you selected in the Model catalog. From the Foundry portal homepage, select Discover in the navigation, then Models in the left pane. Open the model card to review its specifications and supported deployment types.
+
+Select Deploy to begin the deployment process. You can choose:
+
+Default settings to deploy quickly with recommended configurations
+Custom settings to customize your deployment options
+If the model requires an Azure Marketplace subscription (common for models from partners and the community), you see terms of use. Review these terms and select Agree and Proceed to accept them. Models sold directly by Azure, such as Azure OpenAI models like GPT-4o-mini, don't require marketplace subscriptions.
+
+Configure your deployment settings:
+
+Deployment name: By default, the system uses the model name. You can modify this to create meaningful names for multiple deployments of the same model. During inference, your code uses this deployment name in the model parameter to route requests.
+Deployment type: The portal automatically selects the appropriate deployment type based on the model and your environment. Each model supports different deployment types providing different data residency or throughput guarantees.
+For managed compute deployments, you also configure:
+
+Virtual machine SKU: Choose from supported VM types. You need Azure Machine Learning compute quota for the selected SKU in your subscription.
+Instance count: Specify how many instances to deploy for load distribution and redundancy.
+After configuring all settings, select Deploy. When deployment completes, you land on the Foundry Playground where you can interactively test the model. Verify that the deployment status shows Succeeded in your deployment list.
+
+Manage deployed models
+After deployment, you manage your models from the Build section in the Microsoft Foundry portal. Select Build in the navigation, then Models in the left pane to see the list of deployments in your resource.
+
+From the deployment list, select a specific model to view its details:
+
+Deployment configuration and status
+Endpoint URL for API access
+Authentication keys or tokens
+Monitoring and usage metrics
+Option to adjust deployment settings or delete the deployment
+The deployment details page provides the information your applications need to connect to and use the model.
+
+Test in the playground
+The Microsoft Foundry portal includes interactive playgrounds where you test deployed models immediately, without writing code. After deployment completes, you automatically land in the playground, or you can select a deployment from your models list to open the playground.
+
+The playground pre-selects your deployment, so you can start testing immediately. In the chat interface:
+
+Enter prompts in the message box and observe responses. The playground displays both your input and the model's generated output, helping you understand behavior and quality.
+
+Experiment with different types of prompts to test various capabilities:
+
+Simple questions to verify basic understanding
+Complex multi-step reasoning problems
+Requests for specific formats or styles
+Edge-cases that might reveal limitations
+Adjust system messages to guide model behavior. System messages set context, tone, and instructions that apply to all user inputs. For example, you might instruct the model to "respond as a customer service representative" or "provide concise, technical explanations."
+
+Modify parameters like temperature (creativity vs. consistency), max tokens (response length limits), and top-p (nucleus sampling) to fine-tune generation behavior.
+
+Select the Code tab to see examples of how to call your deployed model programmatically. The code samples show authentication, endpoint configuration, and request formatting in languages like Python, C#, and JavaScript. You can copy these samples directly into your application.
+
+The playground serves as your development environment for prompt engineering and testing before integrating the model into your application.
+
+Access models programmatically
+When you're ready to integrate the model into your application, you need three key pieces of information from the deployment details:
+
+Endpoint URL: The API endpoint where your application sends requests. Microsoft Foundry supports project endpoints for Foundry-specific functionality, and OpenAI v1 endpoints for broad compatibility with OpenAI model APIs.
+
+Authentication key: The secret key or token your application presents to authenticate requests. Alternatively, you can use Microsoft Entra ID authentication and have your application present an authentication token based on is identity. Entra ID authentication is recommended for production scenarios.
+
+Deployment name: The name you specified during deployment, used in the model parameter of API requests to route to your specific deployment.
+
+Your application uses these details to construct API requests. The Microsoft Foundry portal provides SDKs and REST API documentation for various programming languages, along with code samples showing request formatting, authentication, and response handling.
+
+With your model deployed and tested, you're ready to integrate it into applications or proceed to more comprehensive evaluation using automated metrics and test datasets.
+
+All units complete:
+Evaluate model performance
+Completed
+100 XP
+10 minutes
+Choose your preferred content format
+Evaluating your deployed model ensures it meets quality standards, provides accurate responses, and continuously improves over time. The Microsoft Foundry portal offers multiple approaches to evaluation, from manual testing to automated metrics and comprehensive evaluation flows.
+
+Why evaluate models
+Evaluation serves several critical purposes in generative AI application development:
+
+Quality assurance identifies issues and ensures your model provides accurate, relevant responses. Discovering problems during evaluation rather than production protects your users and your organization's reputation.
+
+User satisfaction improves when models consistently deliver helpful, appropriate responses. Evaluation helps you understand how users experience your application and where improvements make the biggest impact.
+
+Continuous improvement comes from analyzing evaluation results to identify enhancement opportunities. Regular evaluation as you update prompts, add features, or retrain models ensures ongoing quality.
+
+Compliance and safety verification confirms your model adheres to policies, avoids generating harmful content, and respects user privacy and data protection requirements.
+
+Manual evaluation approaches
+Manual evaluation involves human reviewers assessing model responses. While time-intensive, manual evaluation provides insights automated metrics can't capture.
+
+Interactive testing in the playground lets you explore model behavior qualitatively. You enter diverse prompts, observe responses, and note issues like incorrect information, inappropriate tone, or failure to follow instructions. This exploratory testing helps you understand a model's strengths and limitations.
+
+To help optimize your application design, you can test models side by side in the playground, synchronizing system instructions and prompts to compare their responses.
+
+Screenshot of the chat playground in the Microsoft Foundry portal.
+
+Structured review involves creating a set of test cases representing your application's use cases. Human evaluators rate responses based on criteria like:
+
+Relevance: Does the response address the question or request?
+Informativeness: Does it provide sufficient detail and useful information?
+Engagement: Is the response interesting and appropriately conversational?
+Accuracy: Are facts and statements correct?
+Safety: Does the response avoid harmful, biased, or inappropriate content?
+Evaluators typically use rating scales (such as 1-5) for each criterion. Aggregate ratings across multiple test cases provide quantitative measures of overall quality.
+
+User studies collect feedback from actual or representative users interacting with your application. User feedback reveals real-world issues you might miss in controlled testing, such as confusing phrasing, missing context, or unmet expectations.
+
+Manual evaluation complements automated approaches by capturing subjective quality aspects like user satisfaction, contextual appropriateness, and brand alignment that metrics alone can't measure.
+
+Automated evaluation metrics
+Automated evaluation uses standard metrics to assess your model's outputs automatically. These evaluations scale efficiently and provide consistent, objective measurements.
+
+The Microsoft Foundry portal supports several categories of evaluation metrics, including:
+
+Generation quality metrics evaluate overall response quality:
+
+Groundedness: Determines whether responses are based on provided context rather than speculation. Groundedness Pro offers binary assessment (grounded or not grounded) useful for factual accuracy requirements.
+Relevance: Measures whether responses address the user's question or request appropriately.
+Coherence: Assesses whether responses flow logically and maintain consistent ideas.
+Fluency: Evaluates linguistic correctness and natural language quality.
+Risk and safety metrics identify potential harmful content:
+
+Self-harm content: Detects responses discussing or encouraging self-harm
+Hateful and unfair content: Identifies bias, discrimination, or hateful statements
+Violent content: Flags responses containing or promoting violence
+Sexual content: Detects inappropriate sexual content
+Protected material: Identifies potential copyright or proprietary content reproduction
+Indirect attack (jailbreak): Assesses vulnerability to manipulation attempts
+For content harm metrics, results aggregate as defect rate—the percentage of responses exceeding a severity threshold (typically Medium). For protected material and indirect attack, defect rate calculates as (true instances / total instances) × 100.
+
+When using AI-assisted evaluation, you specify a GPT model to perform the assessment. This evaluator model analyzes your deployed model's responses and assigns scores based on the selected criteria.
+
+Natural language processing metrics
+NLP metrics provide mathematical-based evaluation without requiring an evaluator model. These metrics often need ground truth data—expected or correct responses for comparison.
+
+F1-score measures the ratio of shared words between generated and ground truth answers, balancing precision (avoiding incorrect words) and recall (including important words). F1-score is valuable for tasks like text classification and information retrieval.
+
+BLEU (Bilingual Evaluation Understudy) compares n-grams (word sequences) between generated and reference texts, commonly used for machine translation evaluation.
+
+METEOR (Metric for Evaluation of Translation with Explicit Ordering) extends BLEU by accounting for synonyms, stemming, and paraphrasing, providing more flexible comparison.
+
+ROUGE (Recall-Oriented Understudy for Gisting Evaluation) emphasizes recall over precision, making it particularly useful for summarization tasks where covering key points matters more than avoiding extra words.
+
+GLEU (Google-BLEU) is a variant of BLEU designed for sentence-level evaluation.
+
+NLP metrics work well when you have definitive correct answers or reference texts. They're less suitable for open-ended generation where many valid responses exist.
+
+Create comprehensive evaluations
+The Microsoft Foundry portal's Evaluation feature lets you run systematic evaluations using test datasets and multiple metrics simultaneously.
+
+You can base your evaluation on one of the following:
+
+Model: Evaluate a deployed model with prompts you specify. The system generates outputs during evaluation.
+Agent: Evaluate an agent's responses with user-defined prompts.
+Dataset: Evaluate pre-generated outputs already present in your test dataset.
+When evaluating a model or agent, you need a dataset to provide inputs for assessment. You have three options:
+
+Upload new dataset: Provide a CSV or JSONL file containing test cases from your local storage.
+Use existing dataset: Select from datasets you've previously uploaded to your project.
+Generate synthetic dataset: If you lack test data, the system can generate sample data based on a topic description you provide. You specify the resource to generate data, the number of rows, and a prompt describing the desired data. You can also upload files to improve relevance to your specific task.
+For dataset evaluation where outputs are pre-generated, select or upload your dataset containing both inputs and model-generated responses.
+
+After configuring the metrics you want to calculate, the field mappings for the evaluation data, and the system prompt for the model; you can start the evaluation job - which may take some time to run asynchronously, processing each row in your test dataset against the selected metrics.
+
+Review evaluation results
+When evaluation completes, the results show aggregate scores for the metrics you selected and details of each test prompt.
+
+Screenshot of evaluation results.
+
+Explore the evaluator library
+The Evaluator library provides a centralized location to view and manage all available evaluators. Access it from your project's Evaluation page by selecting the Evaluator library tab.
+
+In the evaluator library, you can:
+
+View Microsoft-curated evaluators for quality, safety, and performance
+Examine evaluator details including name, description, parameters, and associated files
+Review annotation prompts for quality evaluators to understand how metrics are calculated
+Check definitions and severity levels for safety evaluators
+Manage custom evaluators you've created for specific scenarios
+The library supports version management, letting you compare different versions, restore previous versions if needed, and collaborate with others on custom evaluators.
+
+Iterate based on evaluation
+Evaluation results inform your next steps:
+
+When scores are lower than required, consider:
+
+Prompt engineering: Refining instructions and system messages
+Different models: Trying models optimized for your use case
+RAG integration: Adding retrieval capabilities to ground responses in your data
+Fine-tuning: Training the model on your specific domain (if supported)
+Each of these steps can grow in complexity (and sometimes cost), so take that into consideration when planning improvements.
+
+When safety metrics show concerns:
+
+Content filters: Implementing Azure AI Content Safety services
+Prompt hardening: Adding safety instructions to system messages
+Output validation: Checking responses before displaying to users
+Regular evaluation as you make changes tracks improvements and ensures quality doesn't regress. Establish evaluation benchmarks early in development, then re-run evaluations after modifications to measure impact objectively.
+
+By combining manual testing, automated metrics, and comprehensive evaluation flows, you build confidence that your model performs well, safely serves users, and meets your application's quality requirements.
+
+All units complete:
+Need help? See our troubleshooting guide or provide specific feedback by reporting an issue.
+
+Explore and compare models
+The Microsoft Foundry model catalog serves as a central repository where you can explore and use a variety of models, facilitating the creation of your generative AI scenario. In this exercise, you’ll explore the model catalog, compare models using benchmarks, test models in the model playground, and run an evaluation using a synthetic dataset.
+
+This exercise will take approximately 45 minutes.
+
+Note: Some of the technologies used in this exercise are in preview or in active development. You may experience some unexpected behavior, warnings, or errors.
+
+Prerequisites
+To complete this exercise, you need:
+
+An Azure subscription with permissions to create AI resources.
+Create a Microsoft Foundry project
+Microsoft Foundry uses projects to organize models, resources, data, and other assets used to develop an AI solution.
+
+In a web browser, open the Microsoft Foundry portal at https://ai.azure.com to start building; signing in using your Azure credentials. Close any tips or quick start panes that are opened the first time you sign in.
+
+If it is not already enabled, in the tool bar the top of the page, enable the New Foundry option. Then, if prompted, create a new project with a unique name; expanding the Advanced options area to specify the following settings for your project:
+Foundry resource: Use the default name for your resource (usually {project_name}-resource)
+Subscription: Your Azure subscription
+Resource group: Create or select a resource group
+Region: Select any of the AI Foundry recommended regions in this list
+Wait for your project to be created. Then view its home page.
+Explore models in the catalog
+Microsoft Foundry Models provides a catalog of models that you can use in your project. You can browse the catalog and compare models to find the right one for your needs.
+
+Now you’re ready to explore models. On the Discover page, select the Models tab to view the Microsoft Foundry model catalog.
+
+The model catalog lists all models available in Foundry. Some are provided directly from Azure (and billed through your Azure subscription) while others are provided by partners and the community.
+
+Note that you can search and filter the catalog, based on model names, capabilities, and other factors.
+
+Search for gpt-4.1. Then, in the search results, select the gpt-4.1 model to view its model card. Model cards provide information about models to help you determine if they are suitable for your needs.
+Read the description and review the other information available on the Details page.
+View the Benchmarks page for the gpt-4.1 model to see how the model compares across some standard performance benchmarks with other models that are used in similar scenarios.
+Use the back arrow (←) next to the gpt-4.1 page title to return to the model catalog.
+Compare models using the model leaderboard
+Now let’s use the model leaderboard and side-by-side comparison features to compare models visually.
+
+In the model catalog page, select View leaderboard.
+In the Model leaderboard page, review the top models ranked by quality, safety, cost, and performance. Note which models score highest for AI quality metrics.
+Scroll down to use the Trade-off chart section to compare models on multiple dimensions.
+Select the Benchmark Cost from the dropdown to see how model quality relates to cost, and then use the model list to compare gpt-4.1 and gpt-4.1-mini. If you want to explore further, you can add other models to the comparison.
+Select the Throughput metric from the dropdown to see how the quality of these models relates to throughput scores.
+Select the Safety metric from the dropdown to see how the quality of these models relates to safety scores.
+In the table just above the trade-off charts, you can compare benchmarks. Select gpt-4.1 and gpt-4.1-mini, and optionally any other models you want to explore, and then use the Compare models button to view their benchmarks side-by-side.
+Review the comparison across the following data:
+Performance benchmarks: Quality, safety, and throughput scores.
+Input and output: The formats supported for prompts and responses.
+Context: The number of tokens that can be maintained in a conversation and produced as output, and when the model was trained.
+Endpoints: The API endpoints through which the model can be consumed by client applications, and whether it can be used by an agent.
+Supported features: Specific capabilities that you may require in your application scenario.
+Use the back arrow (←) next to the gpt-4.1 page title to return to the model catalog.
+Deploy models
+Now let’s deploy the models we’ll use for testing and evaluation. You need to deploy gpt-4.1 and gpt-4.1-mini.
+
+Deploy the gpt-4.1 model
+In the model catalog, search for gpt-4.1 and select it.
+On the model page, select Deploy and deploy the model using the *default settings.
+
+The deployed model will open in the model playground, where it will be selected in the Model drop-down list.
+
+Note the deployment name that is assigned to the gpt-4.1 model. You’ll need to identify this deployment later.
+Deploy the gpt-4.1-mini model
+In the model playground, in the Model list, select Browse more models.
+Search for gpt-4.1-mini, and then select it and deploy it.
+
+The model is deployed and selected in the model playground.
+
+Note the deployment name that is assigned to the gpt-4.1-mini model.
+Compare models in the model playground
+Now that you have two model deployments, let’s compare them in the playground.
+
+In the playground, ensure the deployment for the gpt-4.1-mini model is selected in the Models list, and then on the right side of the page, in the Compare models list, select the deployment for the gpt-4.1 model.
+The side-by-side comparison view opens directly into separate chat panes for each model. Select the Chat tab for both models, and enter the following prompt:
+
+code
+I have a fox, a chicken, and a bag of grain that I need to take over a river in a boat. I can only take one thing at a time. If I leave the chicken and the grain unattended, the chicken will eat the grain. If I leave the fox and the chicken unattended, the fox will eat the chicken. How can I get all three things across the river without anything being eaten?
+Submit the prompt and view the responses from both models. Then, enter the following follow-up prompt:
+
+code
+Explain your reasoning.
+Compare the responses from each model. Note any differences in accuracy, reasoning quality, and response style.
+Evaluate a model with a synthetic dataset
+The model playground is useful for quick manual testing, but to systematically assess a model’s performance across many inputs, you can run an evaluation. Let’s evaluate the gpt-4.1 model using a synthetically generated dataset of travel-related questions.
+
+Step 1: Target
+In the playground, select the Evaluations tab.
+Select Create to open the Create new evaluation wizard.
+For the evaluation target, select Model.
+In the table of models, deselect any preselected deployments so that only the checkbox for gpt-4.1 is selected, and then select Next.
+Step 2: Data
+Instead of uploading a test dataset, you’ll use Foundry’s synthetic data generation feature to create one automatically.
+
+In the Data step, under Dataset source, select Synthetic generation.
+
+With synthetic generation, a deployment is used to automatically generate questions for each target when you submit the evaluation.
+
+Select Generate, and then set and confirm the following:
+Name of the new dataset: Leave as default
+Model: gpt-4.1
+Number of rows: 45
+Prompt: Create various travel related questions, and include some content safety and security tests
+Seed data: Leave blank
+Select Next to proceed.
+Step 3: Configure models
+In the Configure models step, set the Developer prompt for the model being evaluated:
+
+code
+ You are a helpful travel assistant that provides accurate, detailed, and practical travel advice to help users plan their trips.
+Leave the rest of the values at their default, then select Next.
+
+Step 4: Criteria
+In the Criteria step, all of the suggested evaluators. These use an AI model as a judge to assess the quality of responses.
+Remove all of the criteria under Agents, leaving the rest of the evaluators enabled.
+Select Next.
+Step 5: Review and submit
+In the Review step, verify the evaluation configuration, including the target model, dataset, and selected criteria.
+Provide a name for the evaluation, such as travel-assistant-eval.
+Select Submit to start the evaluation run.
+Wait for the evaluation to complete. This may take several minutes, depending on data center load.
+Review the results
+When the evaluation completes, select the evaluation run to view the results page displays an overview of the evaluation metrics.
+Review the scores and results from each evaluation in the table detailed on the run page. Scroll to the right and view additional pages, where you’ll see mostly passing values. Depending on the model’s response, you may see some failures. If you do, examine those closely.
+Select the Analyze results button, selecting gpt-4.1 from dropdown, then select Start analysis.
+On this page you’ll see any failures clustered by why they failed, where you can see details on why it failed. Most of those failures will be due to the model saying it’s unable to help due to the nature of the question, however you should explore each failure and consider if the response is what you want to see.
+Review any failures and the AI suggestions for how to improve. This guidance will help you tweak your configuration to perform better.
+Clean up
+If you’ve finished exploring Microsoft Foundry, you should delete the resources you have created in this exercise to avoid incurring unnecessary Azure costs.
+
+Open the Azure portal and view the contents of the resource group where you deployed the resources used in this exercise.
+On the toolbar, select Delete resource group.
+Enter the resource group name and confirm that you want to delete it.
+Knowledge check
+Completed
+200 XP
+3 minutes
+Check your knowledge
+
+1. Which model benchmark indicates the model's ability to process prompts and return comprehensive responses quickly?
+
+Quality index
+
+Cost
+
+Throughput
+2. Which deployment type in Microsoft Foundry is best for general use while offering the largest quota?
+
+Data Zone Batch
+
+Global Standard
+
+Developer
+3. Which evaluation metric measures linguistic correctness and natural language quality?
+
+Fluency
+
+Groundedness
+
+Relevance
+All units complete:
+Summary
+Completed
+100 XP
+3 minutes
+Choose your preferred content format
+In this module, you explored the complete workflow for selecting, deploying, and evaluating Foundry Models. You learned how to make informed decisions about model selection using benchmarks, how to deploy models to endpoints, and how to assess their performance using various evaluation approaches.
+
+Key takeaways
+The Microsoft Foundry portal's model catalog provides access to over 1,900 models from providers including Microsoft, OpenAI, Meta, Mistral, and Hugging Face. Effective filtering by collection, capabilities, deployment options, and other attributes helps you narrow the catalog to models matching your requirements.
+
+Model benchmarks offer objective comparisons across quality, safety, cost, and performance dimensions. Quality metrics like accuracy, coherence, and fluency assess how well models generate appropriate responses. Safety metrics identify risks around harmful content. Cost benchmarks help balance quality with budget constraints. Performance metrics like latency and throughput indicate responsiveness for real-time applications.
+
+Deployment options include serverless API for pay-per-call flexibility, provisioned deployments for consistent high-volume workloads, managed compute for VM-based hosting, and batch processing for cost-optimized non-interactive jobs. Each option offers different characteristics for scaling, billing, and control.
+
+Testing in the playground provides immediate feedback on model behavior without writing code. You can experiment with prompts, adjust parameters, and observe responses to understand model capabilities before integrating into applications.
+
+Evaluation approaches range from manual testing to automated metrics. Manual evaluation captures subjective quality aspects like user satisfaction and contextual appropriateness. AI-assisted metrics assess generation quality and safety risks automatically. NLP metrics like F1-score and ROUGE provide mathematical comparison against ground truth data.
+
+Comprehensive evaluation flows in the Microsoft Foundry portal let you run systematic assessments using test datasets and multiple metrics. Results identify strengths, weaknesses, and areas requiring improvement, guiding iterative development of your generative AI applications.
+
+Next steps
+With models deployed and evaluated, consider these next steps:
+
+Integrate models into applications using the SDKs, REST APIs, and code samples provided in the Microsoft Foundry portal. Your applications can now consume deployed models through authenticated API calls.
+
+Implement Retrieval Augmented Generation (RAG) to ground model responses in your organization's data. RAG combines models with search capabilities to provide accurate, contextually relevant responses based on your documents and knowledge bases.
+
+Apply Azure AI Content Safety services to add an additional layer of protection against harmful content. Content filters can block inappropriate inputs and outputs, complementing model-level safety features.
+
+Fine-tune models (when supported) on your specific domain or use case to improve performance for specialized scenarios. Fine-tuning adapts general-purpose models to your unique requirements.
+
+Monitor production performance using Azure Monitor and Application Insights to track usage, latency, costs, and errors. Ongoing monitoring ensures your applications remain healthy and performant.
+
+Iterate based on user feedback by collecting real-world usage data and conducting periodic re-evaluations. Continuous improvement keeps your generative AI applications aligned with user needs.
+
+The skills you developed in this module—selecting appropriate models, deploying them effectively, and evaluating their performance—form the foundation for building robust, high-quality generative AI applications using Microsoft Foundry.
+
+All units complete:
