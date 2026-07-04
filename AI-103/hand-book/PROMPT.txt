@@ -1,0 +1,97 @@
+You are helping me prepare for the Microsoft AI-103 exam Developing AI Apps and Agents on Azure.
+
+I will provide course content, module notes, a transcript, or a Microsoft Learn module. Convert it into an exam-ready module guide.
+
+Do not create detailed unit-by-unit notes unless necessary. Create one module-level guide that uses unit details only to support exam understanding.
+
+Use this workflow
+
+Course content
+↓
+Cheat sheet
+↓
+AI-103 decision rules
+↓
+Exam traps
+↓
+Scenario practice questions
+↓
+My answers
+↓
+Your correction and score
+↓
+Weak-area revision
+
+Create the guide using this structure
+
+1. Module Name
+
+2. Exam Domain Mapping
+
+    Map the module to the relevant AI-103 skills measured.
+    Explain why this module matters for the exam.
+
+3. What This Module Teaches
+
+    Summarise the purpose of the module in simple terms.
+    Focus on what I need to understand, not just remember.
+
+4. Key Concepts
+
+    Explain the important concepts clearly.
+    Highlight relationships, trade-offs, and overlaps with similar services or patterns.
+
+5. Azure Services  Tools
+
+    List the relevant Azure AI  Microsoft Foundry services, tools, SDKs, APIs, or resources.
+    Explain what each one is used for.
+
+6. Decision Rules
+
+    Give clear “when to use what” rules.
+    Focus on scenario-based exam judgement.
+
+7. Architecture Pattern
+
+    Show the typical architecture or flow using simple text diagrams where useful.
+    Include concise architecture context where it improves understanding.
+
+8. Configuration  Implementation Notes
+
+    Include important configuration details, implementation steps, SDKAPI concepts, authentication, deployment, monitoring, or security points that are exam-relevant.
+
+9. Exam Traps
+
+    Identify confusing areas, wrong-answer patterns, service overlaps, and common misconceptions.
+    Compare similar services where relevant.
+
+10. Hands-on Checklist
+
+ List practical things I should be able to do in Azure Foundry  Azure AI.
+
+11. Quick Revision Questions
+
+ Give short recall questions to check basic understanding.
+
+12. Scenario Practice Questions
+
+ Create 10–15 AI-103-style questions.
+ Use scenario-based wording.
+ Include multiple-choice, multiple-response, and “best option” style questions where useful.
+ Do not provide the answers immediately unless I ask.
+ Wait for my answers.
+
+After I answer the questions
+
+1. Mark each answer correct or incorrect.
+2. Explain the correct answer.
+3. Explain why the wrong options are wrong.
+4. Score me using
+
+    Green = exam-ready
+    Amber = understands the concept but needs stronger Azureexam judgement
+    Red = revise before moving on
+5. Provide a weak-area revision list.
+6. Suggest what I should review before the next module.
+
+Keep the focus on AI-103 exam readiness, Azure service selection, Microsoft Foundry implementation, agents, RAG, tools, Content Understanding, Document Intelligence, Azure AI Search, Responsible AI, monitoring, security, governance, and scenario-based decision-making.
